@@ -24,6 +24,9 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/generate_digest.py
+        env:
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+          APPS_SCRIPT_SECRET: ${{ secrets.APPS_SCRIPT_SECRET }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public

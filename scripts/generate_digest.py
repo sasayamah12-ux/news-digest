@@ -2,6 +2,8 @@
 """毎朝のニュースダイジェストHTMLをRSSフィードから生成する。外部依存なし(標準ライブラリのみ)。"""
 
 import html
+import json
+import os
 import re
 import sys
 import urllib.error
@@ -14,6 +16,13 @@ from zoneinfo import ZoneInfo
 TIMEZONE = ZoneInfo("Asia/Bangkok")
 USER_AGENT = "Mozilla/5.0 (compatible; MorningDigestBot/1.0; personal use)"
 DC_NS = "{http://purl.org/dc/elements/1.1/}"
+
+# クリック追跡バックエンド(Google Apps Script)。未設定なら追跡なし・均等配分にフォールバックする。
+APPS_SCRIPT_URL = os.environ.get("APPS_SCRIPT_URL", "").strip()
+APPS_SCRIPT_SECRET = os.environ.get("APPS_SCRIPT_SECRET", "").strip()
+CLICK_WEIGHT_DAYS = 30
+MIN_CATEGORY_SLOTS = 1
+MAX_CATEGORY_SLOTS = 4
 
 # 固定タグの一般ニュースフィード。同じタグを複数指定すると1つのプールに合流する。
 GENERAL_FEEDS = [
@@ -129,6 +138,56 @@ def parse_feed(tag: str | None, url: str, source: str | None = None) -> list[dic
     return items
 
 
+def tracked_link(dest: str, category: str, kind: str, title: str) -> str:
+    if not APPS_SCRIPT_URL:
+        return dest
+    params = {"dest": dest, "cat": category, "kind": kind, "t": title[:60]}
+    return APPS_SCRIPT_URL + "?" + urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
+
+
+def fetch_click_weights(kind: str) -> dict[str, int]:
+    if not APPS_SCRIPT_URL or not APPS_SCRIPT_SECRET:
+        return {}
+    params = {"mode": "summary", "key": APPS_SCRIPT_SECRET, "kind": kind, "days": CLICK_WEIGHT_DAYS}
+    url = APPS_SCRIPT_URL + "?" + urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
+    try:
+        raw = fetch(url)
+        data = json.loads(raw)
+    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+        print(f"[warn] failed to fetch click weights: {exc}", file=sys.stderr)
+        return {}
+    if not isinstance(data, dict) or "error" in data:
+        return {}
+    return {k: int(v) for k, v in data.items() if isinstance(v, (int, float))}
+
+
+def compute_category_slots(categories: list[str], click_counts: dict[str, int], total_slots: int) -> dict[str, int]:
+    """クリック数(Laplaceスムージング付き)に比例して枠を配分する。データが無ければ均等割り。"""
+    weights = {cat: click_counts.get(cat, 0) + 1 for cat in categories}
+    weight_sum = sum(weights.values())
+
+    raw = {cat: total_slots * w / weight_sum for cat, w in weights.items()}
+    slots = {cat: max(MIN_CATEGORY_SLOTS, min(MAX_CATEGORY_SLOTS, round(v))) for cat, v in raw.items()}
+
+    # 丸め・クランプで合計がズレるので、端数の大きい順/小さい順に1個ずつ調整して合わせる
+    diff = total_slots - sum(slots.values())
+    order = sorted(categories, key=lambda c: raw[c] - slots[c], reverse=(diff > 0))
+    i = 0
+    while diff != 0 and order:
+        cat = order[i % len(order)]
+        if diff > 0 and slots[cat] < MAX_CATEGORY_SLOTS:
+            slots[cat] += 1
+            diff -= 1
+        elif diff < 0 and slots[cat] > MIN_CATEGORY_SLOTS:
+            slots[cat] -= 1
+            diff += 1
+        i += 1
+        if i > len(order) * (MAX_CATEGORY_SLOTS + 1):
+            break  # 安全弁: 極端な設定でも無限ループしない
+
+    return slots
+
+
 def dedupe(items: list[dict]) -> list[dict]:
     seen = set()
     result = []
@@ -141,7 +200,7 @@ def dedupe(items: list[dict]) -> list[dict]:
     return result
 
 
-def build_general_list() -> list[dict]:
+def build_general_list(category_slots: dict[str, int]) -> list[dict]:
     by_category: dict[str, list[dict]] = {tag: [] for tag in CATEGORY_ORDER}
     for tag, url in GENERAL_FEEDS:
         by_category[tag].extend(parse_feed(tag, url))
@@ -154,19 +213,22 @@ def build_general_list() -> list[dict]:
 
     picked = []
     seen_titles: set[str] = set()
+    taken_per_tag: dict[str, int] = {tag: 0 for tag in CATEGORY_ORDER}
     for tag in CATEGORY_ORDER:
+        slots = category_slots.get(tag, GENERAL_PER_CATEGORY)
         count = 0
         for item in by_category[tag]:
-            if count >= GENERAL_PER_CATEGORY:
+            if count >= slots:
                 break
             if item["title"] in seen_titles:
                 continue
             picked.append(item)
             seen_titles.add(item["title"])
             count += 1
+        taken_per_tag[tag] = count
 
     if len(picked) < GENERAL_TOTAL:
-        pool = [i for tag in CATEGORY_ORDER for i in by_category[tag][GENERAL_PER_CATEGORY:]]
+        pool = [i for tag in CATEGORY_ORDER for i in by_category[tag][taken_per_tag[tag]:]]
         pool.sort(key=lambda i: i["pubdate"], reverse=True)
         for item in pool:
             if len(picked) >= GENERAL_TOTAL:
@@ -245,7 +307,7 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
 
     general_html = "\n".join(
         f'          <li><span class="tag">{html.escape(i["tag"])}</span>'
-        f'<a href="{html.escape(i["link"])}" target="_blank" rel="noopener">{html.escape(i["title"])}</a></li>'
+        f'<a href="{html.escape(tracked_link(i["link"], i["tag"], "general", i["title"]))}" target="_blank" rel="noopener">{html.escape(i["title"])}</a></li>'
         for i in general_items
     )
 
@@ -259,9 +321,10 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
         if not chips:
             chips = f'            <a class="chip" href="{deep_dive_url(item["title"], item["title"])}" target="_blank" rel="noopener">この件を深掘り</a>'
         description = item["description"] or "詳細は記事本文をご覧ください。"
+        article_link = tracked_link(item["link"], item["tag"], "politics_econ", item["title"])
         deep_blocks.append(
             f"""        <div class="deep-item">
-          <p class="deep-title"><span class="tag">{html.escape(item["tag"])}</span> <a href="{html.escape(item["link"])}" target="_blank" rel="noopener">{html.escape(item["title"])}</a></p>
+          <p class="deep-title"><span class="tag">{html.escape(item["tag"])}</span> <a href="{html.escape(article_link)}" target="_blank" rel="noopener">{html.escape(item["title"])}</a></p>
           <p class="deep-body">{html.escape(description)}</p>
           <div class="keywords">
             <span class="keywords-label">気になったら深掘り：</span>
@@ -377,7 +440,11 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
 
 def main() -> None:
     now = datetime.now(TIMEZONE)
-    general_items = build_general_list()
+    click_weights = fetch_click_weights("general")
+    category_slots = compute_category_slots(CATEGORY_ORDER, click_weights, GENERAL_TOTAL)
+    if click_weights:
+        print(f"[info] click-weighted category slots: {category_slots}", file=sys.stderr)
+    general_items = build_general_list(category_slots)
     deep_items = build_politics_econ_list()
     output = render_html(general_items, deep_items, now)
 
