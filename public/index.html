@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今日のニュースダイジェスト</title>
+<style>
+  :root {
+    --bg: #FCFCFB;
+    --wash: #F9F9F7;
+    --ink: #2E2C27;
+    --ink-soft: #6B6A63;
+    --ink-grey: #B4B3A8;
+    --hairline: #E4E3DC;
+    --clay: #C6613F;
+    --clay-soft: #F4E4DD;
+    --clay-hover: #AE5133;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Segoe UI", sans-serif;
+    line-height: 1.6;
+  }
+  .band { padding: 40px 24px; }
+  .band-top { background: var(--wash); border-bottom: 1px solid var(--hairline); }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .date-line { font-size: 13px; color: var(--ink-soft); letter-spacing: 0.02em; margin-bottom: 8px; }
+  .headline { font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 26px; font-weight: 600; margin: 0 0 6px 0; }
+  .subline { font-size: 14px; color: var(--ink-soft); margin: 0; }
+  .section-title { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-soft); text-transform: uppercase; margin: 0 0 18px 0; }
+  .section { margin-bottom: 44px; }
+  .section:last-child { margin-bottom: 0; }
+  .headline-list { list-style: none; margin: 0; padding: 0; }
+  .headline-list li { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--hairline); align-items: baseline; }
+  .headline-list li:last-child { border-bottom: none; }
+  .tag { flex-shrink: 0; font-size: 11px; color: var(--ink-grey); width: 64px; }
+  .headline-list a { color: var(--ink); text-decoration: none; font-size: 15px; }
+  .headline-list a:hover { color: var(--clay); }
+  .deep-item { padding: 20px 0; border-bottom: 1px solid var(--hairline); }
+  .deep-item:last-child { border-bottom: none; }
+  .deep-title { font-size: 17px; font-weight: 600; margin: 0 0 8px 0; }
+  .deep-title .tag { width: auto; margin-right: 4px; }
+  .deep-title a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
+  .deep-body { font-size: 14.5px; color: var(--ink-soft); margin: 0 0 12px 0; }
+  .keywords { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .keywords-label { font-size: 12px; color: var(--ink-grey); margin-right: 2px; width: 100%; margin-bottom: 2px; }
+  .chip {
+    font-size: 12.5px; color: var(--clay); background: var(--clay-soft);
+    padding: 5px 12px; border-radius: 20px; white-space: nowrap; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s, color 0.15s;
+  }
+  .chip:hover { background: var(--clay); color: #FCFCFB; }
+  .chip::after { content: "→"; font-size: 11px; opacity: 0.7; }
+  .footnote { font-size: 12.5px; color: var(--ink-grey); margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--hairline); }
+  @media (max-width: 640px) {
+    .band { padding: 28px 18px; }
+    .headline { font-size: 22px; }
+    .tag { width: 52px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="band band-top">
+    <div class="wrap">
+      <div class="date-line">2026年8月16日（日）</div>
+      <h1 class="headline">今日のニュースダイジェスト</h1>
+      <p class="subline">一般ニュースはサッと見出しを、政治経済は気になったらそのまま深掘りへ。</p>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="wrap">
+
+      <div class="section">
+        <p class="section-title">一般ニュース・興味のある分野</p>
+        <ul class="headline-list">
+          <li><span class="tag">社会</span><a href="http://www3.nhk.or.jp/news/html/20260808/k10015200211000.html" target="_blank" rel="noopener">北日本と東日本中心 9日も大気の状態が非常に不安定の見込み</a></li>
+          <li><span class="tag">社会</span><a href="http://www3.nhk.or.jp/news/html/20260808/k10015200261000.html" target="_blank" rel="noopener">愛知県内で水難事故相次ぐ 2人死亡</a></li>
+          <li><span class="tag">国際</span><a href="http://www3.nhk.or.jp/news/html/20260808/k10015200331000.html" target="_blank" rel="noopener">イチローさん マリナーズOBのホームラン競争でファンわかせる</a></li>
+          <li><span class="tag">国際</span><a href="http://www3.nhk.or.jp/news/html/20260808/k10015199681000.html" target="_blank" rel="noopener">【動画】中国 北京で人気のレトロ写真館</a></li>
+          <li><span class="tag">文化・エンタメ</span><a href="http://www3.nhk.or.jp/news/html/20260808/k10015199951000.html" target="_blank" rel="noopener">お盆休みで下りの混雑ピーク 高速道路や新幹線は</a></li>
+          <li><span class="tag">文化・エンタメ</span><a href="http://www3.nhk.or.jp/news/html/20260808/k10015200061000.html" target="_blank" rel="noopener">熊本県内 避難情報 124か所 6591人が避難【8月8日】</a></li>
+          <li><span class="tag">科学・医療</span><a href="http://www3.nhk.or.jp/news/html/20260808/k10015200241000.html" target="_blank" rel="noopener">「みちびき」打ち上げは11日に再延期 気象条件が整わず JAXA</a></li>
+          <li><span class="tag">科学・医療</span><a href="http://www3.nhk.or.jp/news/html/20260807/k10015199251000.html" target="_blank" rel="noopener">台風で打ち上げ延期「みちびき7号機」 8月10日打ち上げ JAXA</a></li>
+          <li><span class="tag">テック</span><a href="https://news.yahoo.co.jp/pickup/6591883?source=rss" target="_blank" rel="noopener">米軍AIシステム「メイブン」とは</a></li>
+          <li><span class="tag">テック</span><a href="https://news.yahoo.co.jp/pickup/6591881?source=rss" target="_blank" rel="noopener">インド なぜ若者1000万人にAI研修</a></li>
+          <li><span class="tag">生活</span><a href="https://news.yahoo.co.jp/pickup/6591928?source=rss" target="_blank" rel="noopener">軍人に殴られた痛み 少年の記憶</a></li>
+          <li><span class="tag">生活</span><a href="https://news.yahoo.co.jp/pickup/6591964?source=rss" target="_blank" rel="noopener">千葉豪雨の死者10人 1人行方不明</a></li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <p class="section-title">政治経済</p>
+
+        <div class="deep-item">
+          <p class="deep-title"><span class="tag">経済</span> <a href="http://www3.nhk.or.jp/news/html/20260808/k10015200151000.html" target="_blank" rel="noopener">オープンAI 開発一時中断 AIみずからサイバー攻撃実行のおそれ</a></p>
+          <p class="deep-body">生成AIの「ChatGPT」の開発を手がけるアメリカのオープンAIは、AIモデル「アストラ」の開発の一時中断を7日、発表しました。理由について、AIの能力が大幅に向上し、みずからの判断で重大なサイバー攻撃を実行するおそれが排除できないとしています。</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3AI%20%E9%96%8B%E7%99%BA%E4%B8%80%E6%99%82%E4%B8%AD%E6%96%AD%20AI%E3%81%BF%E3%81%9A%E3%81%8B%E3%82%89%E3%82%B5%E3%82%A4%E3%83%90%E3%83%BC%E6%94%BB%E6%92%83%E5%AE%9F%E8%A1%8C%E3%81%AE%E3%81%8A%E3%81%9D%E3%82%8C%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3AI%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">オープンAI</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3AI%20%E9%96%8B%E7%99%BA%E4%B8%80%E6%99%82%E4%B8%AD%E6%96%AD%20AI%E3%81%BF%E3%81%9A%E3%81%8B%E3%82%89%E3%82%B5%E3%82%A4%E3%83%90%E3%83%BC%E6%94%BB%E6%92%83%E5%AE%9F%E8%A1%8C%E3%81%AE%E3%81%8A%E3%81%9D%E3%82%8C%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%82%B5%E3%82%A4%E3%83%90%E3%83%BC%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">サイバー</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3AI%20%E9%96%8B%E7%99%BA%E4%B8%80%E6%99%82%E4%B8%AD%E6%96%AD%20AI%E3%81%BF%E3%81%9A%E3%81%8B%E3%82%89%E3%82%B5%E3%82%A4%E3%83%90%E3%83%BC%E6%94%BB%E6%92%83%E5%AE%9F%E8%A1%8C%E3%81%AE%E3%81%8A%E3%81%9D%E3%82%8C%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82AI%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">AI</a>
+          </div>
+        </div>
+
+        <div class="deep-item">
+          <p class="deep-title"><span class="tag">政治</span> <a href="http://www3.nhk.or.jp/news/html/20260808/k10015199771000.html" target="_blank" rel="noopener">「なりすまし広告」詐欺対策強化を 政府がSNS事業者に要請</a></p>
+          <p class="deep-body">SNS上で有名人の写真などを無断で使った「なりすまし広告」による詐欺の被害が相次ぐなか、政府は、SNSの運営事業者に対して、広告主の本人確認といった対策を強化するよう文書で要請しました。</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%80%8C%E3%81%AA%E3%82%8A%E3%81%99%E3%81%BE%E3%81%97%E5%BA%83%E5%91%8A%E3%80%8D%E8%A9%90%E6%AC%BA%E5%AF%BE%E7%AD%96%E5%BC%B7%E5%8C%96%E3%82%92%20%E6%94%BF%E5%BA%9C%E3%81%8CSNS%E4%BA%8B%E6%A5%AD%E8%80%85%E3%81%AB%E8%A6%81%E8%AB%8B%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%81%AA%E3%82%8A%E3%81%99%E3%81%BE%E3%81%97%E5%BA%83%E5%91%8A%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">なりすまし広告</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%80%8C%E3%81%AA%E3%82%8A%E3%81%99%E3%81%BE%E3%81%97%E5%BA%83%E5%91%8A%E3%80%8D%E8%A9%90%E6%AC%BA%E5%AF%BE%E7%AD%96%E5%BC%B7%E5%8C%96%E3%82%92%20%E6%94%BF%E5%BA%9C%E3%81%8CSNS%E4%BA%8B%E6%A5%AD%E8%80%85%E3%81%AB%E8%A6%81%E8%AB%8B%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82SNS%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">SNS</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%80%8C%E3%81%AA%E3%82%8A%E3%81%99%E3%81%BE%E3%81%97%E5%BA%83%E5%91%8A%E3%80%8D%E8%A9%90%E6%AC%BA%E5%AF%BE%E7%AD%96%E5%BC%B7%E5%8C%96%E3%82%92%20%E6%94%BF%E5%BA%9C%E3%81%8CSNS%E4%BA%8B%E6%A5%AD%E8%80%85%E3%81%AB%E8%A6%81%E8%AB%8B%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E5%BA%83%E5%91%8A%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">広告</a>
+          </div>
+        </div>
+
+        <div class="deep-item">
+          <p class="deep-title"><span class="tag">政治</span> <a href="http://www3.nhk.or.jp/news/html/20260808/k10015199761000.html" target="_blank" rel="noopener">カリブ海のトリニダード・トバゴと協力推進で一致 茂木外相</a></p>
+          <p class="deep-body">中南米を歴訪中の茂木外務大臣は、カリブ海のトリニダード・トバゴでソバース外相と会談し、エネルギー分野を含む幅広い分野で協力を推進していくことで一致しました。</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%82%AB%E3%83%AA%E3%83%96%E6%B5%B7%E3%81%AE%E3%83%88%E3%83%AA%E3%83%8B%E3%83%80%E3%83%BC%E3%83%89%E3%83%BB%E3%83%88%E3%83%90%E3%82%B4%E3%81%A8%E5%8D%94%E5%8A%9B%E6%8E%A8%E9%80%B2%E3%81%A7%E4%B8%80%E8%87%B4%20%E8%8C%82%E6%9C%A8%E5%A4%96%E7%9B%B8%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%82%AB%E3%83%AA%E3%83%96%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">カリブ</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%82%AB%E3%83%AA%E3%83%96%E6%B5%B7%E3%81%AE%E3%83%88%E3%83%AA%E3%83%8B%E3%83%80%E3%83%BC%E3%83%89%E3%83%BB%E3%83%88%E3%83%90%E3%82%B4%E3%81%A8%E5%8D%94%E5%8A%9B%E6%8E%A8%E9%80%B2%E3%81%A7%E4%B8%80%E8%87%B4%20%E8%8C%82%E6%9C%A8%E5%A4%96%E7%9B%B8%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%83%88%E3%83%AA%E3%83%8B%E3%83%80%E3%83%BC%E3%83%89%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">トリニダード</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E3%82%AB%E3%83%AA%E3%83%96%E6%B5%B7%E3%81%AE%E3%83%88%E3%83%AA%E3%83%8B%E3%83%80%E3%83%BC%E3%83%89%E3%83%BB%E3%83%88%E3%83%90%E3%82%B4%E3%81%A8%E5%8D%94%E5%8A%9B%E6%8E%A8%E9%80%B2%E3%81%A7%E4%B8%80%E8%87%B4%20%E8%8C%82%E6%9C%A8%E5%A4%96%E7%9B%B8%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%83%88%E3%83%90%E3%82%B4%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">トバゴ</a>
+          </div>
+        </div>
+
+        <div class="deep-item">
+          <p class="deep-title"><span class="tag">経済</span> <a href="http://www3.nhk.or.jp/news/html/20260808/k10015199891000.html" target="_blank" rel="noopener">千葉 銚子 輸入サバ高騰で加工業者の約2割が倒産や廃業状態に</a></p>
+          <p class="deep-body">サバの加工が盛んな千葉県銚子市では、原料の大半を占めるノルウェー産などの輸入サバの価格高騰で水産加工業者の採算が悪化し、およそ2割が倒産や、事実上の廃業状態にあることが分かりました。</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E5%8D%83%E8%91%89%20%E9%8A%9A%E5%AD%90%20%E8%BC%B8%E5%85%A5%E3%82%B5%E3%83%90%E9%AB%98%E9%A8%B0%E3%81%A7%E5%8A%A0%E5%B7%A5%E6%A5%AD%E8%80%85%E3%81%AE%E7%B4%842%E5%89%B2%E3%81%8C%E5%80%92%E7%94%A3%E3%82%84%E5%BB%83%E6%A5%AD%E7%8A%B6%E6%85%8B%E3%81%AB%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%82%B5%E3%83%90%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">サバ</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E5%8D%83%E8%91%89%20%E9%8A%9A%E5%AD%90%20%E8%BC%B8%E5%85%A5%E3%82%B5%E3%83%90%E9%AB%98%E9%A8%B0%E3%81%A7%E5%8A%A0%E5%B7%A5%E6%A5%AD%E8%80%85%E3%81%AE%E7%B4%842%E5%89%B2%E3%81%8C%E5%80%92%E7%94%A3%E3%82%84%E5%BB%83%E6%A5%AD%E7%8A%B6%E6%85%8B%E3%81%AB%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E5%8D%83%E8%91%89%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">千葉</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E5%8D%83%E8%91%89%20%E9%8A%9A%E5%AD%90%20%E8%BC%B8%E5%85%A5%E3%82%B5%E3%83%90%E9%AB%98%E9%A8%B0%E3%81%A7%E5%8A%A0%E5%B7%A5%E6%A5%AD%E8%80%85%E3%81%AE%E7%B4%842%E5%89%B2%E3%81%8C%E5%80%92%E7%94%A3%E3%82%84%E5%BB%83%E6%A5%AD%E7%8A%B6%E6%85%8B%E3%81%AB%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E9%8A%9A%E5%AD%90%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">銚子</a>
+          </div>
+        </div>
+
+        <div class="deep-item">
+          <p class="deep-title"><span class="tag">政治</span> <a href="http://www3.nhk.or.jp/news/html/20260808/k10015199751000.html" target="_blank" rel="noopener">熊本地震 中小企業の復旧補助など支援パッケージ急ぐ 政府</a></p>
+          <p class="deep-body">今回の熊本地震を受けて政府は、被災者の生活やなりわいの再建に向けた支援パッケージのとりまとめを急ぐ方針で、中小企業や小規模事業者の施設復旧にかかる費用の補助などを検討しています。</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E7%86%8A%E6%9C%AC%E5%9C%B0%E9%9C%87%20%E4%B8%AD%E5%B0%8F%E4%BC%81%E6%A5%AD%E3%81%AE%E5%BE%A9%E6%97%A7%E8%A3%9C%E5%8A%A9%E3%81%AA%E3%81%A9%E6%94%AF%E6%8F%B4%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E6%80%A5%E3%81%90%20%E6%94%BF%E5%BA%9C%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">パッケージ</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E7%86%8A%E6%9C%AC%E5%9C%B0%E9%9C%87%20%E4%B8%AD%E5%B0%8F%E4%BC%81%E6%A5%AD%E3%81%AE%E5%BE%A9%E6%97%A7%E8%A3%9C%E5%8A%A9%E3%81%AA%E3%81%A9%E6%94%AF%E6%8F%B4%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E6%80%A5%E3%81%90%20%E6%94%BF%E5%BA%9C%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E7%86%8A%E6%9C%AC%E5%9C%B0%E9%9C%87%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">熊本地震</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E7%86%8A%E6%9C%AC%E5%9C%B0%E9%9C%87%20%E4%B8%AD%E5%B0%8F%E4%BC%81%E6%A5%AD%E3%81%AE%E5%BE%A9%E6%97%A7%E8%A3%9C%E5%8A%A9%E3%81%AA%E3%81%A9%E6%94%AF%E6%8F%B4%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E6%80%A5%E3%81%90%20%E6%94%BF%E5%BA%9C%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E4%B8%AD%E5%B0%8F%E4%BC%81%E6%A5%AD%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">中小企業</a>
+          </div>
+        </div>
+
+        <div class="deep-item">
+          <p class="deep-title"><span class="tag">政治</span> <a href="http://www3.nhk.or.jp/news/html/20260808/k10015199831000.html" target="_blank" rel="noopener">韓国調査船が竹島周辺EEZ内で海洋調査か 日本政府が抗議</a></p>
+          <p class="deep-body">島根県の竹島西方の日本の排他的経済水域内で、韓国の調査船が日本側の同意を得ずに海洋調査とみられる活動を行っていることが確認され、政府は外交ルートを通じて韓国側に強く抗議しました。</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E9%9F%93%E5%9B%BD%E8%AA%BF%E6%9F%BB%E8%88%B9%E3%81%8C%E7%AB%B9%E5%B3%B6%E5%91%A8%E8%BE%BAEEZ%E5%86%85%E3%81%A7%E6%B5%B7%E6%B4%8B%E8%AA%BF%E6%9F%BB%E3%81%8B%20%E6%97%A5%E6%9C%AC%E6%94%BF%E5%BA%9C%E3%81%8C%E6%8A%97%E8%AD%B0%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82EEZ%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">EEZ</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E9%9F%93%E5%9B%BD%E8%AA%BF%E6%9F%BB%E8%88%B9%E3%81%8C%E7%AB%B9%E5%B3%B6%E5%91%A8%E8%BE%BAEEZ%E5%86%85%E3%81%A7%E6%B5%B7%E6%B4%8B%E8%AA%BF%E6%9F%BB%E3%81%8B%20%E6%97%A5%E6%9C%AC%E6%94%BF%E5%BA%9C%E3%81%8C%E6%8A%97%E8%AD%B0%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E9%9F%93%E5%9B%BD%E8%AA%BF%E6%9F%BB%E8%88%B9%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">韓国調査船</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E9%9F%93%E5%9B%BD%E8%AA%BF%E6%9F%BB%E8%88%B9%E3%81%8C%E7%AB%B9%E5%B3%B6%E5%91%A8%E8%BE%BAEEZ%E5%86%85%E3%81%A7%E6%B5%B7%E6%B4%8B%E8%AA%BF%E6%9F%BB%E3%81%8B%20%E6%97%A5%E6%9C%AC%E6%94%BF%E5%BA%9C%E3%81%8C%E6%8A%97%E8%AD%B0%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E7%AB%B9%E5%B3%B6%E5%91%A8%E8%BE%BA%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">竹島周辺</a>
+          </div>
+        </div>
+
+        <div class="deep-item">
+          <p class="deep-title"><span class="tag">経済</span> <a href="http://www3.nhk.or.jp/news/html/20260808/k10015199811000.html" target="_blank" rel="noopener">KDDI 楽天への回線提供の契約 9月で終了 一部では提供継続</a></p>
+          <p class="deep-body">KDDIが楽天モバイルに回線を貸し出す「ローミング契約」について、KDDIの松田浩路社長は、決算会見で、現在の契約は9月末で終了するものの、過疎地などエリアを限定して通信回線の提供を続ける考えを明らかにしました。</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8CKDDI%20%E6%A5%BD%E5%A4%A9%E3%81%B8%E3%81%AE%E5%9B%9E%E7%B7%9A%E6%8F%90%E4%BE%9B%E3%81%AE%E5%A5%91%E7%B4%84%209%E6%9C%88%E3%81%A7%E7%B5%82%E4%BA%86%20%E4%B8%80%E9%83%A8%E3%81%A7%E3%81%AF%E6%8F%90%E4%BE%9B%E7%B6%99%E7%B6%9A%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82KDDI%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">KDDI</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8CKDDI%20%E6%A5%BD%E5%A4%A9%E3%81%B8%E3%81%AE%E5%9B%9E%E7%B7%9A%E6%8F%90%E4%BE%9B%E3%81%AE%E5%A5%91%E7%B4%84%209%E6%9C%88%E3%81%A7%E7%B5%82%E4%BA%86%20%E4%B8%80%E9%83%A8%E3%81%A7%E3%81%AF%E6%8F%90%E4%BE%9B%E7%B6%99%E7%B6%9A%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E6%A5%BD%E5%A4%A9%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">楽天</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8CKDDI%20%E6%A5%BD%E5%A4%A9%E3%81%B8%E3%81%AE%E5%9B%9E%E7%B7%9A%E6%8F%90%E4%BE%9B%E3%81%AE%E5%A5%91%E7%B4%84%209%E6%9C%88%E3%81%A7%E7%B5%82%E4%BA%86%20%E4%B8%80%E9%83%A8%E3%81%A7%E3%81%AF%E6%8F%90%E4%BE%9B%E7%B6%99%E7%B6%9A%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E5%9B%9E%E7%B7%9A%E6%8F%90%E4%BE%9B%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">回線提供</a>
+          </div>
+        </div>
+
+        <div class="deep-item">
+          <p class="deep-title"><span class="tag">経済</span> <a href="http://www3.nhk.or.jp/news/html/20260807/k10015199701000.html" target="_blank" rel="noopener">米就業者 市場予想に反し減少 利上げ観測後退で円高ドル安進む</a></p>
+          <p class="deep-body">円相場や株価に影響を及ぼすアメリカの雇用統計が発表され、7月の農業分野以外の就業者は減少に転じ、市場の予想を大幅に下回りました。アメリカのFRB＝連邦準備制度理事会が早期に利上げに踏み切るという観測がいくぶん後退し、外国為替市場では、公表後にドルを売って円を買う動きが進みました。</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E7%B1%B3%E5%B0%B1%E6%A5%AD%E8%80%85%20%E5%B8%82%E5%A0%B4%E4%BA%88%E6%83%B3%E3%81%AB%E5%8F%8D%E3%81%97%E6%B8%9B%E5%B0%91%20%E5%88%A9%E4%B8%8A%E3%81%92%E8%A6%B3%E6%B8%AC%E5%BE%8C%E9%80%80%E3%81%A7%E5%86%86%E9%AB%98%E3%83%89%E3%83%AB%E5%AE%89%E9%80%B2%E3%82%80%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E3%83%89%E3%83%AB%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">ドル</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E7%B1%B3%E5%B0%B1%E6%A5%AD%E8%80%85%20%E5%B8%82%E5%A0%B4%E4%BA%88%E6%83%B3%E3%81%AB%E5%8F%8D%E3%81%97%E6%B8%9B%E5%B0%91%20%E5%88%A9%E4%B8%8A%E3%81%92%E8%A6%B3%E6%B8%AC%E5%BE%8C%E9%80%80%E3%81%A7%E5%86%86%E9%AB%98%E3%83%89%E3%83%AB%E5%AE%89%E9%80%B2%E3%82%80%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E7%B1%B3%E5%B0%B1%E6%A5%AD%E8%80%85%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">米就業者</a>
+            <a class="chip" href="https://claude.ai/new?q=%E3%80%8C%E7%B1%B3%E5%B0%B1%E6%A5%AD%E8%80%85%20%E5%B8%82%E5%A0%B4%E4%BA%88%E6%83%B3%E3%81%AB%E5%8F%8D%E3%81%97%E6%B8%9B%E5%B0%91%20%E5%88%A9%E4%B8%8A%E3%81%92%E8%A6%B3%E6%B8%AC%E5%BE%8C%E9%80%80%E3%81%A7%E5%86%86%E9%AB%98%E3%83%89%E3%83%AB%E5%AE%89%E9%80%B2%E3%82%80%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E3%83%8B%E3%83%A5%E3%83%BC%E3%82%B9%E3%82%92%E8%A6%8B%E3%81%9F%E3%80%82%E5%B8%82%E5%A0%B4%E4%BA%88%E6%83%B3%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%81%E8%83%8C%E6%99%AF%E3%82%84%E6%84%8F%E5%91%B3%E3%82%92%E3%82%8F%E3%81%8B%E3%82%8A%E3%82%84%E3%81%99%E3%81%8F%E6%95%99%E3%81%88%E3%81%A6%E3%80%82" target="_blank" rel="noopener">市場予想</a>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="footnote">
+        最終更新: 2026年8月16日（日） 16:26（Asia/Bangkok）※NHKニュース・Yahoo!ニュースのRSSより自動生成。要約はNHK提供のものをそのまま使用しています。<br>
+        「気になったら深掘り」のチップをタップすると、その質問内容が入った新しいClaudeとの会話が開きます。
+      </p>
+
+    </div>
+  </div>
+
+</body>
+</html>
