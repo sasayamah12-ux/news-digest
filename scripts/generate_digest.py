@@ -13,26 +13,51 @@ from zoneinfo import ZoneInfo
 
 TIMEZONE = ZoneInfo("Asia/Bangkok")
 USER_AGENT = "Mozilla/5.0 (compatible; MorningDigestBot/1.0; personal use)"
+DC_NS = "{http://purl.org/dc/elements/1.1/}"
 
+# 固定タグの一般ニュースフィード。同じタグを複数指定すると1つのプールに合流する。
 GENERAL_FEEDS = [
     ("社会", "https://www3.nhk.or.jp/rss/news/cat1.xml"),
     ("国際", "https://www3.nhk.or.jp/rss/news/cat6.xml"),
     ("科学・医療", "https://www3.nhk.or.jp/rss/news/cat3.xml"),
     ("文化・エンタメ", "https://www3.nhk.or.jp/rss/news/cat2.xml"),
     ("テック", "https://news.yahoo.co.jp/rss/topics/it.xml"),
+    ("テック", "https://rss.itmedia.co.jp/rss/2.0/news_bursts.xml"),
     ("生活", "https://news.yahoo.co.jp/rss/topics/local.xml"),
 ]
+# 朝日新聞は記事ごとにdc:subjectでジャンルが付くので、そのまま対応カテゴリへ振り分ける
+ASAHI_FEED_URL = "https://www.asahi.com/rss/asahi/newsheadlines.rdf"
+ASAHI_SUBJECT_MAP = {
+    "社会": "社会",
+    "国際": "国際",
+    "文化": "文化・エンタメ",
+    "エンタメ": "文化・エンタメ",
+    "科学": "科学・医療",
+    "医療・健康": "科学・医療",
+    "IT・科学": "テック",
+    "生活": "生活",
+}
+CATEGORY_ORDER = ["社会", "国際", "科学・医療", "文化・エンタメ", "テック", "生活"]
+TOYOKEIZAI_ALLOWED_CATEGORIES = {"政治・経済・投資"}
 GENERAL_TOTAL = 12
 GENERAL_PER_CATEGORY = 2
 
 POLITICS_ECON_FEEDS = [
-    ("政治", "https://www3.nhk.or.jp/rss/news/cat4.xml"),
-    ("経済", "https://www3.nhk.or.jp/rss/news/cat5.xml"),
+    ("政治", "https://www3.nhk.or.jp/rss/news/cat4.xml", None),
+    ("経済", "https://www3.nhk.or.jp/rss/news/cat5.xml", None),
+    ("経済", "https://toyokeizai.net/list/feed/rss", "toyokeizai"),
 ]
 POLITICS_ECON_TOTAL = 8
+POLITICS_ECON_PER_SOURCE = 3
 
 KEYWORD_STOPWORDS = {"日本", "政府", "発表", "会見", "関係者", "一部", "きょう", "ニュース"}
 WEEKDAY_JA = ["月", "火", "水", "木", "金", "土", "日"]
+
+
+def clean_title(title: str, source: str | None) -> str:
+    if source == "toyokeizai" and " | " in title:
+        return title.split(" | ")[0].strip()
+    return title
 
 
 def fetch(url: str) -> bytes:
@@ -45,15 +70,20 @@ def parse_pubdate(text: str) -> datetime:
     try:
         return datetime.strptime(text, "%a, %d %b %Y %H:%M:%S %z")
     except ValueError:
+        pass
+    try:
+        return datetime.fromisoformat(text)
+    except ValueError:
         return datetime(1970, 1, 1, tzinfo=ZoneInfo("UTC"))
 
 
-def parse_feed(tag: str, url: str) -> list[dict]:
+def parse_feed(tag: str | None, url: str, source: str | None = None) -> list[dict]:
+    """tagがNoneの場合、各アイテムのdc:subjectをASAHI_SUBJECT_MAPで解決してタグにする(朝日新聞用)。"""
     try:
         raw = fetch(url)
         root = ET.fromstring(raw)
     except (urllib.error.URLError, ET.ParseError, TimeoutError) as exc:
-        print(f"[warn] failed to fetch {tag} ({url}): {exc}", file=sys.stderr)
+        print(f"[warn] failed to fetch {tag or source} ({url}): {exc}", file=sys.stderr)
         return []
 
     items = []
@@ -61,10 +91,27 @@ def parse_feed(tag: str, url: str) -> list[dict]:
         title_el = item.find("title")
         link_el = item.find("link")
         pubdate_el = item.find("pubDate")
+        if pubdate_el is None:
+            pubdate_el = item.find(DC_NS + "date")
         desc_el = item.find("description")
         if title_el is None or link_el is None or not title_el.text:
             continue
-        title = html.unescape(title_el.text.strip())
+
+        item_tag = tag
+        if item_tag is None:
+            subject_el = item.find(DC_NS + "subject")
+            subject = subject_el.text.strip() if subject_el is not None and subject_el.text else ""
+            item_tag = ASAHI_SUBJECT_MAP.get(subject)
+            if item_tag is None:
+                continue  # 政治・経済・スポーツなど対象外ジャンルは除外
+
+        if source == "toyokeizai":
+            category_el = item.find("category")
+            category = category_el.text.strip() if category_el is not None and category_el.text else ""
+            if category not in TOYOKEIZAI_ALLOWED_CATEGORIES:
+                continue
+
+        title = clean_title(html.unescape(title_el.text.strip()), source)
         link = (link_el.text or "").strip()
         pubdate_text = (pubdate_el.text or "").strip() if pubdate_el is not None else ""
         description = ""
@@ -72,7 +119,7 @@ def parse_feed(tag: str, url: str) -> list[dict]:
             description = html.unescape(re.sub(r"<[^>]+>", "", desc_el.text)).strip()
         items.append(
             {
-                "tag": tag,
+                "tag": item_tag,
                 "title": title,
                 "link": link,
                 "pubdate": parse_pubdate(pubdate_text),
@@ -95,19 +142,31 @@ def dedupe(items: list[dict]) -> list[dict]:
 
 
 def build_general_list() -> list[dict]:
-    by_category = []
+    by_category: dict[str, list[dict]] = {tag: [] for tag in CATEGORY_ORDER}
     for tag, url in GENERAL_FEEDS:
-        items = dedupe(parse_feed(tag, url))
-        items.sort(key=lambda i: i["pubdate"], reverse=True)
-        by_category.append(items)
+        by_category[tag].extend(parse_feed(tag, url))
+    for item in parse_feed(None, ASAHI_FEED_URL):
+        by_category.setdefault(item["tag"], []).append(item)
+
+    for tag in by_category:
+        by_category[tag] = dedupe(by_category[tag])
+        by_category[tag].sort(key=lambda i: i["pubdate"], reverse=True)
 
     picked = []
-    for items in by_category:
-        picked.extend(items[:GENERAL_PER_CATEGORY])
+    seen_titles: set[str] = set()
+    for tag in CATEGORY_ORDER:
+        count = 0
+        for item in by_category[tag]:
+            if count >= GENERAL_PER_CATEGORY:
+                break
+            if item["title"] in seen_titles:
+                continue
+            picked.append(item)
+            seen_titles.add(item["title"])
+            count += 1
 
-    seen_titles = {i["title"] for i in picked}
     if len(picked) < GENERAL_TOTAL:
-        pool = [i for items in by_category for i in items[GENERAL_PER_CATEGORY:]]
+        pool = [i for tag in CATEGORY_ORDER for i in by_category[tag][GENERAL_PER_CATEGORY:]]
         pool.sort(key=lambda i: i["pubdate"], reverse=True)
         for item in pool:
             if len(picked) >= GENERAL_TOTAL:
@@ -141,12 +200,38 @@ def extract_keywords(title: str) -> list[str]:
 
 
 def build_politics_econ_list() -> list[dict]:
-    items = []
-    for tag, url in POLITICS_ECON_FEEDS:
-        items.extend(parse_feed(tag, url))
-    items = dedupe(items)
-    items.sort(key=lambda i: i["pubdate"], reverse=True)
-    return items[:POLITICS_ECON_TOTAL]
+    buckets = []
+    for tag, url, source in POLITICS_ECON_FEEDS:
+        items = dedupe(parse_feed(tag, url, source))
+        items.sort(key=lambda i: i["pubdate"], reverse=True)
+        buckets.append(items)
+
+    picked = []
+    seen_titles: set[str] = set()
+    for items in buckets:
+        count = 0
+        for item in items:
+            if count >= POLITICS_ECON_PER_SOURCE:
+                break
+            if item["title"] in seen_titles:
+                continue
+            picked.append(item)
+            seen_titles.add(item["title"])
+            count += 1
+
+    if len(picked) < POLITICS_ECON_TOTAL:
+        pool = [i for items in buckets for i in items[POLITICS_ECON_PER_SOURCE:]]
+        pool.sort(key=lambda i: i["pubdate"], reverse=True)
+        for item in pool:
+            if len(picked) >= POLITICS_ECON_TOTAL:
+                break
+            if item["title"] in seen_titles:
+                continue
+            picked.append(item)
+            seen_titles.add(item["title"])
+
+    picked.sort(key=lambda i: i["pubdate"], reverse=True)
+    return picked[:POLITICS_ECON_TOTAL]
 
 
 def deep_dive_url(title: str, keyword: str) -> str:
@@ -278,7 +363,7 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
       </div>
 
       <p class="footnote">
-        最終更新: {date_line} {updated_line}（Asia/Bangkok）※NHKニュース・Yahoo!ニュースのRSSより自動生成。要約はNHK提供のものをそのまま使用しています。<br>
+        最終更新: {date_line} {updated_line}（Asia/Bangkok）※NHK・Yahoo!ニュース・朝日新聞・東洋経済オンライン・ITmediaのRSSより自動生成。要約は各社提供のものをそのまま使用しています。<br>
         「気になったら深掘り」のチップをタップすると、その質問内容が入った新しいClaudeとの会話が開きます。
       </p>
 
