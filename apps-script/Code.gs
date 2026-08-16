@@ -14,6 +14,9 @@ function doGet(e) {
   if (params.mode === 'summary') {
     return handleSummary(params);
   }
+  if (params.mode === 'raw') {
+    return handleRaw(params);
+  }
   return handleClick(params);
 }
 
@@ -88,6 +91,27 @@ function handleSummary(params) {
   }
 
   return jsonOutput(counts);
+}
+
+function handleRaw(params) {
+  const secret = PropertiesService.getScriptProperties().getProperty('SUMMARY_SECRET');
+  if (!secret || params.key !== secret) {
+    return jsonOutput({ error: 'unauthorized' });
+  }
+
+  const limit = Number(params.limit) > 0 ? Number(params.limit) : 50;
+  const values = getSheet().getDataRange().getValues();
+  const rows = values.slice(1).map(function (row) {
+    return {
+      timestamp: row[0] instanceof Date ? row[0].toISOString() : row[0],
+      kind: row[1],
+      category: row[2],
+      title: row[3],
+      dest: row[4],
+    };
+  });
+  rows.reverse(); // 新しい順
+  return jsonOutput(rows.slice(0, limit));
 }
 
 function jsonOutput(obj) {
