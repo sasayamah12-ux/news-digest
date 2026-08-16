@@ -14,13 +14,34 @@ function doGet(e) {
   return handleClick(params);
 }
 
-function getSheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(['timestamp', 'kind', 'category', 'title', 'dest']);
+function getSpreadsheet() {
+  const props = PropertiesService.getScriptProperties();
+  const existingId = props.getProperty('SPREADSHEET_ID');
+  if (existingId) {
+    try {
+      return SpreadsheetApp.openById(existingId);
+    } catch (err) {
+      // 保存されたIDが無効な場合は新規作成にフォールバック
+    }
   }
+  const ss = SpreadsheetApp.create('News Digest Clicks');
+  props.setProperty('SPREADSHEET_ID', ss.getId());
+  return ss;
+}
+
+function getSheet() {
+  const ss = getSpreadsheet();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (sheet) return sheet;
+
+  const sheets = ss.getSheets();
+  if (sheets.length === 1 && sheets[0].getLastRow() === 0) {
+    sheet = sheets[0];
+    sheet.setName(SHEET_NAME);
+  } else {
+    sheet = ss.insertSheet(SHEET_NAME);
+  }
+  sheet.appendRow(['timestamp', 'kind', 'category', 'title', 'dest']);
   return sheet;
 }
 
