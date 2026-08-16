@@ -138,17 +138,60 @@ def parse_feed(tag: str | None, url: str, source: str | None = None) -> list[dic
     return items
 
 
-def track_url(dest: str, category: str, kind: str, title: str) -> str | None:
-    """クリック記録用のビーコンURL。記事へは直接リンクしたまま、裏でこのURLにfetchするだけにする。
-    (Apps ScriptのHtmlOutputは常にサンドボックスiframe経由になり、外部サイトへのJSリダイレクトが
-    フレーム埋め込みを拒否するサイトで失敗するため、リダイレクト方式は採用しない)"""
-    if not APPS_SCRIPT_URL:
-        return None
-    params = {"dest": dest, "cat": category, "kind": kind, "t": title[:60]}
+def source_of(url: str) -> str:
+    return urllib.parse.urlparse(url).netloc
+
+
+def beacon_url(**fields: str) -> str:
+    params = {k: v for k, v in fields.items() if v}
     return APPS_SCRIPT_URL + "?" + urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
 
 
-def fetch_click_weights(kind: str) -> dict[str, int]:
+def click_track_attr(item: dict, kind: str, position: int) -> str:
+    """記事クリック記録用のビーコンURLをdata-track属性として返す。記事へは直接リンクしたまま、
+    裏でこのURLにfetchするだけにする(Apps ScriptのHtmlOutputは常にサンドボックスiframe経由になり、
+    外部サイトへのJSリダイレクトがフレーム埋め込みを拒否するサイトで失敗するため、リダイレクト方式は
+    採用しない)。"""
+    if not APPS_SCRIPT_URL:
+        return ""
+    url = beacon_url(
+        event="click",
+        dest=item["link"],
+        cat=item["tag"],
+        kind=kind,
+        pos=str(position),
+        src=source_of(item["link"]),
+        t=item["title"][:60],
+    )
+    return f' data-track="{html.escape(url)}"'
+
+
+def chip_track_attr(item: dict, kind: str, keyword: str, dest: str) -> str:
+    if not APPS_SCRIPT_URL:
+        return ""
+    url = beacon_url(
+        event="chip_click",
+        dest=dest,
+        cat=item["tag"],
+        kind=kind,
+        t=item["title"][:60],
+        keyword=keyword[:30],
+    )
+    return f' data-track="{html.escape(url)}"'
+
+
+def impression_record(item: dict, kind: str, position: int) -> dict:
+    return {
+        "kind": kind,
+        "cat": item["tag"],
+        "pos": position,
+        "src": source_of(item["link"]),
+        "t": item["title"][:60],
+        "dest": item["link"],
+    }
+
+
+def fetch_click_weights(kind: str) -> dict[str, dict[str, int]]:
     if not APPS_SCRIPT_URL or not APPS_SCRIPT_SECRET:
         return {}
     params = {"mode": "summary", "key": APPS_SCRIPT_SECRET, "kind": kind, "days": CLICK_WEIGHT_DAYS}
@@ -161,12 +204,25 @@ def fetch_click_weights(kind: str) -> dict[str, int]:
         return {}
     if not isinstance(data, dict) or "error" in data:
         return {}
-    return {k: int(v) for k, v in data.items() if isinstance(v, (int, float))}
+    result = {}
+    for cat, v in data.items():
+        if isinstance(v, dict):
+            result[cat] = {"clicks": int(v.get("clicks", 0)), "impressions": int(v.get("impressions", 0))}
+    return result
 
 
-def compute_category_slots(categories: list[str], click_counts: dict[str, int], total_slots: int) -> dict[str, int]:
-    """クリック数(Laplaceスムージング付き)に比例して枠を配分する。データが無ければ均等割り。"""
-    weights = {cat: click_counts.get(cat, 0) + 1 for cat in categories}
+def compute_category_slots(
+    categories: list[str], stats: dict[str, dict[str, int]], total_slots: int
+) -> dict[str, int]:
+    """クリック率(CTR、Laplaceスムージング付き)に比例して枠を配分する。データが無ければ均等割り。
+    生クリック数ではなくCTRを使うのは、単に多く表示しているカテゴリがさらに多く表示される
+    という偏りループを避けるため(表示された数=インプレッションで正規化する)。"""
+
+    def ctr(cat: str) -> float:
+        s = stats.get(cat, {})
+        return (s.get("clicks", 0) + 1) / (s.get("impressions", 0) + 2)
+
+    weights = {cat: ctr(cat) for cat in categories}
     weight_sum = sum(weights.values())
 
     raw = {cat: total_slots * w / weight_sum for cat, w in weights.items()}
@@ -304,32 +360,42 @@ def deep_dive_url(title: str, keyword: str) -> str:
     return "https://claude.ai/new?q=" + urllib.parse.quote(question, safe="")
 
 
-def track_attr(dest: str, category: str, kind: str, title: str) -> str:
-    url = track_url(dest, category, kind, title)
-    return f' data-track="{html.escape(url)}"' if url else ""
-
-
 def render_html(general_items: list[dict], deep_items: list[dict], now: datetime) -> str:
     date_line = f"{now.year}年{now.month}月{now.day}日（{WEEKDAY_JA[now.weekday()]}）"
     updated_line = now.strftime("%H:%M")
 
-    general_html = "\n".join(
-        f'          <li><span class="tag">{html.escape(i["tag"])}</span>'
-        f'<a href="{html.escape(i["link"])}" target="_blank" rel="noopener"{track_attr(i["link"], i["tag"], "general", i["title"])}>{html.escape(i["title"])}</a></li>'
-        for i in general_items
-    )
+    impressions: list[dict] = []
+
+    general_html_parts = []
+    for pos, i in enumerate(general_items, start=1):
+        impressions.append(impression_record(i, "general", pos))
+        attr = click_track_attr(i, "general", pos)
+        general_html_parts.append(
+            f'          <li><span class="tag">{html.escape(i["tag"])}</span>'
+            f'<a href="{html.escape(i["link"])}" target="_blank" rel="noopener"{attr}>{html.escape(i["title"])}</a></li>'
+        )
+    general_html = "\n".join(general_html_parts)
 
     deep_blocks = []
-    for item in deep_items:
+    for pos, item in enumerate(deep_items, start=1):
+        impressions.append(impression_record(item, "politics_econ", pos))
         keywords = extract_keywords(item["title"])
-        chips = "\n".join(
-            f'            <a class="chip" href="{deep_dive_url(item["title"], kw)}" target="_blank" rel="noopener">{html.escape(kw)}</a>'
-            for kw in keywords
-        )
-        if not chips:
-            chips = f'            <a class="chip" href="{deep_dive_url(item["title"], item["title"])}" target="_blank" rel="noopener">この件を深掘り</a>'
+        chip_parts = []
+        for kw in keywords:
+            dest = deep_dive_url(item["title"], kw)
+            chip_attr = chip_track_attr(item, "politics_econ", kw, dest)
+            chip_parts.append(
+                f'            <a class="chip" href="{dest}" target="_blank" rel="noopener"{chip_attr}>{html.escape(kw)}</a>'
+            )
+        if not chip_parts:
+            dest = deep_dive_url(item["title"], item["title"])
+            chip_attr = chip_track_attr(item, "politics_econ", item["title"], dest)
+            chip_parts.append(
+                f'            <a class="chip" href="{dest}" target="_blank" rel="noopener"{chip_attr}>この件を深掘り</a>'
+            )
+        chips = "\n".join(chip_parts)
         description = item["description"] or "詳細は記事本文をご覧ください。"
-        article_attr = track_attr(item["link"], item["tag"], "politics_econ", item["title"])
+        article_attr = click_track_attr(item, "politics_econ", pos)
         deep_blocks.append(
             f"""        <div class="deep-item">
           <p class="deep-title"><span class="tag">{html.escape(item["tag"])}</span> <a href="{html.escape(item["link"])}" target="_blank" rel="noopener"{article_attr}>{html.escape(item["title"])}</a></p>
@@ -341,6 +407,17 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
         </div>"""
         )
     deep_html = "\n\n".join(deep_blocks)
+
+    impressions_script = ""
+    if APPS_SCRIPT_URL and impressions:
+        payload = json.dumps(impressions, ensure_ascii=False).replace("</", "<\\/")
+        impressions_script = f"""
+  (function () {{
+    var records = {payload};
+    try {{
+      fetch({json.dumps(APPS_SCRIPT_URL)}, {{ method: 'POST', body: JSON.stringify(records), keepalive: true, mode: 'no-cors' }});
+    }} catch (err) {{}}
+  }})();"""
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -447,6 +524,7 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
     if (!a) return;
     try {{ fetch(a.dataset.track, {{ mode: 'no-cors', keepalive: true }}); }} catch (err) {{}}
   }}, true);
+{impressions_script}
 </script>
 
 </body>
