@@ -138,9 +138,12 @@ def parse_feed(tag: str | None, url: str, source: str | None = None) -> list[dic
     return items
 
 
-def tracked_link(dest: str, category: str, kind: str, title: str) -> str:
+def track_url(dest: str, category: str, kind: str, title: str) -> str | None:
+    """クリック記録用のビーコンURL。記事へは直接リンクしたまま、裏でこのURLにfetchするだけにする。
+    (Apps ScriptのHtmlOutputは常にサンドボックスiframe経由になり、外部サイトへのJSリダイレクトが
+    フレーム埋め込みを拒否するサイトで失敗するため、リダイレクト方式は採用しない)"""
     if not APPS_SCRIPT_URL:
-        return dest
+        return None
     params = {"dest": dest, "cat": category, "kind": kind, "t": title[:60]}
     return APPS_SCRIPT_URL + "?" + urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
 
@@ -301,13 +304,18 @@ def deep_dive_url(title: str, keyword: str) -> str:
     return "https://claude.ai/new?q=" + urllib.parse.quote(question, safe="")
 
 
+def track_attr(dest: str, category: str, kind: str, title: str) -> str:
+    url = track_url(dest, category, kind, title)
+    return f' data-track="{html.escape(url)}"' if url else ""
+
+
 def render_html(general_items: list[dict], deep_items: list[dict], now: datetime) -> str:
     date_line = f"{now.year}年{now.month}月{now.day}日（{WEEKDAY_JA[now.weekday()]}）"
     updated_line = now.strftime("%H:%M")
 
     general_html = "\n".join(
         f'          <li><span class="tag">{html.escape(i["tag"])}</span>'
-        f'<a href="{html.escape(tracked_link(i["link"], i["tag"], "general", i["title"]))}" target="_blank" rel="noopener">{html.escape(i["title"])}</a></li>'
+        f'<a href="{html.escape(i["link"])}" target="_blank" rel="noopener"{track_attr(i["link"], i["tag"], "general", i["title"])}>{html.escape(i["title"])}</a></li>'
         for i in general_items
     )
 
@@ -321,10 +329,10 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
         if not chips:
             chips = f'            <a class="chip" href="{deep_dive_url(item["title"], item["title"])}" target="_blank" rel="noopener">この件を深掘り</a>'
         description = item["description"] or "詳細は記事本文をご覧ください。"
-        article_link = tracked_link(item["link"], item["tag"], "politics_econ", item["title"])
+        article_attr = track_attr(item["link"], item["tag"], "politics_econ", item["title"])
         deep_blocks.append(
             f"""        <div class="deep-item">
-          <p class="deep-title"><span class="tag">{html.escape(item["tag"])}</span> <a href="{html.escape(article_link)}" target="_blank" rel="noopener">{html.escape(item["title"])}</a></p>
+          <p class="deep-title"><span class="tag">{html.escape(item["tag"])}</span> <a href="{html.escape(item["link"])}" target="_blank" rel="noopener"{article_attr}>{html.escape(item["title"])}</a></p>
           <p class="deep-body">{html.escape(description)}</p>
           <div class="keywords">
             <span class="keywords-label">気になったら深掘り：</span>
@@ -432,6 +440,14 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
 
     </div>
   </div>
+
+<script>
+  document.addEventListener('click', function (e) {{
+    var a = e.target.closest('a[data-track]');
+    if (!a) return;
+    try {{ fetch(a.dataset.track, {{ mode: 'no-cors', keepalive: true }}); }} catch (err) {{}}
+  }}, true);
+</script>
 
 </body>
 </html>

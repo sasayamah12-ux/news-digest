@@ -1,6 +1,9 @@
 /**
  * 毎朝のニュースダイジェスト用クリック追跡サーバー。
- * - 通常のGET: クリックをスプレッドシートに記録し、実際の記事URLへリダイレクト
+ * - 通常のGET: クリックをスプレッドシートに記録するだけ(サイト側はfetch(...,{keepalive:true})の
+ *   ビーコンとして叩く。記事へのリンクは直接飛ばすので、ここでのリダイレクトは行わない。
+ *   Apps ScriptのHtmlOutputは常にサンドボックスiframe経由になり、外部サイトへのJSリダイレクトが
+ *   フレーム埋め込みを拒否するサイトで失敗するため、リダイレクト方式は採用していない)
  * - ?mode=summary: 直近のクリック傾向をJSONで返す(生成スクリプトのパーソナライズ用、要シークレットキー)
  */
 
@@ -51,24 +54,13 @@ function handleClick(params) {
   const category = params.cat || '';
   const title = params.t || '';
 
-  if (!/^https:\/\//.test(dest)) {
-    return HtmlService.createHtmlOutput('Invalid destination');
-  }
-
   try {
     getSheet().appendRow([new Date(), kind, category, title, dest]);
   } catch (err) {
-    // シート書き込みに失敗してもリダイレクトは継続する
+    // 記録に失敗してもビーコン呼び出し元(fetch)は気にしないので黙って無視
   }
 
-  const html =
-    '<!DOCTYPE html><html><head><meta charset="utf-8">' +
-    '<meta http-equiv="refresh" content="0;url=' + dest.replace(/"/g, '&quot;') + '">' +
-    '<title>Redirecting…</title></head><body>' +
-    '<script>location.replace(' + JSON.stringify(dest) + ');</script>' +
-    '<a href="' + dest.replace(/"/g, '&quot;') + '">記事へ移動</a>' +
-    '</body></html>';
-  return HtmlService.createHtmlOutput(html);
+  return jsonOutput({ ok: true });
 }
 
 function handleSummary(params) {
