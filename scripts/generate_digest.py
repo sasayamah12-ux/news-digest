@@ -59,6 +59,16 @@ POLITICS_ECON_FEEDS = [
 POLITICS_ECON_TOTAL = 8
 POLITICS_ECON_PER_SOURCE = 3
 
+# 空調機（業界専門ニュース）。Cooling Post(coolingpost.com)は世界の空調・冷凍・ヒートポンプ業界の
+# 専門ニュースサイト。日本語の業界専門メディアはRSS配信が確認できなかったため、現状はこの1本のみ。
+HVAC_FEED_URL = "https://coolingpost.com/feed"
+HVAC_ROOM_KEYWORDS = [
+    "residential", "split system", "split-system", "mini-split", "mini split",
+    "domestic", "ductless", "room air conditioner", "window unit", "home cooling",
+]
+HVAC_ROOM_MAX = 2
+HVAC_COMMERCIAL_MAX = 6
+
 KEYWORD_STOPWORDS = {"日本", "政府", "発表", "会見", "関係者", "一部", "きょう", "ニュース"}
 WEEKDAY_JA = ["月", "火", "水", "木", "金", "土", "日"]
 
@@ -67,6 +77,36 @@ def clean_title(title: str, source: str | None) -> str:
     if source == "toyokeizai" and " | " in title:
         return title.split(" | ")[0].strip()
     return title
+
+
+def clean_description(description: str, source: str | None) -> str:
+    if source == "coolingpost":
+        description = re.sub(r"Read More\.\.\.\s*", "", description)
+        description = re.sub(r"The post .* appeared first on Cooling Post\.\s*", "", description)
+    return description.strip()
+
+
+def has_japanese(text: str) -> bool:
+    return bool(re.search(r"[ぁ-んァ-ヶ一-龠]", text))
+
+
+def translate_to_japanese(text: str) -> str:
+    """MyMemory(無料・APIキー不要)で英語テキストを日本語に翻訳する。失敗時は原文のまま返す。"""
+    if not text or has_japanese(text):
+        return text
+    try:
+        params = {"q": text[:490], "langpair": "en|ja"}
+        url = "https://api.mymemory.translated.net/get?" + urllib.parse.urlencode(
+            params, quote_via=urllib.parse.quote
+        )
+        raw = fetch(url)
+        data = json.loads(raw)
+        translated = data.get("responseData", {}).get("translatedText", "")
+        translated = html.unescape(translated).strip()
+        return translated or text
+    except (urllib.error.URLError, TimeoutError, ValueError, KeyError) as exc:
+        print(f"[warn] translation failed for {text[:30]!r}: {exc}", file=sys.stderr)
+        return text
 
 
 def fetch(url: str) -> bytes:
@@ -126,6 +166,7 @@ def parse_feed(tag: str | None, url: str, source: str | None = None) -> list[dic
         description = ""
         if desc_el is not None and desc_el.text:
             description = html.unescape(re.sub(r"<[^>]+>", "", desc_el.text)).strip()
+            description = clean_description(description, source)
         items.append(
             {
                 "tag": item_tag,
@@ -305,7 +346,7 @@ def extract_keywords(title: str) -> list[str]:
     candidates = []
     candidates.extend(re.findall(r"「([^」]{2,14})」", title))
     candidates.extend(re.findall(r"[ァ-ヴー]{2,}[A-Za-z0-9]{0,6}", title))
-    candidates.extend(re.findall(r"[A-Za-z]{2,6}", title))
+    candidates.extend(re.findall(r"(?<![A-Za-zÀ-ÖØ-öø-ÿ])[A-Za-z]{2,6}(?![A-Za-zÀ-ÖØ-öø-ÿ])", title))
     candidates.extend(re.findall(r"[一-龠]{2,6}", title))
 
     seen = set()
@@ -355,12 +396,42 @@ def build_politics_econ_list() -> list[dict]:
     return picked[:POLITICS_ECON_TOTAL]
 
 
+def build_hvac_lists() -> tuple[list[dict], list[dict]]:
+    """Cooling Post(空調・冷凍・ヒートポンプ業界の専門ニュース)を、キーワードでルームエアコン
+    (大きな話題のみ)と店舗用・業務用(メイン)に振り分ける。"""
+    items = dedupe(parse_feed("空調", HVAC_FEED_URL, "coolingpost"))
+    items.sort(key=lambda i: i["pubdate"], reverse=True)
+
+    room, commercial = [], []
+    for item in items:
+        haystack = (item["title"] + " " + item["description"]).lower()
+        if any(kw in haystack for kw in HVAC_ROOM_KEYWORDS):
+            room.append(item)
+        else:
+            commercial.append(item)
+
+    room = room[:HVAC_ROOM_MAX]
+    commercial = commercial[:HVAC_COMMERCIAL_MAX]
+
+    for item in room + commercial:
+        item["title"] = translate_to_japanese(item["title"])
+        item["description"] = translate_to_japanese(item["description"])
+
+    return room, commercial
+
+
 def deep_dive_url(title: str, keyword: str) -> str:
     question = f"「{title}」というニュースを見た。{keyword}について、背景や意味をわかりやすく教えて。"
     return "https://claude.ai/new?q=" + urllib.parse.quote(question, safe="")
 
 
-def render_html(general_items: list[dict], deep_items: list[dict], now: datetime) -> str:
+def render_html(
+    general_items: list[dict],
+    deep_items: list[dict],
+    hvac_room_items: list[dict],
+    hvac_commercial_items: list[dict],
+    now: datetime,
+) -> str:
     date_line = f"{now.year}年{now.month}月{now.day}日（{WEEKDAY_JA[now.weekday()]}）"
     updated_line = now.strftime("%H:%M")
 
@@ -407,6 +478,57 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
         </div>"""
         )
     deep_html = "\n\n".join(deep_blocks)
+
+    hvac_room_html_parts = []
+    for pos, i in enumerate(hvac_room_items, start=1):
+        impressions.append(impression_record(i, "hvac_room", pos))
+        attr = click_track_attr(i, "hvac_room", pos)
+        hvac_room_html_parts.append(
+            f'          <li><span class="tag">ルーム</span>'
+            f'<a href="{html.escape(i["link"])}" target="_blank" rel="noopener"{attr}>{html.escape(i["title"])}</a></li>'
+        )
+    hvac_room_html = (
+        "\n".join(hvac_room_html_parts)
+        if hvac_room_html_parts
+        else '          <li class="empty-note">特筆すべき大きな話題はありません。</li>'
+    )
+
+    hvac_commercial_blocks = []
+    for pos, item in enumerate(hvac_commercial_items, start=1):
+        impressions.append(impression_record(item, "hvac_commercial", pos))
+        # 英語タイトルはextract_keywordsが単語断片を拾ってしまうため、日本語タイトルの場合のみ適用する
+        keywords = extract_keywords(item["title"]) if has_japanese(item["title"]) else []
+        chip_parts = []
+        for kw in keywords:
+            dest = deep_dive_url(item["title"], kw)
+            chip_attr = chip_track_attr(item, "hvac_commercial", kw, dest)
+            chip_parts.append(
+                f'            <a class="chip" href="{dest}" target="_blank" rel="noopener"{chip_attr}>{html.escape(kw)}</a>'
+            )
+        if not chip_parts:
+            dest = deep_dive_url(item["title"], item["title"])
+            chip_attr = chip_track_attr(item, "hvac_commercial", item["title"], dest)
+            chip_parts.append(
+                f'            <a class="chip" href="{dest}" target="_blank" rel="noopener"{chip_attr}>この件を深掘り</a>'
+            )
+        chips = "\n".join(chip_parts)
+        description = item["description"] or "詳細は記事本文をご覧ください。"
+        article_attr = click_track_attr(item, "hvac_commercial", pos)
+        hvac_commercial_blocks.append(
+            f"""        <div class="deep-item">
+          <p class="deep-title"><span class="tag">業務用</span> <a href="{html.escape(item["link"])}" target="_blank" rel="noopener"{article_attr}>{html.escape(item["title"])}</a></p>
+          <p class="deep-body">{html.escape(description)}</p>
+          <div class="keywords">
+            <span class="keywords-label">気になったら深掘り：</span>
+{chips}
+          </div>
+        </div>"""
+        )
+    hvac_commercial_html = (
+        "\n\n".join(hvac_commercial_blocks)
+        if hvac_commercial_blocks
+        else '        <p class="empty-note">本日は該当ニュースがありません。</p>'
+    )
 
     impressions_script = ""
     if APPS_SCRIPT_URL and impressions:
@@ -475,6 +597,9 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
   }}
   .chip:hover {{ background: var(--clay); color: #FCFCFB; }}
   .chip::after {{ content: "→"; font-size: 11px; opacity: 0.7; }}
+  .subsection-title {{ font-size: 12px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink-grey); margin: 0 0 10px 0; }}
+  .hvac-commercial-title {{ margin-top: 26px; }}
+  .empty-note {{ font-size: 13.5px; color: var(--ink-grey); padding: 8px 0 4px 0; }}
   .footnote {{ font-size: 12.5px; color: var(--ink-grey); margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--hairline); }}
   @media (max-width: 640px) {{
     .band {{ padding: 28px 18px; }}
@@ -510,8 +635,21 @@ def render_html(general_items: list[dict], deep_items: list[dict], now: datetime
 
       </div>
 
+      <div class="section">
+        <p class="section-title">空調機（エアコン）業界ニュース</p>
+
+        <p class="subsection-title">ルームエアコン（大きな話題のみ）</p>
+        <ul class="headline-list">
+{hvac_room_html}
+        </ul>
+
+        <p class="subsection-title hvac-commercial-title">店舗用・業務用（日本・アセオセ市場）</p>
+{hvac_commercial_html}
+
+      </div>
+
       <p class="footnote">
-        最終更新: {date_line} {updated_line}（Asia/Bangkok）※NHK・Yahoo!ニュース・朝日新聞・東洋経済オンライン・ITmediaのRSSより自動生成。要約は各社提供のものをそのまま使用しています。<br>
+        最終更新: {date_line} {updated_line}（Asia/Bangkok）※NHK・Yahoo!ニュース・朝日新聞・東洋経済オンライン・ITmedia・Cooling PostのRSSより自動生成。要約は各社提供のものをそのまま使用しています（Cooling Postの英語記事は機械翻訳）。<br>
         「気になったら深掘り」のチップをタップすると、その質問内容が入った新しいClaudeとの会話が開きます。
       </p>
 
@@ -540,12 +678,16 @@ def main() -> None:
         print(f"[info] click-weighted category slots: {category_slots}", file=sys.stderr)
     general_items = build_general_list(category_slots)
     deep_items = build_politics_econ_list()
-    output = render_html(general_items, deep_items, now)
+    hvac_room_items, hvac_commercial_items = build_hvac_lists()
+    output = render_html(general_items, deep_items, hvac_room_items, hvac_commercial_items, now)
 
     out_path = "public/index.html"
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(output)
-    print(f"wrote {out_path}: {len(general_items)} general items, {len(deep_items)} politics/econ items")
+    print(
+        f"wrote {out_path}: {len(general_items)} general items, {len(deep_items)} politics/econ items, "
+        f"{len(hvac_room_items)} hvac-room items, {len(hvac_commercial_items)} hvac-commercial items"
+    )
 
 
 if __name__ == "__main__":
