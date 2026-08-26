@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+public/general.xml
+public/politics-economy.xml
+public/hvac.xml
