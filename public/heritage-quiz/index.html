@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>世界遺産 国あてクイズ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: one narrow column. Picture first, then a 2x2 grid of flag tiles; the answer notes open below the tiles. */
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --ink: #15203a;
+  --muted: #5b6880;
+  --line: #d2dae6;
+  --accent: #2a4bd0;
+  --accent-ink: #ffffff;
+  --ok: #1b8a52;
+  --ok-bg: #e2f4ea;
+  --bad: #c23a2e;
+  --bad-bg: #fbe6e3;
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1424;
+    --surface: #161f33;
+    --ink: #e7ecf6;
+    --muted: #9aa7c0;
+    --line: #2b3654;
+    --accent: #8aa9ff;
+    --accent-ink: #0d1424;
+    --ok: #4cc790;
+    --ok-bg: #12301f;
+    --bad: #ff8a7d;
+    --bad-bg: #3a1a18;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1424;
+  --surface: #161f33;
+  --ink: #e7ecf6;
+  --muted: #9aa7c0;
+  --line: #2b3654;
+  --accent: #8aa9ff;
+  --accent-ink: #0d1424;
+  --ok: #4cc790;
+  --ok-bg: #12301f;
+  --bad: #ff8a7d;
+  --bad-bg: #3a1a18;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 20px 36px;
+}
+.app { width: 100%; max-width: 520px; margin-inline: auto; display: flex; flex-direction: column; gap: 14px; }
+
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.brand { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: .06em; }
+.count { margin: 0; color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.count b { color: var(--ink); font-size: 17px; font-weight: 700; }
+
+.bar { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .25s ease-out; } }
+
+#stage { display: flex; flex-direction: column; gap: 14px; outline: none; }
+
+.shot { position: relative; aspect-ratio: 16 / 10; max-width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #1c2236; }
+.shot > svg, .shot > img { width: 100%; height: 100%; display: block; }
+.shot > img { object-fit: cover; }
+.chip { position: absolute; left: 10px; bottom: 10px; padding: 2px 10px; border-radius: 999px; background: rgba(10, 16, 32, .6); color: #fff; font-size: 11px; letter-spacing: .08em; }
+
+.stamp {
+  position: absolute; top: 12px; right: 12px;
+  width: 78px; height: 78px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 3px solid currentColor;
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--surface) 80%, transparent), inset 0 0 0 4.5px currentColor;
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  font-family: var(--font-display); font-weight: 800; letter-spacing: .04em;
+  transform: rotate(-10deg);
+}
+.stamp.ok { color: var(--ok); font-size: 22px; }
+.stamp.bad { color: var(--bad); font-size: 16px; }
+@media (prefers-reduced-motion: no-preference) {
+  .stamp { animation: stamp-in .32s cubic-bezier(.2, 1.4, .4, 1) both; }
+  @keyframes stamp-in { from { transform: rotate(-22deg) scale(1.7); opacity: 0; } to { transform: rotate(-10deg) scale(1); opacity: 1; } }
+  .reveal { animation: rise .28s ease-out both; }
+  @keyframes rise { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+}
+
+.question { margin: 2px 0 0; font-family: var(--font-display); font-weight: 800; font-size: 21px; line-height: 1.4; text-wrap: balance; }
+.lead { margin: 0; color: var(--muted); max-width: 65ch; }
+
+.choices { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.choices li { min-width: 0; display: flex; }
+.tile {
+  position: relative; flex: 1; min-width: 0; min-height: 96px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  padding: 12px; text-align: left; cursor: pointer;
+  background: var(--surface); color: var(--ink); font: inherit;
+  border: 1.5px solid var(--line); border-radius: 12px;
+}
+.choices:not([data-locked]) .tile:hover { border-color: var(--accent); }
+.choices[data-locked] .tile { cursor: default; }
+.tile:focus-visible, .next:focus-visible, .mode:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tile .ja { font-weight: 700; font-size: 15px; line-height: 1.3; overflow-wrap: anywhere; }
+.tile .en { color: var(--muted); font-size: 11px; letter-spacing: .05em; }
+.tile[data-state="ok"] { border-color: var(--ok); background: var(--ok-bg); }
+.tile[data-state="bad"] { border-color: var(--bad); background: var(--bad-bg); }
+.tile[data-state="dim"] { opacity: .5; }
+.tile[data-state="ok"]::after, .tile[data-state="bad"]::after {
+  position: absolute; top: 8px; right: 12px;
+  font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1;
+}
+.tile[data-state="ok"]::after { content: "○"; color: var(--ok); }
+.tile[data-state="bad"]::after { content: "×"; color: var(--bad); }
+
+.flag { flex: none; display: block; width: 54px; aspect-ratio: 3 / 2; line-height: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 3px; background: #fff; }
+.flag svg { width: 100%; height: 100%; display: block; }
+.flag.sm { width: 30px; }
+
+.mode {
+  width: 100%; display: flex; flex-direction: column; gap: 2px; align-items: flex-start;
+  padding: 14px 16px; text-align: left; cursor: pointer; font: inherit; color: var(--ink);
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
+}
+.mode:hover { border-color: var(--accent); }
+.mode .mt { font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+.mode .ms { color: var(--muted); font-size: 13px; }
+
+.reveal { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.verdict { margin: 0; font-weight: 700; font-size: 14px; }
+.verdict.ok { color: var(--ok); }
+.verdict.bad { color: var(--bad); }
+.site { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1.4; text-wrap: balance; }
+.meta { margin: 0; color: var(--muted); font-size: 12.5px; }
+.note { margin: 4px 0 8px; max-width: 65ch; }
+.next {
+  width: 100%; min-height: 48px; padding: 12px 16px; border: 0; border-radius: 12px; cursor: pointer;
+  background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 700; font-size: 15px;
+}
+
+.result { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 16px; display: flex; flex-direction: column; gap: 10px; }
+.eyebrow { margin: 0; color: var(--muted); font-size: 12px; letter-spacing: .12em; }
+.score { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 56px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.score small { font-size: 22px; color: var(--muted); font-weight: 600; }
+.msg { margin: 0 0 4px; }
+.log { margin: 0 0 8px; padding: 0; list-style: none; display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.log li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.log .mark { font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+.log .mark.bad { color: var(--bad); }
+.log .logsite { min-width: 0; font-weight: 500; line-height: 1.4; }
+.log .logans { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+
+.credit { margin: 0 0 8px; color: var(--muted); font-size: 11.5px; line-height: 1.6; overflow-wrap: anywhere; }
+.credit a { color: inherit; }
+.foot { margin: 4px 0 0; color: var(--muted); font-size: 11.5px; line-height: 1.7; }
+</style>
+
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <p class="brand">世界遺産 国あてクイズ</p>
+    <p class="count" id="count"></p>
+  </header>
+  <div class="bar" aria-hidden="true"><i id="barfill"></i></div>
+  <main id="stage" tabindex="-1"></main>
+  <p class="foot">ランキングは、PR TIMESに掲載された「勉強して行きたくなった世界遺産 TOP50」をもとにしています。同順位を含めて57件ある中から、複数の国にまたがるものと、絵にするのが難しいものを除いた50件を採用しました。<span id="footimg">画像は簡略化したイラスト</span>、国旗も簡略化した図です。</p>
+</div>
+
+<script>
+(function () {
+  function flag(inner) {
+    return '<svg viewBox="0 0 60 40" aria-hidden="true" focusable="false">' + inner + '</svg>';
+  }
+  var tower = 'M-2.5 0V-4Q-2.5 -6 -1 -8Q-.5 -10 0 -13Q.5 -10 1 -8Q2.5 -6 2.5 -4V0Z';
+  var FLAGS = {
+    'in': flag('<rect width="60" height="13.4" fill="#ff9933"/><rect y="13.3" width="60" height="13.4" fill="#fff"/><rect y="26.6" width="60" height="13.4" fill="#138808"/><g stroke="#000080" stroke-width=".7" fill="none"><circle cx="30" cy="20" r="5"/><path d="M30 15V25M25 20H35M26.5 16.5L33.5 23.5M33.5 16.5L26.5 23.5"/></g><circle cx="30" cy="20" r="1" fill="#000080"/>'),
+    pk: flag('<rect width="60" height="40" fill="#01411c"/><rect width="15" height="40" fill="#fff"/><circle cx="37" cy="20" r="9" fill="#fff"/><circle cx="40" cy="18.3" r="8" fill="#01411c"/><polygon fill="#fff" points="44,11.6 44.82,13.87 47.23,13.95 45.33,15.43 46,17.75 44,16.4 42,17.75 42.67,15.43 40.77,13.95 43.18,13.87"/>'),
+    bd: flag('<rect width="60" height="40" fill="#006a4e"/><circle cx="26" cy="20" r="9" fill="#f42a41"/>'),
+    id: flag('<rect width="60" height="20" fill="#ce1126"/><rect y="20" width="60" height="20" fill="#fff"/>'),
+    eg: flag('<rect width="60" height="13.4" fill="#ce1126"/><rect y="13.3" width="60" height="13.4" fill="#fff"/><rect y="26.6" width="60" height="13.4" fill="#000"/><g fill="#c8a24a"><path d="M22 19Q26 14 30 15Q34 14 38 19Q34 18 30 19Q26 18 22 19Z"/><rect x="28" y="19" width="4" height="7" rx="1.5"/></g>'),
+    ma: flag('<rect width="60" height="40" fill="#c1272d"/><path d="M30 12L34.7 26.47L22.39 17.53L37.61 17.53L25.3 26.47Z" fill="none" stroke="#006233" stroke-width="1.4"/>'),
+    jo: flag('<rect width="60" height="13.4" fill="#000"/><rect y="13.3" width="60" height="13.4" fill="#fff"/><rect y="26.6" width="60" height="13.4" fill="#007a3d"/><polygon points="0,0 28,20 0,40" fill="#ce1126"/><polygon fill="#fff" points="9,17.4 9.65,19.11 11.47,19.2 10.05,20.34 10.53,22.1 9,21.1 7.47,22.1 7.95,20.34 6.53,19.2 8.35,19.11"/>'),
+    sd: flag('<rect width="60" height="13.4" fill="#d21034"/><rect y="13.3" width="60" height="13.4" fill="#fff"/><rect y="26.6" width="60" height="13.4" fill="#000"/><polygon points="0,0 22,20 0,40" fill="#007229"/>'),
+    kh: flag('<rect width="60" height="40" fill="#e00025"/><rect y="10" width="60" height="20" fill="#032ea1"/><g fill="#fff"><rect x="17" y="24" width="26" height="3"/><path transform="translate(30 24) scale(1.1)" d="' + tower + '"/><path transform="translate(24.5 24) scale(.8)" d="' + tower + '"/><path transform="translate(35.5 24) scale(.8)" d="' + tower + '"/><path transform="translate(20 24) scale(.6)" d="' + tower + '"/><path transform="translate(40 24) scale(.6)" d="' + tower + '"/></g>'),
+    th: flag('<rect width="60" height="40" fill="#a51931"/><rect y="6.67" width="60" height="26.67" fill="#f4f5f8"/><rect y="13.33" width="60" height="13.34" fill="#2d2a4a"/>'),
+    vn: flag('<rect width="60" height="40" fill="#da251d"/><polygon fill="#ffff00" points="30,10.5 32.35,17.76 39.99,17.76 33.8,22.24 36.17,29.49 30,25 23.83,29.49 26.2,22.24 20.01,17.76 27.65,17.76"/>'),
+    la: flag('<rect width="60" height="40" fill="#ce1126"/><rect y="10" width="60" height="20" fill="#002868"/><circle cx="30" cy="20" r="7" fill="#fff"/>')
+  };
+  var S = function (x) { return '<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' + x + '</svg>'; };
+  var A = function (f, o) { return ' fill="' + f + '"' + (o == null ? '' : ' opacity="' + o + '"'); };
+  var R = function (x, y, w, h, f, o) { return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"' + A(f, o) + '/>'; };
+  var P = function (pts, f, o) { return '<polygon points="' + pts + '"' + A(f, o) + '/>'; };
+  var C = function (x, y, r, f, o) { return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"' + A(f, o) + '/>'; };
+  var E = function (x, y, rx, ry, f, o) { return '<ellipse cx="' + x + '" cy="' + y + '" rx="' + rx + '" ry="' + ry + '"' + A(f, o) + '/>'; };
+  var D = function (d, f, o) { return '<path d="' + d + '"' + A(f, o) + '/>'; };
+  var L = function (d, s, w, o) { return '<path d="' + d + '" fill="none" stroke="' + s + '" stroke-width="' + w + '" stroke-linecap="round"' + (o == null ? '' : ' opacity="' + o + '"') + '/>'; };
+  var GR = function (id, c1, c2, y, h) {
+    return '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + c1 + '"/><stop offset="1" stop-color="' + c2 + '"/></linearGradient></defs><rect y="' + y + '" width="320" height="' + h + '" fill="url(#' + id + ')"/>';
+  };
+  var SKY = function (c1, c2, h) { return GR('sk', c1, c2, 0, h); };
+  var GND = function (c1, c2, y) { return GR('gd', c1, c2, y, 200 - y); };
+  var PINE = function (x, y, h, f) { return P((x - h * 0.3) + ',' + y + ' ' + x + ',' + (y - h) + ' ' + (x + h * 0.3) + ',' + y, f) + R(x - 1.2, y, 2.4, h * 0.1, '#4a3626'); };
+  var fs = function (cx, cy, r, fill, n, ratio, rot) {
+    n = n || 5; ratio = ratio || 0.382; rot = rot || 0;
+    var pts = [];
+    for (var i = 0; i < n * 2; i++) {
+      var a = (-90 + rot + i * 180 / n) * Math.PI / 180, rad = i % 2 ? r * ratio : r;
+      pts.push((cx + rad * Math.cos(a)).toFixed(2) + ',' + (cy + rad * Math.sin(a)).toFixed(2));
+    }
+    return P(pts.join(' '), fill);
+  };
+  var H3 = function (a, b, c) { return R(0, 0, 60, 13.4, a) + R(0, 13.3, 60, 13.4, b) + R(0, 26.6, 60, 13.4, c); };
+  var V3 = function (a, b, c) { return R(0, 0, 20.1, 40, a) + R(19.9, 0, 20.2, 40, b) + R(40, 0, 20, 40, c); };
+  var UJ = function (w, h) {
+    var d1 = 'M0 0L' + w + ' ' + h + 'M' + w + ' 0L0 ' + h, d2 = 'M' + (w / 2) + ' 0V' + h + 'M0 ' + (h / 2) + 'H' + w;
+    return R(0, 0, w, h, '#012169') +
+      '<path d="' + d1 + '" stroke="#fff" stroke-width="' + (h * 0.15) + '" fill="none"/>' +
+      '<path d="' + d1 + '" stroke="#c8102e" stroke-width="' + (h * 0.05) + '" fill="none"/>' +
+      '<path d="' + d2 + '" stroke="#fff" stroke-width="' + (h * 0.25) + '" fill="none"/>' +
+      '<path d="' + d2 + '" stroke="#c8102e" stroke-width="' + (h * 0.15) + '" fill="none"/>';
+  };
+  var JACK = function () { return '<svg x="0" y="0" width="30" height="20" viewBox="0 0 60 40">' + UJ(60, 40) + '</svg>'; };
+  var bars = function (cx, cy, rot, pat) {
+    var s = '';
+    for (var i = 0; i < 3; i++) {
+      var y = -1.9 + i * 1.9;
+      s += pat[i] ? R(-3.6, y - 0.5, 7.2, 1, '#000') : R(-3.6, y - 0.5, 3.2, 1, '#000') + R(0.4, y - 0.5, 3.2, 1, '#000');
+    }
+    return '<g transform="translate(' + cx + ' ' + cy + ') rotate(' + rot + ')">' + s + '</g>';
+  };
+  var crest = function () {
+    var s = '';
+    for (var r = 0; r < 4; r++) { for (var c = 0; c < 3; c++) { s += R(26 + c * 2.67, 14 + r * 3.25, 2.67, 3.25, (r + c) % 2 ? '#fff' : '#f00'); } }
+    return s;
+  };
+  var usF = function () {
+    var s = R(0, 0, 60, 40, '#fff');
+    for (var i = 0; i < 7; i++) { s += R(0, i * 6.154, 60, 3.077, '#b22234'); }
+    s += R(0, 0, 24, 21.5, '#3c3b6e');
+    for (var r = 0; r < 5; r++) { for (var c = 0; c < 6; c++) { s += C(2.6 + c * 3.7, 2.5 + r * 3.7, 0.7, '#fff'); } }
+    return s;
+  };
+  var veStars = function () {
+    var s = '';
+    for (var i = 0; i < 8; i++) { var a = (200 + i * 20) * Math.PI / 180; s += C((30 + 9.5 * Math.cos(a)).toFixed(2), (27 + 9.5 * Math.sin(a)).toFixed(2), 1, '#fff'); }
+    return s;
+  };
+
+  FLAGS.jp = flag(R(0, 0, 60, 40, '#fff') + C(30, 20, 12, '#bc002d'));
+  FLAGS.cn = flag(R(0, 0, 60, 40, '#de2910') + fs(10, 10, 6, '#ffde00') + fs(20, 4, 2, '#ffde00', 5, 0.382, 24) + fs(24, 8, 2, '#ffde00', 5, 0.382, 48) + fs(24, 14, 2, '#ffde00', 5, 0.382, 78) + fs(20, 18, 2, '#ffde00', 5, 0.382, 106));
+  FLAGS.kr = flag(R(0, 0, 60, 40, '#fff') + D('M22 20A8 8 0 0 1 38 20Z', '#cd2e3a') + D('M22 20A8 8 0 0 0 38 20Z', '#0047a0') + C(26, 20, 4, '#0047a0') + C(34, 20, 4, '#cd2e3a') + bars(11, 7, -55.6, [1, 1, 1]) + bars(49, 7, 55.6, [0, 1, 0]) + bars(11, 33, 55.6, [1, 0, 1]) + bars(49, 33, -55.6, [0, 0, 0]));
+  FLAGS.lk = flag(R(0, 0, 60, 40, '#8d153a') + '<rect x="1" y="1" width="58" height="38" fill="none" stroke="#ffbe29" stroke-width="1.6"/>' + R(4, 4, 7, 32, '#00534e') + R(11, 4, 7, 32, '#eb7400') + D('M30 29Q31 15 40 15Q50 15 50 22Q50 29 46 29L46 33H44L43 29H36L35 33H33L32 29Z', '#ffbe29') + C(31, 14, 3.4, '#ffbe29') + L('M49 10V30', '#ffbe29', 1.2));
+  FLAGS.uz = flag(R(0, 0, 60, 12.5, '#0099b5') + R(0, 12.5, 60, 1.2, '#ce1126') + R(0, 13.7, 60, 12.6, '#fff') + R(0, 26.3, 60, 1.2, '#ce1126') + R(0, 27.5, 60, 12.5, '#1eb53a') + C(8, 6.2, 4, '#fff') + C(9.6, 6.2, 3.4, '#0099b5') + fs(15, 3, 1, '#fff') + fs(19, 3, 1, '#fff') + fs(23, 3, 1, '#fff') + fs(17, 7, 1, '#fff') + fs(21, 7, 1, '#fff') + fs(25, 7, 1, '#fff') + fs(19, 10.5, 1, '#fff'));
+  FLAGS.kz = flag(R(0, 0, 60, 40, '#00afca') + fs(30, 16, 7, '#fec50c', 16, 0.7) + C(30, 16, 4, '#fec50c') + D('M17 28Q30 20 43 28Q30 26 17 28Z', '#fec50c') + P('26,29 30,33 34,29', '#fec50c') + R(3, 4, 2, 32, '#fec50c', 0.9));
+  FLAGS.ir = flag(H3('#239f40', '#fff', '#da0000') + L('M30 16V24', '#da0000', 1.4) + '<circle cx="30" cy="20" r="3.6" fill="none" stroke="#da0000" stroke-width="1.2"/>');
+  FLAGS.tr = flag(R(0, 0, 60, 40, '#e30a17') + C(23, 20, 10, '#fff') + C(26, 20, 8, '#e30a17') + fs(36, 20, 4, '#fff', 5, 0.382, 18));
+  FLAGS.fr = flag(V3('#0055a4', '#fff', '#ef4135'));
+  FLAGS.es = flag(R(0, 0, 60, 40, '#aa151b') + R(0, 10, 60, 20, '#f1bf00') + R(12, 15, 7, 10, '#ad1519'));
+  FLAGS.it = flag(V3('#009246', '#fff', '#ce2b37'));
+  FLAGS.de = flag(H3('#000', '#dd0000', '#ffce00'));
+  FLAGS.pl = flag(R(0, 0, 60, 20, '#fff') + R(0, 20, 60, 20, '#dc143c'));
+  FLAGS.gr = flag(R(0, 0, 60, 40, '#0d5eaf') + R(0, 4.44, 60, 4.44, '#fff') + R(0, 13.33, 60, 4.44, '#fff') + R(0, 22.22, 60, 4.44, '#fff') + R(0, 31.11, 60, 4.44, '#fff') + R(0, 0, 22.2, 22.2, '#0d5eaf') + R(8.9, 0, 4.4, 22.2, '#fff') + R(0, 8.9, 22.2, 4.4, '#fff'));
+  FLAGS.at = flag(H3('#ed2939', '#fff', '#ed2939'));
+  FLAGS.cz = flag(R(0, 0, 60, 20, '#fff') + R(0, 20, 60, 20, '#d7141a') + P('0,0 28,20 0,40', '#11457e'));
+  FLAGS.hr = flag(H3('#f00', '#fff', '#171796') + crest() + '<rect x="26" y="14" width="8" height="13" fill="none" stroke="#8a8a8a" stroke-width=".5"/>');
+  FLAGS.pt = flag(R(0, 0, 60, 40, '#f00') + R(0, 0, 24, 40, '#060') + C(24, 20, 5.5, '#ffe000') + R(21, 16, 6, 8, '#f00') + R(22.3, 17.3, 3.4, 5.4, '#fff'));
+  FLAGS.ch = flag(R(0, 0, 60, 40, '#fff') + R(10, 0, 40, 40, '#d52b1e') + R(27, 8, 6, 24, '#fff') + R(18, 17, 24, 6, '#fff'));
+  FLAGS.nl = flag(H3('#ae1c28', '#fff', '#21468b'));
+  FLAGS.hu = flag(H3('#ce2939', '#fff', '#477050'));
+  FLAGS.us = flag(usF());
+  FLAGS.ca = flag(R(0, 0, 60, 40, '#fff') + R(0, 0, 15, 40, '#f00') + R(45, 0, 15, 40, '#f00') + fs(30, 20, 9, '#f00', 11, 0.5) + R(29.2, 26, 1.6, 5, '#f00'));
+  FLAGS.mx = flag(V3('#006847', '#fff', '#ce1126') + C(30, 20, 4.5, '#b08a3e') + C(30, 20, 2.5, '#6a8a3a'));
+  FLAGS.br = flag(R(0, 0, 60, 40, '#009c3b') + P('30,4 55,20 30,36 5,20', '#ffdf00') + C(30, 20, 9, '#002776') + L('M21.6 19.5Q30 15.5 38.4 21.5', '#fff', 1.4));
+  FLAGS.pe = flag(V3('#d91023', '#fff', '#d91023'));
+  FLAGS.cl = flag(R(0, 0, 60, 20, '#fff') + R(0, 20, 60, 20, '#d52b1e') + R(0, 0, 20, 20, '#0039a6') + fs(10, 10, 5, '#fff'));
+  FLAGS.ar = flag(H3('#74acdf', '#fff', '#74acdf') + fs(30, 20, 4.6, '#f6b40e', 16, 0.62));
+  FLAGS.ve = flag(H3('#fcdd09', '#00247d', '#cf142b') + veStars());
+  FLAGS.co = flag(R(0, 0, 60, 20, '#fcd116') + R(0, 20, 60, 10, '#003893') + R(0, 30, 60, 10, '#ce1126'));
+  FLAGS.tz = flag(R(0, 0, 60, 40, '#00a3dd') + P('0,0 60,0 0,40', '#1eb53a') + L('M-2 42L62 -2', '#fcd116', 13) + L('M-2 42L62 -2', '#000', 9));
+  FLAGS.sn = flag(V3('#00853f', '#fdef42', '#e31b23') + fs(30, 20, 6, '#00853f'));
+  FLAGS.ke = flag(R(0, 0, 60, 11, '#000') + R(0, 11, 60, 2, '#fff') + R(0, 13, 60, 14, '#bb0000') + R(0, 27, 60, 2, '#fff') + R(0, 29, 60, 11, '#006600') + E(30, 20, 5.5, 10, '#bb0000') + '<ellipse cx="30" cy="20" rx="5.5" ry="10" fill="none" stroke="#fff" stroke-width="1"/>' + E(30, 20, 3, 7, '#000'));
+  FLAGS.za = flag(R(0, 0, 60, 20, '#e03c31') + R(0, 20, 60, 20, '#001489') + L('M0 4L24 20L60 20M0 36L24 20', '#fff', 10) + L('M0 4L24 20L60 20M0 36L24 20', '#007749', 5.5) + P('0,6 0,34 18,20', '#ffb81c') + P('0,9 0,31 14,20', '#000'));
+  FLAGS.et = flag(H3('#078930', '#fcdd09', '#da121a') + C(30, 20, 8.5, '#0f47af') + fs(30, 20, 6, '#fcdd09'));
+  FLAGS.au = flag(R(0, 0, 60, 40, '#012169') + JACK() + fs(15, 30, 4, '#fff', 7, 0.45) + fs(44, 33, 3, '#fff') + fs(36, 21, 2.4, '#fff') + fs(51, 17, 2.4, '#fff') + fs(44, 8, 2.8, '#fff'));
+  FLAGS.nz = flag(R(0, 0, 60, 40, '#00247d') + JACK() + fs(45, 31, 3, '#cc142b') + fs(38, 18, 3, '#cc142b') + fs(52, 16, 3, '#cc142b') + fs(45, 7, 3, '#cc142b'));
+  FLAGS.gb = flag(UJ(60, 40));
+  var SCENES = {
+    taj: '<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' +
+      '<defs>' +
+      '<linearGradient id="tj-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4d62a8"/><stop offset=".55" stop-color="#e59aa0"/><stop offset="1" stop-color="#f8d6a2"/></linearGradient>' +
+      '<linearGradient id="tj-pool" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9b9a6"/><stop offset="1" stop-color="#6f8fbd"/></linearGradient>' +
+      '<clipPath id="tj-clip"><rect x="0" y="142" width="320" height="58"/></clipPath>' +
+      '<g id="tj-bld">' +
+        '<rect x="56" y="132" width="208" height="10" fill="#ece2d3"/>' +
+        '<rect x="118" y="96" width="84" height="36" fill="#f7f2e9"/>' +
+        '<rect x="148" y="104" width="24" height="28" fill="#e4dac9"/>' +
+        '<path d="M151 132V114Q160 98 169 114V132Z" fill="#b8ab97"/>' +
+        '<path d="M126 126V114Q131 106 136 114V126Z" fill="#d9cebc"/>' +
+        '<path d="M184 126V114Q189 106 194 114V126Z" fill="#d9cebc"/>' +
+        '<rect x="140" y="88" width="40" height="9" fill="#f3ede2"/>' +
+        '<path d="M138 90C132 70 148 62 160 50C172 62 188 70 182 90Z" fill="#fbf7ef"/>' +
+        '<path d="M160 50C172 62 188 70 182 90L160 90Z" fill="#000" opacity=".07"/>' +
+        '<rect x="159.2" y="36" width="1.6" height="15" fill="#d8b25a"/><circle cx="160" cy="40" r="1.6" fill="#d8b25a"/>' +
+        '<rect x="121" y="88" width="10" height="8" fill="#f3ede2"/><path d="M120 88C120 80 126 77 126 74C126 77 132 80 132 88Z" fill="#fbf7ef"/>' +
+        '<rect x="189" y="88" width="10" height="8" fill="#f3ede2"/><path d="M188 88C188 80 194 77 194 74C194 77 200 80 200 88Z" fill="#fbf7ef"/>' +
+        '<rect x="80" y="70" width="8" height="62" fill="#f1eadd"/><rect x="78" y="88" width="12" height="3" fill="#e2d8c6"/><rect x="78" y="106" width="12" height="3" fill="#e2d8c6"/>' +
+        '<path d="M79 70C79 62 84 60 84 55C84 60 89 62 89 70Z" fill="#fbf7ef"/><rect x="83.4" y="46" width="1.2" height="10" fill="#d8b25a"/>' +
+        '<rect x="232" y="70" width="8" height="62" fill="#f1eadd"/><rect x="230" y="88" width="12" height="3" fill="#e2d8c6"/><rect x="230" y="106" width="12" height="3" fill="#e2d8c6"/>' +
+        '<path d="M231 70C231 62 236 60 236 55C236 60 241 62 241 70Z" fill="#fbf7ef"/><rect x="235.4" y="46" width="1.2" height="10" fill="#d8b25a"/>' +
+      '</g>' +
+      '</defs>' +
+      '<rect width="320" height="142" fill="url(#tj-sky)"/>' +
+      '<circle cx="256" cy="42" r="14" fill="#fff0c8" opacity=".75"/>' +
+      '<ellipse cx="22" cy="134" rx="34" ry="15" fill="#3f5a4a"/><ellipse cx="300" cy="134" rx="34" ry="15" fill="#3f5a4a"/>' +
+      '<rect y="142" width="320" height="58" fill="url(#tj-pool)"/>' +
+      '<g clip-path="url(#tj-clip)"><use href="#tj-bld" transform="translate(0 284) scale(1 -1)" opacity=".3"/></g>' +
+      '<g stroke="#fff" stroke-width="1" opacity=".18"><path d="M70 158H250M90 170H230M110 183H210"/></g>' +
+      '<use href="#tj-bld"/>' +
+      '</svg>',
+
+    giza: '<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' +
+      '<defs>' +
+      '<linearGradient id="gz-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5f9bd6"/><stop offset="1" stop-color="#f7dca8"/></linearGradient>' +
+      '<linearGradient id="gz-sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3b56e"/><stop offset="1" stop-color="#c98f4a"/></linearGradient>' +
+      '</defs>' +
+      '<rect width="320" height="200" fill="url(#gz-sky)"/>' +
+      '<circle cx="252" cy="46" r="28" fill="#fff6d6" opacity=".3"/><circle cx="252" cy="46" r="15" fill="#fff6d6"/>' +
+      '<path d="M0 128Q60 116 120 126T240 124T320 120V200H0Z" fill="#ebc88a"/>' +
+      '<polygon points="170,46 98,136 190,146" fill="#ecc783"/><polygon points="170,46 190,146 250,138" fill="#c58f48"/>' +
+      '<g stroke="#b88742" stroke-width=".7" opacity=".4" fill="none"><path d="M148.4 73L176 76M134 91L180 96M119.6 109L184 116M105 127L188 136"/></g>' +
+      '<polygon points="270,112 240,144 268,154" fill="#efcb88"/><polygon points="270,112 268,154 300,146" fill="#cc9650"/>' +
+      '<polygon points="78,92 38,140 86,150" fill="#efcb88"/><polygon points="78,92 86,150 124,142" fill="#cc9650"/>' +
+      '<path d="M0 152Q70 142 150 154T320 150V200H0Z" fill="url(#gz-sand)"/>' +
+      '<path d="M0 178Q90 162 190 176T320 170V200H0Z" fill="#b97f3f" opacity=".55"/>' +
+      '</svg>',
+
+    angkor: '<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' +
+      '<defs>' +
+      '<linearGradient id="ak-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34305f"/><stop offset=".5" stop-color="#c0617f"/><stop offset="1" stop-color="#f9b866"/></linearGradient>' +
+      '<linearGradient id="ak-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f9b866"/><stop offset=".55" stop-color="#8d4f7c"/><stop offset="1" stop-color="#3a3363"/></linearGradient>' +
+      '<clipPath id="ak-clip"><rect x="0" y="140" width="320" height="60"/></clipPath>' +
+      '<g id="ak-sil" fill="#231c30">' +
+        '<ellipse cx="14" cy="134" rx="24" ry="13"/><ellipse cx="306" cy="134" rx="24" ry="13"/>' +
+        '<polygon points="26,124 38,116 282,116 294,124"/><rect x="26" y="124" width="268" height="16"/>' +
+        '<rect x="100" y="106" width="120" height="12"/>' +
+        '<path transform="translate(76 120) scale(.46)" d="M-16 0V-10H16V0ZM-12 -10V-20H12V-10ZM-9 -20C-9 -34 -6 -44 -3 -52C-2 -66 -1 -78 0 -92C1 -78 2 -66 3 -52C6 -44 9 -34 9 -20Z"/>' +
+        '<path transform="translate(244 120) scale(.46)" d="M-16 0V-10H16V0ZM-12 -10V-20H12V-10ZM-9 -20C-9 -34 -6 -44 -3 -52C-2 -66 -1 -78 0 -92C1 -78 2 -66 3 -52C6 -44 9 -34 9 -20Z"/>' +
+        '<path transform="translate(118 118) scale(.62)" d="M-16 0V-10H16V0ZM-12 -10V-20H12V-10ZM-9 -20C-9 -34 -6 -44 -3 -52C-2 -66 -1 -78 0 -92C1 -78 2 -66 3 -52C6 -44 9 -34 9 -20Z"/>' +
+        '<path transform="translate(202 118) scale(.62)" d="M-16 0V-10H16V0ZM-12 -10V-20H12V-10ZM-9 -20C-9 -34 -6 -44 -3 -52C-2 -66 -1 -78 0 -92C1 -78 2 -66 3 -52C6 -44 9 -34 9 -20Z"/>' +
+        '<path transform="translate(160 118) scale(.85)" d="M-16 0V-10H16V0ZM-12 -10V-20H12V-10ZM-9 -20C-9 -34 -6 -44 -3 -52C-2 -66 -1 -78 0 -92C1 -78 2 -66 3 -52C6 -44 9 -34 9 -20Z"/>' +
+      '</g>' +
+      '</defs>' +
+      '<rect width="320" height="140" fill="url(#ak-sky)"/>' +
+      '<circle cx="160" cy="112" r="52" fill="#ffe4a8" opacity=".25"/><circle cx="160" cy="112" r="34" fill="#ffd88a" opacity=".95"/>' +
+      '<rect y="140" width="320" height="60" fill="url(#ak-water)"/>' +
+      '<g clip-path="url(#ak-clip)"><use href="#ak-sil" transform="translate(0 280) scale(1 -1)" opacity=".35"/></g>' +
+      '<g stroke="#fff" stroke-width="1" opacity=".14"><path d="M40 156H280M70 168H250M100 181H220"/></g>' +
+      '<use href="#ak-sil"/>' +
+      '</svg>'
+  };
+  SCENES.mont = S(SKY('#8fb7de', '#f3d9c4', 138) + E(60, 40, 32, 8, '#fff', .7) + E(256, 54, 38, 8, '#fff', .6) + GND('#cfc3ae', '#a79b86', 138) +
+    D('M66 140Q100 104 126 80Q150 58 164 30Q176 58 206 82Q236 106 266 140Z', '#8c7b6b') + R(86, 126, 150, 14, '#9a8a76') + R(118, 100, 84, 28, '#a89983') + R(130, 84, 60, 18, '#b9a98f') + R(142, 66, 36, 20, '#c7b79b') +
+    P('138,66 160,48 182,66', '#6b6f78') + P('157,50 160,10 163,50', '#7f8590') + C(160, 10, 2.4, '#e2b84a') + P('92,126 104,114 116,126', '#a65a43') + P('206,126 218,114 230,126', '#a65a43') +
+    R(80, 142, 160, 30, '#9a8a76', .22) + L('M70 150H250M90 160H230M110 170H210', '#fff', 1, .25));
+
+  SCENES.yaku = S(GR('sk', '#86a98f', '#1f3626', 0, 200) + P('130,200 138,118 134,74 150,58 176,64 184,118 194,200', '#4e3d2c') +
+    R(40, 50, 14, 150, '#3a2e22') + R(262, 36, 16, 164, '#3a2e22') + R(92, 80, 8, 120, '#44352a') + R(228, 90, 9, 110, '#44352a') +
+    C(160, 44, 62, '#1f3a28', .95) + C(60, 40, 30, '#1f3a28', .9) + C(270, 30, 34, '#1f3a28', .9) +
+    L('M150 90Q148 130 146 190M162 80Q164 130 166 190M172 100Q176 140 180 190', '#3a2e22', 1.6, .7) +
+    E(160, 150, 42, 10, '#3e6b3c', .75) + E(160, 198, 170, 16, '#2f5a38') + P('176,0 200,0 150,200 118,200', '#fff', .08) + E(40, 194, 50, 11, '#3f7a44') + E(284, 196, 56, 13, '#3f7a44'));
+
+  SCENES.samarkand = S(SKY('#6fb4e6', '#f4e6c8', 150) + GND('#dccaa4', '#c3ae85', 150) +
+    R(30, 92, 70, 58, '#d8b98a') + R(220, 92, 70, 58, '#d8b98a') + R(116, 76, 88, 74, '#dcbf90') +
+    D('M52 150V114Q65 96 78 114V150Z', '#2f6f8f') + D('M242 150V114Q255 96 268 114V150Z', '#2f6f8f') + D('M138 150V98Q160 70 182 98V150Z', '#2f6f8f') + D('M146 150V104Q160 82 174 104V150Z', '#1d4c66') +
+    R(116, 86, 88, 6, '#1d6f9a') + R(30, 98, 70, 4, '#1d6f9a') + R(220, 98, 70, 4, '#1d6f9a') +
+    R(54, 82, 22, 10, '#cdb184') + D('M50 82Q50 54 65 50Q80 54 80 82Z', '#1aa0b8') + L('M65 52V82M58 56V82M72 56V82', '#0e7a8d', 1, .6) +
+    R(244, 82, 22, 10, '#cdb184') + D('M240 82Q240 54 255 50Q270 54 270 82Z', '#1aa0b8') + L('M255 52V82M248 56V82M262 56V82', '#0e7a8d', 1, .6) +
+    R(100, 46, 10, 104, '#d6b787') + R(210, 46, 10, 104, '#d6b787') + D('M98 46Q105 30 112 46Z', '#1aa0b8') + D('M208 46Q215 30 222 46Z', '#1aa0b8') +
+    R(100, 64, 10, 3, '#1d6f9a') + R(210, 64, 10, 3, '#1d6f9a') + R(100, 90, 10, 3, '#1d6f9a') + R(210, 90, 10, 3, '#1d6f9a'));
+
+  SCENES.yellow = S(SKY('#5fa8e0', '#d6ebf7', 150) + D('M0 150L40 118L84 150L136 112L186 150L244 120L320 150Z', '#4a7a58') + GND('#cdbb92', '#9d8a60', 150) +
+    PINE(30, 152, 46, '#2f5a3f') + PINE(52, 152, 36, '#356647') + PINE(280, 152, 50, '#2f5a3f') + PINE(300, 152, 38, '#356647') +
+    E(240, 172, 54, 13, '#e8943a', .7) + E(240, 172, 46, 10, '#3fc1c9') + E(240, 170, 30, 5, '#8ee3e6') +
+    D('M136 152Q160 136 184 152Z', '#e9e3d2') + P('154,148 158,62 162,62 166,148', '#fff') +
+    C(160, 48, 22, '#fff') + C(138, 62, 16, '#fff') + C(184, 60, 18, '#fff') + C(150, 36, 14, '#f4f9ff') + C(174, 34, 12, '#f4f9ff') + E(70, 172, 40, 6, '#bfae85', .6));
+
+  var tcr = '';
+  for (var ti = 0; ti < 6; ti++) { tcr += R(34 + ti * 8, 118 + ti * 13, 252 - ti * 16, 13, ti % 2 ? '#76a957' : '#86b862') + R(34 + ti * 8, 118 + ti * 13, 252 - ti * 16, 2, '#b9b0a0'); }
+  SCENES.machu = S(SKY('#6fa8d8', '#e9f1e4', 150) + E(70, 36, 36, 8, '#fff', .8) + E(250, 24, 30, 6, '#fff', .7) +
+    D('M0 150L54 84L120 150Z', '#5a8a54') + P('182,38 252,150 112,150', '#4f7a4a') + P('182,38 252,150 192,150', '#3d6339') + D('M230 150L276 96L320 150Z', '#5d8d58') +
+    R(0, 150, 320, 50, '#7fb25d') + tcr +
+    R(118, 102, 24, 16, '#b5ad9f') + P('116,102 130,90 144,102', '#c9a96a') + R(152, 106, 20, 12, '#b5ad9f') + P('150,106 162,96 174,106', '#c9a96a') +
+    E(246, 180, 13, 6, '#efe7d4') + R(255, 160, 3, 18, '#efe7d4') + C(258, 158, 3.6, '#efe7d4') + R(238, 184, 2, 8, '#efe7d4') + R(252, 184, 2, 8, '#efe7d4'));
+
+  var gtw = '', gxs = [96, 132, 188, 224, 160], ghs = [96, 116, 116, 96, 124];
+  for (var gi = 0; gi < 5; gi++) {
+    var gx = gxs[gi], gh = ghs[gi], gw = gi === 4 ? 18 : 22, gy = 164;
+    gtw += P((gx - gw / 2) + ',' + gy + ' ' + (gx - gw / 2 + 2) + ',' + (gy - gh) + ' ' + (gx + gw / 2 - 2) + ',' + (gy - gh) + ' ' + (gx + gw / 2) + ',' + gy, '#cbb99b') +
+      D('M' + (gx - gw / 2 + 2) + ' ' + (gy - gh) + 'Q' + gx + ' ' + (gy - gh - 34) + ' ' + (gx + gw / 2 - 2) + ' ' + (gy - gh) + 'Z', '#bfa985') + C(gx, gy - gh - 30, 3.2, '#e2a23a');
+    for (var gj = 0; gj < 5; gj++) { gtw += R(gx - 2, gy - gh + 10 + gj * ((gh - 20) / 5), 4, 7, '#6a5848'); }
+    gtw += R(gx - gw / 2 + 1, gy - gh + 4, gw - 2, 2, '#a89476');
+  }
+  SCENES.gaudi = S(SKY('#79b4e4', '#f7e3c6', 164) + GND('#c1b199', '#a09079', 164) + R(70, 140, 180, 26, '#bfae90') + gtw);
+
+  SCENES.venice = S(SKY('#8cc3ea', '#f9e6d0', 128) + GND('#3e7f8f', '#27596d', 128) +
+    R(0, 70, 72, 60, '#e0b48a') + R(72, 86, 50, 44, '#d9c3a0') + R(248, 66, 72, 64, '#d8a07a') + R(198, 88, 50, 42, '#e6d1b0') +
+    D('M128 108Q128 72 160 68Q192 72 192 108Z', '#f1ece0') + R(124, 104, 72, 24, '#efe7d6') + R(157, 54, 6, 14, '#efe7d6') + C(160, 52, 3, '#efe7d6') +
+    D('M206 108Q206 92 216 90Q226 92 226 108Z', '#f1ece0') + D('M96 108Q96 94 105 92Q114 94 114 108Z', '#f1ece0') +
+    D('M12 130V102Q22 88 32 102V130Z', '#7d5a44') + D('M42 130V102Q52 88 62 102V130Z', '#7d5a44') + D('M260 130V100Q272 84 284 100V130Z', '#7d5a44') + D('M292 130V100Q302 84 312 100V130Z', '#7d5a44') +
+    P('0,70 36,58 72,70', '#b9573d') + P('248,66 284,54 320,66', '#b9573d') +
+    D('M104 172Q150 184 204 172Q208 160 214 148Q202 166 104 162Z', '#14161a') + R(158, 138, 3, 26, '#14161a') + C(159.5, 135, 3.2, '#e8e4dc') + L('M168 146L196 176', '#6b4a2a', 1.6) +
+    R(78, 122, 4, 44, '#e8e2d4') + R(78, 132, 4, 6, '#2f5fa0') + R(78, 146, 4, 6, '#2f5fa0') + R(256, 122, 4, 44, '#e8e2d4') + R(256, 132, 4, 6, '#c1382e') + R(256, 146, 4, 6, '#c1382e') +
+    L('M20 150H100M200 186H300M60 184H140', '#fff', 1.2, .25));
+
+  var ctw = function (x) {
+    return P((x - 22) + ',170 ' + (x - 18) + ',80 ' + (x + 18) + ',80 ' + (x + 22) + ',170', '#6e6962') + P((x - 18) + ',80 ' + x + ',4 ' + (x + 18) + ',80', '#625d57') + P(x + ',4 ' + (x + 18) + ',80 ' + x + ',80', '#7c776f') +
+      P((x - 22) + ',84 ' + (x - 19) + ',60 ' + (x - 16) + ',84', '#625d57') + P((x + 16) + ',84 ' + (x + 19) + ',60 ' + (x + 22) + ',84', '#625d57') +
+      R(x - 9, 100, 6, 16, '#2c2a27') + R(x + 3, 100, 6, 16, '#2c2a27') + R(x - 9, 124, 6, 16, '#2c2a27') + R(x + 3, 124, 6, 16, '#2c2a27') + R(x - 9, 148, 6, 16, '#2c2a27') + R(x + 3, 148, 6, 16, '#2c2a27');
+  };
+  SCENES.cologne = S(SKY('#9bb0c6', '#e3e1da', 168) + GND('#7d7c78', '#605f59', 168) + R(142, 112, 36, 58, '#78736b') + P('142,112 160,94 178,112', '#5a5650') + P('157,96 160,64 163,96', '#625d57') + ctw(122) + ctw(198) + L('M142 130L150 160M178 130L170 160', '#5a5650', 2));
+
+  SCENES.wieliczka = S(R(0, 0, 320, 200, '#3d352f') + D('M30 200V96Q160 -14 290 96V200Z', '#594f46') + D('M64 200V104Q160 22 256 104V200Z', '#6d6156') + R(0, 172, 320, 28, '#463c33') +
+    R(84, 112, 9, 60, '#8a7c6e') + R(227, 112, 9, 60, '#8a7c6e') + R(132, 128, 56, 44, '#85786a') + R(142, 106, 36, 24, '#9a8c7c') + R(158, 114, 4, 20, '#cdbfaa') + C(160, 111, 3.2, '#cdbfaa') +
+    L('M160 18V54', '#d8c9a8', 1.2) + C(160, 62, 16, '#ffe7a8', .3) + C(160, 62, 8, '#fff0c4', .8) + L('M148 62H172M152 70H168', '#e6d2a0', 1.5) +
+    L('M108 40V66', '#d8c9a8', 1) + C(108, 72, 10, '#ffe7a8', .28) + C(108, 72, 5, '#fff0c4', .8) + L('M212 40V66', '#d8c9a8', 1) + C(212, 72, 10, '#ffe7a8', .28) + C(212, 72, 5, '#fff0c4', .8) +
+    C(60, 150, 1.6, '#fff', .8) + C(260, 140, 1.6, '#fff', .8) + C(100, 160, 1.4, '#fff', .7) + C(220, 162, 1.4, '#fff', .7) + R(104, 160, 112, 3, '#2f2822', .5));
+
+  var hwn = '';
+  for (var hi = 0; hi < 6; hi++) { hwn += R(120 + hi * 14, 96, 7, 8, '#3a3a3a'); }
+  SCENES.himeji = S(SKY('#8fc3ee', '#eaf5ff', 150) + GND('#b9ae95', '#8e8570', 150) +
+    P('88,152 104,114 216,114 232,152', '#9c9b99') + L('M96 140H224M100 128H220', '#7f7e7c', 1) +
+    R(58, 112, 34, 28, '#fbfbf8') + P('52,114 62,102 88,102 98,114', '#434852') +
+    R(112, 92, 96, 22, '#fbfbf8') + hwn + D('M90 94Q160 86 230 94L216 82H104Z', '#434852') +
+    R(124, 68, 72, 16, '#fbfbf8') + P('112,70 126,58 194,58 208,70', '#434852') +
+    R(134, 48, 52, 12, '#fbfbf8') + P('126,50 138,38 182,38 194,50', '#434852') +
+    R(144, 30, 32, 10, '#fbfbf8') + P('138,32 148,20 172,20 182,32', '#434852') + P('150,20 160,6 170,20', '#fbfbf8') + C(150, 20, 2.2, '#d6a93a') + C(170, 20, 2.2, '#d6a93a') +
+    R(28, 138, 4, 24, '#5a4034') + C(30, 126, 26, '#f3b6c7') + C(56, 138, 19, '#f7c4d2') + C(18, 140, 14, '#f7c4d2') +
+    R(286, 132, 4, 30, '#5a4034') + C(288, 118, 28, '#f3b6c7') + C(264, 138, 19, '#f7c4d2') + C(304, 140, 14, '#f7c4d2'));
+
+  SCENES.lencois = S(SKY('#5eaee8', '#d2eaf8', 120) + E(80, 36, 36, 7, '#fff', .8) + E(240, 56, 44, 8, '#fff', .7) +
+    D('M0 118Q60 88 130 110T260 98T320 110V200H0Z', '#f5efe1') + D('M0 132Q80 106 150 128T320 122V200H0Z', '#ebe0ca', .7) +
+    E(96, 152, 52, 10, '#2ab5c0') + E(210, 170, 64, 12, '#27a9bd') + E(262, 140, 32, 6, '#3cc1c8') + E(52, 184, 40, 7, '#33b9c4') +
+    E(96, 150, 40, 5, '#7fdde0', .7) + E(210, 168, 50, 6, '#7fdde0', .7) + L('M0 112Q60 84 130 106', '#fff', 1.4, .8) + L('M190 100Q250 90 320 106', '#fff', 1.4, .8));
+
+  var imn = function (x, h) {
+    return R(x - 4, 150 - h, 8, h, '#e6d9c8') + P((x - 6) + ',' + (150 - h) + ' ' + x + ',' + (150 - h - 22) + ' ' + (x + 6) + ',' + (150 - h), '#8a8f98') + R(x - 6, 150 - h + 22, 12, 3, '#cfc2b0') + C(x, 150 - h - 24, 1.6, '#e2b84a');
+  };
+  SCENES.istanbul = S(SKY('#f2b68e', '#fbe8cc', 150) + GND('#6aa0c0', '#497e9f', 150) +
+    imn(38, 94) + imn(62, 84) + imn(258, 84) + imn(282, 94) +
+    D('M66 124Q66 98 100 96L100 124Z', '#c0997d') + D('M254 124Q254 98 220 96L220 124Z', '#c0997d') +
+    R(84, 98, 152, 52, '#d2a98a') + R(80, 100, 14, 50, '#b08970') + R(226, 100, 14, 50, '#b08970') +
+    D('M108 98Q108 54 160 48Q212 54 212 98Z', '#cba58a') + R(108, 92, 104, 8, '#b48f78') +
+    R(120, 92, 3, 8, '#4a3a30') + R(134, 92, 3, 8, '#4a3a30') + R(148, 92, 3, 8, '#4a3a30') + R(162, 92, 3, 8, '#4a3a30') + R(176, 92, 3, 8, '#4a3a30') + R(190, 92, 3, 8, '#4a3a30') +
+    L('M160 50V98M140 56V98M180 56V98', '#a98771', 1, .6) + C(160, 44, 2, '#e2b84a') +
+    R(104, 114, 8, 22, '#8a6a56') + R(130, 114, 8, 22, '#8a6a56') + R(182, 114, 8, 22, '#8a6a56') + R(208, 114, 8, 22, '#8a6a56') +
+    L('M120 30q4-4 8 0q4-4 8 0M250 40q4-4 8 0q4-4 8 0', '#6a5a50', 1.4) + L('M60 170H150M180 182H270', '#fff', 1.2, .3));
+
+  var acol = function (x) {
+    return R(x - 12, 74, 24, 76, '#c99f5d') + R(x - 11, 116, 22, 34, '#d3a868') + C(x, 68, 8, '#d6ad6d') + P((x - 9) + ',66 ' + x + ',50 ' + (x + 9) + ',66', '#b98a4a') + R(x + 3, 76, 9, 74, '#000', .09) + R(x - 12, 112, 24, 2, '#a97d42');
+  };
+  var afr = '';
+  for (var ai = 0; ai < 11; ai++) { afr += C(82 + ai * 15.6, 46, 3.6, '#bd8f50'); }
+  SCENES.abusimbel = S(SKY('#7fbfe8', '#fbe7bd', 150) + GND('#e2c88c', '#c9a96a', 150) +
+    P('44,150 66,36 254,36 276,150', '#d3a96a') + R(66, 30, 188, 10, '#c79a58') + afr +
+    R(148, 112, 24, 38, '#2d2118') + acol(104) + acol(134) + acol(186) + acol(216) +
+    R(0, 158, 320, 42, '#4b8fb0') + L('M10 170H110M160 182H290M60 190H200', '#bfe0ee', 1.4, .5) +
+    R(22, 124, 3, 32, '#6a4c2c') + L('M23 126Q10 120 4 130M23 126Q36 118 44 128M23 126Q22 112 30 108', '#3f7a3a', 2.4));
+
+  SCENES.kii = S(GR('sk', '#7a9c84', '#2f4a38', 0, 200) + P('0,0 90,0 70,200 0,200', '#35523f') + P('230,0 320,0 320,200 250,200', '#35523f') +
+    R(140, 0, 40, 150, '#e9f4f6') + R(146, 0, 28, 150, '#fff') + L('M150 10V150M160 6V150M170 12V150', '#cfe6ec', 1.2, .7) + E(160, 152, 38, 8, '#fff', .8) + E(160, 160, 52, 8, '#9fd0dc', .7) +
+    PINE(44, 176, 120, '#26422f') + PINE(86, 176, 96, '#2c4c36') + PINE(276, 176, 128, '#26422f') + PINE(236, 176, 94, '#2c4c36') + R(0, 176, 320, 24, '#2f4a38') +
+    R(96, 150, 18, 26, '#c93a2e') + P('88,152 105,142 122,152', '#3b3b3f') + R(98, 126, 14, 18, '#c93a2e') + P('90,128 105,118 120,128', '#3b3b3f') + R(100, 106, 10, 14, '#c93a2e') + P('94,108 105,98 116,108', '#3b3b3f') + R(104, 84, 2, 14, '#9a9a9a'));
+
+  SCENES.sado = S(SKY('#8dbbe0', '#e2eef5', 120) + GR('sea', '#4d8db3', '#2e6a90', 110, 40) + D('M0 140L60 82L120 140Z', '#4f7a52') + D('M200 140L262 78L320 140Z', '#4f7a52') +
+    P('70,200 110,60 150,40 170,40 210,60 250,200', '#6d6a63') + P('170,40 210,60 250,200 170,200', '#000', .12) + P('150,40 170,40 164,200 156,200', '#2f2c28') + P('158,40 162,40 161,100 159,100', '#cfe6f2') +
+    R(112, 150, 34, 36, '#1d1a17') + R(110, 148, 4, 40, '#7a5a38') + R(144, 148, 4, 40, '#7a5a38') + R(110, 146, 38, 4, '#7a5a38') +
+    L('M129 186V200M121 186L110 200M137 186L148 200', '#6a6a6a', 1.2) + C(196, 150, 3, '#f0c43a') + C(206, 166, 2.4, '#f0c43a') + C(186, 172, 2, '#f0c43a') + C(100, 120, 2.4, '#f0c43a') +
+    PINE(40, 200, 70, '#2f5a3f') + PINE(282, 200, 74, '#2f5a3f'));
+
+  SCENES.shiretoko = S(SKY('#7ea6d6', '#f6d9c8', 110) + GR('sea', '#3f6f9c', '#244a70', 110, 90) +
+    D('M0 118L50 66L86 90L130 52L180 96L226 60L280 98L320 74V118Z', '#e9eef3') + D('M0 118L50 66L60 118Z', '#c3ccd8') + D('M130 52L180 96L130 118Z', '#c3ccd8') + D('M226 60L280 98L226 118Z', '#c3ccd8') +
+    E(70, 150, 36, 8, '#f2f7fb') + E(180, 170, 50, 10, '#f2f7fb') + E(260, 142, 30, 7, '#f2f7fb') + E(40, 186, 30, 6, '#f2f7fb') + C(250, 36, 12, '#ffd8a0', .9) + L('M10 130Q80 124 150 132', '#fff', 1, .3));
+
+  SCENES.florence = S(SKY('#79b4e4', '#f7e3c6', 150) + GND('#c4764b', '#a8603f', 150) + L('M0 160H320M0 172H320M0 186H320', '#8a4a30', 1.2, .5) +
+    R(70, 128, 180, 24, '#e8dcc4') + R(70, 136, 180, 3, '#8fb59a') + R(104, 116, 112, 14, '#efe3cf') + D('M104 120Q104 56 160 50Q216 56 216 120Z', '#c8573a') + L('M160 50V120M134 56L126 120M186 56L194 120', '#f2e6d4', 2) +
+    R(154, 28, 12, 24, '#efe3cf') + P('152,28 160,12 168,28', '#d8c8a8') + C(160, 10, 2.6, '#e2b84a') +
+    C(118, 123, 3, '#7a7060') + C(134, 123, 3, '#7a7060') + C(186, 123, 3, '#7a7060') + C(202, 123, 3, '#7a7060') +
+    R(248, 50, 30, 100, '#eadfc9') + R(248, 70, 30, 3, '#8fb59a') + R(252, 76, 22, 14, '#e9b4b4') + R(248, 100, 30, 3, '#8fb59a') + R(246, 44, 34, 8, '#d8c9a8') + R(258, 108, 10, 20, '#6a5a48'));
+
+  SCENES.itsukushima = S(SKY('#8ec1e8', '#fbe5d0', 110) + D('M0 110L70 60L130 90L190 50L250 84L320 70V120H0Z', '#4f7f5a') + D('M190 50L250 84L190 120Z', '#3f6a4a') + GR('sea', '#7fb0cc', '#3b7699', 110, 90) +
+    R(40, 100, 90, 10, '#e8dfd0') + R(50, 86, 70, 14, '#c8372d') + P('44,86 85,70 126,86', '#7a7a80') + R(192, 102, 80, 8, '#e8dfd0') + R(200, 90, 64, 12, '#c8372d') + P('194,90 232,76 270,90', '#7a7a80') +
+    R(140, 70, 8, 86, '#d0392d') + R(176, 70, 8, 86, '#d0392d') + D('M118 60Q160 50 202 60L196 68H124Z', '#2d2d33') + R(124, 68, 72, 6, '#d0392d') + R(134, 84, 52, 5, '#d0392d') +
+    R(140, 156, 8, 24, '#d0392d', .3) + R(176, 156, 8, 24, '#d0392d', .3) + L('M20 150H120M200 160H300M60 176H150M190 186H290', '#fff', 1.2, .3));
+
+  var atr = function (x, y, w, h) {
+    return R(x, y, w, h, '#f6f2ea') + P((x - 4) + ',' + y + ' ' + (x + w / 2) + ',' + (y - h * 0.9) + ' ' + (x + w + 4) + ',' + y, '#6b6a70') + C(x + w / 2, y - h * 0.9 - 3, 2.4, '#f6f2ea') + R(x + w / 2 - 4, y + h * 0.35, 8, h * 0.65, '#6a5a4a');
+  };
+  SCENES.alberobello = S(SKY('#79b4e4', '#f4ead0', 150) + GND('#cdbb97', '#b09c76', 150) + atr(40, 110, 46, 40) + atr(100, 96, 56, 54) + atr(170, 104, 50, 46) + atr(236, 114, 44, 36) + atr(14, 128, 30, 22) +
+    L('M0 160H320', '#fff', 1, .3) + R(298, 130, 4, 22, '#5a4a3a') + C(300, 126, 16, '#6c8a52'));
+
+  SCENES.canaima = S(SKY('#7cb0de', '#f1e7d4', 120) + E(60, 30, 34, 7, '#fff', .8) + E(264, 44, 40, 8, '#fff', .7) +
+    P('40,150 54,52 152,52 168,150', '#9a6b4d') + P('176,150 190,70 280,70 300,150', '#a77452') + R(54, 48, 98, 6, '#8aa05a') + R(190, 66, 90, 6, '#8aa05a') +
+    R(86, 54, 6, 100, '#fff', .9) + E(89, 160, 16, 6, '#fff', .7) + R(0, 150, 320, 50, '#2f6a44') +
+    C(30, 160, 22, '#2a5e3c') + C(70, 168, 22, '#34703f') + C(120, 160, 24, '#2a5e3c') + C(180, 170, 24, '#34703f') + C(236, 160, 24, '#2a5e3c') + C(290, 168, 22, '#34703f') + E(160, 150, 150, 10, '#fff', .35));
+
+  SCENES.nikko = S(GR('sk', '#7a9c84', '#2f4a38', 0, 200) + R(244, 0, 20, 170, '#3a2e22') + R(262, 0, 14, 170, '#443628') + R(54, 0, 16, 170, '#3a2e22') + C(260, 10, 40, '#1f3a28', .9) + C(60, 10, 36, '#1f3a28', .9) +
+    R(0, 160, 320, 40, '#4b5a48') + P('100,200 120,160 200,160 220,200', '#a8a8a4') +
+    R(110, 100, 100, 60, '#f4f0e6') + R(116, 62, 88, 38, '#fbf8ef') + D('M96 102Q160 92 224 102L212 92H108Z', '#2e2e34') + D('M104 64Q160 52 216 64L204 52H116Z', '#2e2e34') +
+    R(110, 100, 100, 3, '#d9a93a') + R(116, 62, 88, 3, '#d9a93a') + R(130, 72, 60, 22, '#c8372d', .9) + C(145, 83, 5, '#e2b84a') + C(175, 83, 5, '#e2b84a') + R(144, 118, 32, 42, '#8a2a22') + C(154, 140, 2, '#e2b84a') + C(166, 140, 2, '#e2b84a') +
+    R(118, 106, 8, 54, '#fbf8ef') + R(194, 106, 8, 54, '#fbf8ef') +
+    R(40, 144, 6, 22, '#9a9a95') + R(34, 140, 18, 5, '#9a9a95') + R(37, 130, 12, 10, '#9a9a95') + P('34,130 43,122 52,130', '#8a8a85'));
+
+  SCENES.sigiriya = S(SKY('#7fb7e2', '#f6e6c8', 150) + E(60, 30, 34, 7, '#fff', .8) + E(262, 46, 38, 7, '#fff', .7) +
+    P('96,170 108,56 126,40 202,40 218,58 232,170', '#a7753f') + P('172,40 218,58 232,170 172,170', '#000', .13) + R(124, 34, 80, 8, '#6f9a52') + R(150, 26, 16, 8, '#b5ad9f') +
+    L('M126 170L146 132L136 102L168 72', '#e8dcc0', 3) + L('M104 100H124M112 130H134', '#c9a96a', 2, .8) +
+    R(0, 160, 320, 40, '#2f6a44') + C(24, 166, 24, '#2a5e3c') + C(70, 172, 22, '#34703f') + C(250, 168, 24, '#2a5e3c') + C(296, 172, 22, '#34703f') + E(160, 164, 90, 8, '#cfe0c0', .35));
+
+  SCENES.ogasawara = S(SKY('#6ab6ec', '#d6eefb', 100) + GR('sea', '#2fb5d6', '#0f6aa3', 100, 100) +
+    D('M0 112Q30 70 70 78Q96 84 110 112Z', '#3f7a46') + D('M190 112Q230 60 276 70Q310 78 320 112Z', '#4a8a4f') + D('M120 106Q146 92 170 106Z', '#3a7040') + E(60, 114, 66, 5, '#f4f0e0') + E(250, 114, 76, 5, '#f4f0e0') +
+    R(158, 150, 4, 38, '#2b3a50') + D('M160 150Q130 138 118 152Q142 150 160 160Q178 150 202 152Q190 138 160 150Z', '#2b3a50') + E(160, 190, 26, 4, '#fff', .7) +
+    L('M20 140H100M210 150H300M60 170H140', '#fff', 1.2, .35));
+
+  var mpl = function (x, w, h) {
+    return P((x - w / 2 - 6) + ',170 ' + (x - w / 2) + ',' + (170 - h) + ' ' + (x + w / 2) + ',' + (170 - h) + ' ' + (x + w / 2 + 8) + ',170', '#9a8068') +
+      P((x + w / 6) + ',' + (170 - h) + ' ' + (x + w / 2) + ',' + (170 - h) + ' ' + (x + w / 2 + 8) + ',170 ' + (x + w / 6 + 4) + ',170', '#000', .12) +
+      R(x - w / 2 + 4, 170 - h - 12, w - 10, 12, '#e6d6bd') + P((x - w / 2 + 2) + ',' + (170 - h - 12) + ' ' + x + ',' + (170 - h - 24) + ' ' + (x + w / 2 - 2) + ',' + (170 - h - 12), '#b0523a');
+  };
+  SCENES.meteora = S(SKY('#f09a6a', '#fcd9a4', 170) + C(250, 64, 24, '#ffe6b0', .9) + GND('#6a7a52', '#4b5b3a', 170) + mpl(70, 30, 110) + mpl(150, 38, 130) + mpl(236, 34, 100) + D('M0 170Q60 150 120 168T240 166T320 168V200H0Z', '#52623e'));
+
+  var sgs = function (x, w, h) {
+    var y = 142;
+    return R(x, y - 26, w, 26, '#6b4f35') + R(x + w * 0.18, y - 20, w * 0.2, 10, '#f3dfa5') + R(x + w * 0.62, y - 20, w * 0.2, 10, '#f3dfa5') +
+      P((x - 6) + ',' + (y - 26) + ' ' + (x + w / 2) + ',' + (y - 26 - h) + ' ' + (x + w + 6) + ',' + (y - 26), '#cdac5c') +
+      P((x + w * 0.2) + ',' + (y - 26 - h * 0.62) + ' ' + (x + w / 2) + ',' + (y - 26 - h) + ' ' + (x + w * 0.8) + ',' + (y - 26 - h * 0.62), '#fafcff');
+  };
+  SCENES.shirakawa = S(SKY('#b9cfe2', '#eef3f8', 142) + D('M0 110L60 60L120 110L180 70L250 110L320 64V142H0Z', '#7d95a8') + D('M60 60L82 80L60 76L48 80Z', '#fff') + D('M320 64L296 86L312 82L320 90Z', '#fff') +
+    GND('#f4f7fa', '#dfe6ee', 142) + sgs(30, 56, 60) + sgs(112, 70, 76) + sgs(214, 60, 64) + PINE(280, 150, 60, '#35523f') + PINE(300, 154, 48, '#2c4c36') + L('M0 170H320', '#c9d4df', 1.2, .6));
+  var swin = '';
+  for (var si = 0; si < 14; si++) { swin += R(32 + si * 18, 136, 8, 10, '#5b6d7c'); }
+  SCENES.schonbrunn = S(SKY('#79b4e4', '#f4ead2', 130) + D('M60 130Q160 46 260 130Z', '#5c8a50') +
+    R(138, 80, 44, 22, '#f6efd8') + R(142, 84, 3, 18, '#d8ceb0') + R(150, 84, 3, 18, '#d8ceb0') + R(158, 84, 3, 18, '#d8ceb0') + R(166, 84, 3, 18, '#d8ceb0') + R(174, 84, 3, 18, '#d8ceb0') + R(134, 76, 52, 5, '#d6ccaf') + C(160, 72, 3, '#d6a93a') +
+    GND('#6aa05a', '#4f8a46', 158) + R(20, 128, 280, 30, '#f4cf4f') + R(20, 120, 280, 9, '#6e5f50') + swin + R(130, 114, 60, 44, '#f4cf4f') + P('126,116 160,98 194,116', '#6e5f50') + R(150, 134, 20, 24, '#d9b23a') +
+    L('M0 172H320M0 188H320', '#f0e6c6', 2, .5) + C(160, 180, 8, '#9cc7e0') + C(160, 180, 4, '#e8f3f9'));
+
+  SCENES.seine = S(SKY('#8fb6dc', '#f9e4cf', 140) + R(0, 140, 320, 60, '#4f86a8') +
+    R(0, 106, 70, 40, '#e8dcc4') + P('0,106 35,92 70,106', '#5c6470') + R(8, 114, 8, 12, '#6a7a8a') + R(26, 114, 8, 12, '#6a7a8a') + R(44, 114, 8, 12, '#6a7a8a') +
+    R(250, 112, 70, 34, '#e2d4b8') + P('250,112 285,98 320,112', '#5c6470') + R(260, 120, 8, 12, '#6a7a8a') + R(280, 120, 8, 12, '#6a7a8a') + R(300, 120, 8, 12, '#6a7a8a') +
+    P('110,150 148,70 154,34 160,10 166,34 172,70 210,150 196,150 160,92 124,150', '#6b5a4e') + R(144, 72, 32, 4, '#6b5a4e') + R(150, 40, 20, 3, '#6b5a4e') + L('M132 120H188M140 100H180M148 60H172', '#6b5a4e', 2) +
+    R(0, 146, 320, 6, '#c8bba6') + D('M10 152Q30 172 50 152Z', '#8c8478') + D('M60 152Q80 172 100 152Z', '#8c8478') + D('M220 152Q240 172 260 152Z', '#8c8478') + D('M270 152Q290 172 310 152Z', '#8c8478') +
+    L('M20 178H140M180 190H300', '#fff', 1.2, .3) + C(30, 130, 10, '#6c8a52') + C(300, 134, 10, '#6c8a52'));
+
+  SCENES.hiraizumi = S(GR('sk', '#7a9c84', '#2f4a38', 0, 200) + P('100,0 140,0 110,180 60,180', '#fff', .07) + R(30, 40, 16, 150, '#3a2e22') + R(274, 30, 16, 160, '#3a2e22') + C(40, 20, 44, '#1f3a28', .9) + C(280, 16, 46, '#1f3a28', .9) +
+    R(0, 172, 320, 28, '#3b5a44') + R(88, 154, 144, 8, '#9a9a95') +
+    P('96,152 114,132 206,132 224,152', '#3a3a3f') + R(120, 108, 80, 26, '#e6bd4a') + R(124, 112, 72, 18, '#b8872a') + L('M136 112V130M148 112V130M160 112V130M172 112V130M184 112V130', '#e6bd4a', 1.4) +
+    P('106,110 160,82 214,110', '#3a3a3f') + R(158, 72, 4, 12, '#e2b84a') + PINE(60, 176, 120, '#26422f') + PINE(262, 176, 130, '#26422f'));
+
+  var vfw = '';
+  for (var vi = 0; vi < 20; vi++) { vfw += R(8 + vi * 16, 128, 6, 18, '#6a7a8a'); }
+  SCENES.versailles = S(SKY('#8fc0ea', '#f8ead2', 108) + GND('#9cc08a', '#6a9a58', 152) +
+    R(0, 96, 110, 52, '#e0d4b8') + R(210, 96, 110, 52, '#e0d4b8') + R(0, 88, 110, 9, '#5c6470') + R(210, 88, 110, 9, '#5c6470') + R(110, 72, 100, 76, '#e6dbc2') + R(110, 64, 100, 9, '#5c6470') + R(150, 56, 20, 10, '#d9a93a') +
+    vfw + R(144, 108, 32, 40, '#d9a93a', .85) + R(0, 148, 320, 4, '#d9a93a') +
+    L('M0 168H320M0 184H320M80 152V200M160 152V200M240 152V200', '#f1ead2', 2, .55) + C(160, 176, 9, '#9cc7e0') + C(160, 176, 4, '#e8f3f9'));
+
+  SCENES.iwami = S(SKY('#8fb9de', '#eaf2f5', 100) + D('M0 100L60 60L140 100L210 56L280 90L320 70V130H0Z', '#4f7a58') + GND('#b9a78a', '#9a8868', 120) +
+    P('120,130 200,130 270,200 50,200', '#c8b690') +
+    R(8, 98, 52, 46, '#efe4cc') + P('0,98 34,74 68,98', '#b5602f') + R(70, 108, 42, 36, '#e7dcc2') + P('64,108 91,88 118,108', '#b5602f') +
+    R(260, 98, 52, 46, '#efe4cc') + P('252,98 286,74 320,98', '#b5602f') + R(208, 108, 42, 36, '#e7dcc2') + P('202,108 229,88 256,108', '#b5602f') +
+    R(138, 98, 44, 36, '#2a2622') + D('M138 134V112Q160 84 182 112V134Z', '#3a342e') + R(150, 114, 20, 20, '#14110f') + R(136, 96, 4, 40, '#7a5a38') + R(180, 96, 4, 40, '#7a5a38') + PINE(124, 130, 56, '#2f5a3f') + PINE(198, 130, 56, '#2f5a3f'));
+
+  SCENES.fuji = S(SKY('#7fb3e0', '#fbe3d4', 150) + P('30,150 144,38 176,38 290,150', '#51679b') + P('176,38 290,150 200,150', '#000', .1) + P('138,52 144,38 176,38 182,52 174,60 166,54 160,70 152,56 146,64', '#fbfdff') +
+    GND('#5f95c0', '#3e739e', 150) + P('60,150 160,262 260,150', '#51679b', .0) + L('M40 162H280M70 176H250M100 190H220', '#fff', 1.2, .25) +
+    L('M0 40Q40 52 90 30', '#5a4034', 3) + C(18, 44, 10, '#f6c0d0') + C(36, 52, 9, '#f8cdda') + C(56, 44, 10, '#f6c0d0') + C(76, 34, 9, '#f8cdda') + C(40, 36, 8, '#f9d6e0') + C(8, 56, 7, '#f8cdda') +
+    PINE(250, 152, 40, '#2f5a3f') + PINE(272, 152, 30, '#356647'));
+
+  var acs = '';
+  for (var ci = 0; ci < 8; ci++) { acs += R(100 + ci * 16, 76, 8, 44, '#f3e9cf') + R(104 + ci * 16, 76, 4, 44, '#d9cdb0', .6); }
+  SCENES.acropolis = S(SKY('#79b4e4', '#f7ead2', 150) + D('M0 200L30 150Q80 130 120 128H210Q260 130 296 150L320 200Z', '#b49d78') + R(96, 120, 128, 8, '#ebdfc2') + acs +
+    R(94, 66, 132, 10, '#e8dcbf') + P('90,66 160,40 230,66', '#efe4c8') + P('110,64 160,48 210,64', '#d9cdb0') + R(88, 126, 144, 4, '#d6c7a4') + C(40, 178, 16, '#6c8a52') + C(280, 182, 18, '#6c8a52') + C(60, 190, 14, '#7a9a5c'));
+
+  SCENES.esfahan = S(SKY('#79b4e4', '#f6ead2', 148) + GND('#d8c8a0', '#c0ae82', 148) +
+    R(40, 100, 240, 48, '#d9c29a') + D('M52 148V124Q60 112 68 124V148Z', '#8a6a4a') + D('M84 148V124Q92 112 100 124V148Z', '#8a6a4a') + D('M220 148V124Q228 112 236 124V148Z', '#8a6a4a') + D('M252 148V124Q260 112 268 124V148Z', '#8a6a4a') +
+    R(116, 64, 88, 84, '#2f78a8') + D('M132 148V96Q160 62 188 96V148Z', '#e0d3b0') + D('M142 148V104Q160 78 178 104V148Z', '#7a5a3a') + L('M134 94Q160 66 186 94M138 104Q160 80 182 104', '#2f78a8', 1.2) +
+    D('M124 64Q124 22 160 16Q196 22 196 64Z', '#1aa5b8') + L('M160 18V64M142 24L136 64M178 24L184 64', '#0e7f90', 1, .6) + C(160, 12, 2, '#e2b84a') +
+    R(102, 44, 8, 104, '#2f78a8') + R(210, 44, 8, 104, '#2f78a8') + P('100,44 106,32 112,44', '#1aa5b8') + P('208,44 214,32 220,44', '#1aa5b8') +
+    R(0, 150, 320, 50, '#5aa0c0') + L('M20 162H300M50 176H270M90 190H230', '#fff', 1.2, .3) + R(116, 150, 88, 20, '#2f78a8', .22));
+
+  SCENES.prague = S(SKY('#8fb2d8', '#f6e2cf', 130) + D('M0 130Q60 84 140 90T320 100V140H0Z', '#6f8a56') + GR('sea', '#5a86a8', '#3e6688', 130, 70) +
+    R(150, 52, 62, 50, '#a89f8e') + P('156,52 163,14 170,52', '#7b7a78') + P('192,52 199,14 206,52', '#7b7a78') + R(176, 42, 10, 14, '#a89f8e') + P('174,42 181,28 188,42', '#7b7a78') +
+    P('40,104 52,92 64,104', '#b9573d') + R(40, 104, 24, 14, '#e8dcc4') + P('70,108 82,96 94,108', '#b9573d') + R(70, 108, 24, 12, '#e2d4b8') + P('110,106 122,94 134,106', '#b9573d') + R(110, 106, 24, 14, '#e8dcc4') +
+    R(30, 136, 260, 6, '#8c8478') + D('M40 142Q58 164 76 142Z', '#7a7268') + D('M92 142Q110 164 128 142Z', '#7a7268') + D('M144 142Q162 164 180 142Z', '#7a7268') + D('M196 142Q214 164 232 142Z', '#7a7268') +
+    R(36, 112, 22, 26, '#8c8478') + P('32,112 47,92 62,112', '#5a4a40') + R(262, 112, 22, 26, '#8c8478') + P('258,112 273,92 288,112', '#5a4a40') +
+    R(100, 128, 3, 8, '#3a342e') + R(130, 128, 3, 8, '#3a342e') + R(170, 128, 3, 8, '#3a342e') + R(210, 128, 3, 8, '#3a342e') + L('M20 170H150M170 184H300', '#fff', 1.2, .25));
+
+  var nco = '';
+  for (var ni = 0; ni < 9; ni++) { nco += R(90 + ni * 15, 98, 5, 42, '#b5432f'); }
+  var deer = function (x, y, s) {
+    return E(x, y, 16 * s, 8 * s, '#b57a3f') + R(x + 11 * s, y - 20 * s, 4 * s, 20 * s, '#b57a3f') + E(x + 16 * s, y - 21 * s, 6 * s, 4 * s, '#b57a3f') +
+      R(x - 11 * s, y + 4 * s, 3 * s, 12 * s, '#8a5a2a') + R(x + 7 * s, y + 4 * s, 3 * s, 12 * s, '#8a5a2a') + L('M' + (x + 16 * s) + ' ' + (y - 24 * s) + 'L' + (x + 12 * s) + ' ' + (y - 32 * s) + 'M' + (x + 17 * s) + ' ' + (y - 24 * s) + 'L' + (x + 21 * s) + ' ' + (y - 32 * s), '#8a5a2a', 1.2);
+  };
+  SCENES.nara = S(SKY('#8fc3ea', '#f1f0d8', 140) + GND('#7fae5c', '#5c8a44', 140) +
+    R(80, 94, 160, 46, '#c8a76b') + nco + R(100, 70, 120, 26, '#d9ba7d') + D('M52 96Q160 84 268 96L246 78H74Z', '#3a3a3f') + D('M84 72Q160 62 236 72L214 56H106Z', '#3a3a3f') +
+    P('104,56 108,42 112,56', '#e2b84a') + P('208,56 212,42 216,56', '#e2b84a') + PINE(30, 150, 80, '#2f5a3f') + PINE(294, 150, 84, '#2f5a3f') + deer(236, 176, 1) + deer(100, 184, .8));
+
+  SCENES.rockies = S(SKY('#6fb0e6', '#d8ecf8', 118) + D('M0 118L40 62L70 82L112 28L150 70L192 36L232 78L272 50L320 104V118Z', '#7d8ea3') +
+    D('M112 28L124 52L116 48L106 58L100 46Z', '#fff') + D('M192 36L204 58L196 52L186 62L180 50Z', '#fff') + D('M272 50L284 70L276 64L266 72Z', '#fff') + D('M40 62L50 80L40 76L30 84Z', '#fff') +
+    GND('#2fc4c8', '#1b8fa6', 118) + L('M30 140H150M170 156H290M60 176H190', '#fff', 1.2, .3) +
+    PINE(14, 120, 40, '#2f5a3f') + PINE(36, 120, 30, '#356647') + PINE(58, 120, 36, '#2f5a3f') + PINE(262, 120, 34, '#356647') + PINE(284, 120, 44, '#2f5a3f') + PINE(306, 120, 32, '#356647'));
+
+  var moai = function (x, y, h) {
+    var w = h * 0.55;
+    return D('M' + (x - w / 2) + ' ' + y + 'L' + (x - w * 0.42) + ' ' + (y - h * 0.7) + 'Q' + x + ' ' + (y - h * 1.04) + ' ' + (x + w * 0.42) + ' ' + (y - h * 0.7) + 'L' + (x + w / 2) + ' ' + y + 'Z', '#7a746a') +
+      R(x - w * 0.36, y - h * 0.62, w * 0.72, h * 0.07, '#5c574f') + R(x - w * 0.06, y - h * 0.55, w * 0.12, h * 0.2, '#5c574f') + R(x - w * 0.26, y - h * 0.4, w * 0.52, h * 0.04, '#5c574f');
+  };
+  SCENES.rapanui = S(SKY('#6fb3e6', '#f1e9d0', 130) + GR('sea', '#3b8cc0', '#2b6ea0', 120, 20) + GND('#8ab35e', '#6a9a44', 140) + R(40, 158, 240, 10, '#6b665e') +
+    moai(80, 160, 86) + moai(140, 162, 100) + moai(204, 160, 92) + moai(262, 162, 78) + E(160, 190, 150, 8, '#5f8a3e', .6));
+
+  SCENES.ngorongoro = S(SKY('#f6a96a', '#fde7b8', 120) + C(240, 70, 28, '#fff1c4') + D('M0 110L40 84L100 98L160 80L230 96L290 76L320 96V130H0Z', '#7a8a5a') + GND('#c9b872', '#a6a054', 120) +
+    E(190, 150, 40, 8, '#7fb8c8') + R(62, 98, 3, 60, '#4a3a2a') + E(63, 96, 36, 8, '#5a7a3a') + E(63, 90, 26, 6, '#6a8a46') +
+    E(240, 166, 24, 13, '#6c6a66') + C(268, 160, 9, '#6c6a66') + D('M274 164Q282 176 276 188', 'none') + L('M274 164Q284 174 278 188', '#6c6a66', 4) + P('260,152 252,170 266,168', '#5a5854') +
+    R(222, 174, 6, 18, '#5a5854') + R(234, 174, 6, 18, '#5a5854') + R(248, 174, 6, 18, '#5a5854') + R(258, 174, 6, 18, '#5a5854') + E(120, 186, 20, 4, '#9a8a50', .5));
+
+  SCENES.gbr = S(GR('sk', '#3ec7d8', '#0a5a96', 0, 200) + P('90,0 120,0 100,200 60,200', '#fff', .08) + P('200,0 230,0 250,200 210,200', '#fff', .06) +
+    D('M0 176Q80 166 160 176T320 172V200H0Z', '#e8d8a8') +
+    L('M40 176V150M40 160L28 148M40 156L52 142', '#f08a4b', 5) + L('M90 176V140M90 156L76 144M90 150L104 132M90 164L100 156', '#e8628a', 5) + L('M150 176V152M150 164L140 154M150 160L162 148', '#f2c84a', 5) +
+    L('M220 176V146M220 160L206 150M220 154L234 138', '#8a5ac8', 5) + L('M280 176V154M280 164L270 152M280 160L292 148', '#f08a4b', 5) + E(120, 178, 24, 6, '#e8628a') + E(190, 180, 22, 5, '#f2c84a') +
+    E(200, 90, 13, 8, '#f07a22') + P('212,90 224,82 224,98', '#f07a22') + R(198, 83, 3, 14, '#fff') + C(193, 88, 1.4, '#222') +
+    E(110, 62, 15, 10, '#2a5fd0') + P('124,62 138,52 138,72', '#f2c84a') + C(103, 60, 1.5, '#fff') +
+    E(238, 130, 18, 11, '#6a8a52') + E(238, 130, 12, 7, '#8aa96a') + C(258, 128, 5, '#6a8a52') + P('228,138 214,150 230,146', '#6a8a52') + P('244,138 252,152 240,146', '#6a8a52'));
+
+  var dro = '';
+  for (var di = 0; di < 7; di++) { dro += P((30 + di * 40) + ',96 ' + (50 + di * 40) + ',72 ' + (70 + di * 40) + ',96', '#d0602f') + R(32 + di * 40, 96, 36, 6, '#eadfc8'); }
+  SCENES.dubrovnik = S(SKY('#79b4e4', '#f4ead8', 110) + GR('sea', '#2f8ec8', '#1b5f9a', 110, 90) + dro +
+    R(20, 102, 280, 28, '#d6c9ae') + R(20, 98, 280, 5, '#c4b79c') + R(60, 60, 26, 66, '#d6c9ae') + P('56,60 73,38 90,60', '#c4562f') + R(220, 52, 18, 76, '#d6c9ae') + D('M218 52Q229 30 240 52Z', '#7a8a96') +
+    D('M120 130V114Q130 104 140 114V130Z', '#6a5a48') + R(0, 130, 320, 6, '#b8ab90') + L('M10 150H110M200 164H310M60 182H180', '#fff', 1.2, .3));
+
+  SCENES.tongariro = S(SKY('#79b4e4', '#e9f1f6', 140) + D('M200 150L246 84L300 150Z', '#7a8a96') + P('80,150 150,34 170,34 240,150', '#5b4a46') + P('170,34 240,150 190,150', '#000', .14) +
+    C(160, 24, 10, '#fff', .85) + C(148, 14, 8, '#fff', .7) + GND('#a8a35c', '#8a8a4a', 140) + E(220, 166, 46, 12, '#27c0a8') + E(130, 180, 34, 9, '#27c0a8') + E(220, 164, 30, 5, '#7fe0cc', .7) +
+    L('M20 160L40 150L60 160M270 190L286 180L302 190', '#8a8a4a', 3));
+
+  var jtr = '', jcs = ['#d98a2e', '#c0392b', '#e8b030', '#3f7a46', '#d98a2e', '#b5502a'];
+  for (var ji = 0; ji < 12; ji++) { jtr += C(14 + ji * 26, 128 + (ji % 3) * 6, 14, jcs[ji % 6]); }
+  SCENES.jiuzhaigou = S(SKY('#7fb3e0', '#e9f1f6', 100) + D('M0 100L50 46L100 86L160 28L220 78L280 40L320 84V110H0Z', '#8fa4b8') + D('M160 28L174 52L166 46L154 56L148 44Z', '#fff') + D('M280 40L292 60L284 54L274 62Z', '#fff') +
+    D('M0 120Q80 84 160 112T320 104V140H0Z', '#d98a2e') + jtr + GR('sea', '#38cfd0', '#12a0b8', 140, 60) + E(100, 160, 70, 10, '#2fc0c8') + E(220, 176, 80, 12, '#4ad8d0') + R(150, 146, 30, 12, '#fff', .85) + L('M20 188H140M180 192H300', '#fff', 1.2, .3));
+
+  SCENES.hiroshima = S(SKY('#9fb8d4', '#eaeef2', 150) + GND('#9aa39a', '#79827a', 150) + R(0, 164, 320, 36, '#6a8aa8') +
+    R(110, 96, 100, 54, '#bfb4a6') + D('M110 96L118 88L130 96L140 90L150 98V150H110Z', '#bfb4a6') + D('M210 96L202 88L190 96L182 90V150H210Z', '#bfb4a6') +
+    L('M130 96Q130 54 160 46Q190 54 190 96', '#5a5650', 2.6) + L('M144 96Q144 60 160 46M176 96Q176 60 160 46', '#5a5650', 1.6) + L('M133 80H187M139 66H181M148 54H172', '#5a5650', 1.6) + L('M160 46V38', '#5a5650', 1.6) +
+    R(116, 110, 8, 18, '#4a463f') + R(132, 110, 8, 18, '#4a463f') + R(180, 110, 8, 18, '#4a463f') + R(196, 110, 8, 18, '#4a463f') + R(148, 116, 24, 34, '#4a463f') +
+    C(30, 140, 18, '#6c8a52') + R(28, 150, 4, 14, '#5a4034') + C(292, 140, 18, '#6c8a52') + R(290, 150, 4, 14, '#5a4034') + L('M20 176H140M180 188H300', '#fff', 1.2, .3));
+
+  var ocy = '';
+  for (var oi = 0; oi < 6; oi++) { ocy += E(100 + oi * 14, 128 - oi * 4.4, 3, 12, '#2f5a3a'); }
+  SCENES.orcia = S(SKY('#8fc3ea', '#fbefd6', 100) + D('M0 120Q80 84 160 104T320 90V200H0Z', '#b6c26a') + D('M0 150Q90 118 180 140T320 126V200H0Z', '#9bb05a') + D('M0 176Q100 150 200 170T320 160V200H0Z', '#c8b45a') +
+    ocy + R(220, 108, 28, 16, '#e0c9a0') + P('216,108 234,94 252,108', '#b5602f') + E(268, 118, 8, 10, '#2f5a3a') + L('M110 200Q150 160 190 140', '#efe8d0', 3) + E(60, 40, 30, 7, '#fff', .8) + E(250, 30, 34, 7, '#fff', .7));
+
+  var gor = '', gcs = ['#d9663a', '#e8b030', '#4a8fb8', '#c0392b', '#e0762a', '#6aa84f'];
+  for (var gk = 0; gk < 6; gk++) { gor += R(66 + gk * 26, 122, 22, 26, gcs[gk]) + P((64 + gk * 26) + ',122 ' + (77 + gk * 26) + ',112 ' + (90 + gk * 26) + ',122', '#8a4a2a') + R(74 + gk * 26, 132, 6, 8, '#3a2a20', .6); }
+  SCENES.goree = S(SKY('#79b4e4', '#fbe8cd', 120) + GR('sea', '#2f8ec8', '#1b5f9a', 120, 80) + D('M40 152Q70 118 160 114T280 152Z', '#a8683c') + gor +
+    R(236, 94, 40, 24, '#8a5a38') + R(240, 86, 8, 8, '#8a5a38') + R(256, 86, 8, 8, '#8a5a38') + R(268, 86, 8, 8, '#8a5a38') + R(100, 98, 5, 24, '#5a3a22') + C(102, 94, 12, '#5f8a3e') +
+    D('M170 178Q214 190 258 178L248 170H180Z', '#e0762a') + R(212, 150, 2, 22, '#5a3a22') + P('214,150 214,170 236,170', '#fff') + L('M10 162H110M190 196H300', '#fff', 1.2, .3));
+
+  SCENES.sharkbay = S(SKY('#6ab6ec', '#d6eefb', 92) + D('M0 92L60 80L120 90V120H0Z', '#c4683a') + D('M0 120H120V132H0Z', '#a8532c') + GR('sea', '#35d0c8', '#0f8aa8', 92, 108) +
+    D('M200 126Q260 114 320 128V136Q260 128 200 132Z', '#f6f0e0') + E(70, 176, 20, 6, '#6a6a58') + E(120, 186, 18, 5, '#76766a') + E(250, 180, 22, 6, '#6a6a58') +
+    D('M110 158Q140 116 192 122Q172 134 162 146Q150 158 110 158Z', '#6b7a8a') + P('160,124 168,108 174,126', '#5a6878') + C(186, 124, 1.4, '#14161a') + E(130, 168, 18, 3, '#fff', .7) + L('M20 112H100M200 150H300', '#fff', 1.2, .3));
+
+  SCENES.plitvice = S(GR('sk', '#8fb98a', '#2f5a3a', 0, 200) + C(20, 30, 50, '#2f5a3a', .8) + C(300, 40, 54, '#2f5a3a', .8) + C(40, 110, 36, '#3d7048', .8) + C(290, 120, 38, '#3d7048', .8) +
+    E(160, 60, 40, 8, '#3ec8b8') + R(130, 62, 60, 12, '#fff', .9) + E(160, 100, 60, 10, '#2fb8b0') + R(110, 102, 100, 14, '#fff', .9) + E(160, 142, 80, 12, '#3ec8b8') + R(90, 144, 140, 16, '#fff', .9) + E(160, 186, 110, 12, '#2fb8b0') +
+    L('M0 192Q100 178 220 192T320 184', '#9a7a52', 5) + L('M60 110L80 120M260 120L240 130', '#5a4034', 3));
+
+  SCENES.kyoto = S(SKY('#8fc1e8', '#f4ecd8', 110) + C(20, 90, 40, '#3f6e50') + C(300, 94, 44, '#3f6e50') + C(70, 80, 28, '#4a7e5a') + C(262, 80, 26, '#4a7e5a') + GR('sea', '#4f7f6a', '#2e5a4a', 130, 70) +
+    R(112, 112, 96, 22, '#efe4c8') + R(120, 88, 80, 24, '#e6bd4a') + R(130, 66, 60, 22, '#e6bd4a') + D('M104 114Q160 104 216 114L206 104H114Z', '#4a3a30') + D('M112 90Q160 80 208 90L198 80H122Z', '#4a3a30') + D('M122 68Q160 58 198 68L190 58H130Z', '#4a3a30') +
+    R(126, 94, 4, 14, '#8a5a1a') + R(190, 94, 4, 14, '#8a5a1a') + P('152,58 160,42 168,58', '#4a3a30') + C(160, 38, 2.4, '#d9a93a') +
+    R(112, 134, 96, 22, '#e6bd4a', .22) + R(120, 156, 80, 12, '#e6bd4a', .14) + L('M30 160H100M220 170H300M90 186H230', '#fff', 1.2, .25) + PINE(40, 134, 50, '#2f5a3f') + PINE(282, 134, 54, '#2f5a3f'));
+  var NAMES = {
+    jp: ['日本', 'Japan'], cn: ['中国', 'China'], kr: ['韓国', 'South Korea'], th: ['タイ', 'Thailand'], vn: ['ベトナム', 'Vietnam'],
+    'in': ['インド', 'India'], lk: ['スリランカ', 'Sri Lanka'], pk: ['パキスタン', 'Pakistan'], bd: ['バングラデシュ', 'Bangladesh'],
+    uz: ['ウズベキスタン', 'Uzbekistan'], kz: ['カザフスタン', 'Kazakhstan'], ir: ['イラン', 'Iran'], tr: ['トルコ', 'Türkiye'], jo: ['ヨルダン', 'Jordan'],
+    fr: ['フランス', 'France'], es: ['スペイン', 'Spain'], it: ['イタリア', 'Italy'], de: ['ドイツ', 'Germany'], pl: ['ポーランド', 'Poland'],
+    gr: ['ギリシャ', 'Greece'], at: ['オーストリア', 'Austria'], cz: ['チェコ', 'Czechia'], hr: ['クロアチア', 'Croatia'], pt: ['ポルトガル', 'Portugal'],
+    ch: ['スイス', 'Switzerland'], nl: ['オランダ', 'Netherlands'], hu: ['ハンガリー', 'Hungary'],
+    us: ['アメリカ', 'United States'], ca: ['カナダ', 'Canada'], mx: ['メキシコ', 'Mexico'], br: ['ブラジル', 'Brazil'], pe: ['ペルー', 'Peru'],
+    cl: ['チリ', 'Chile'], ar: ['アルゼンチン', 'Argentina'], ve: ['ベネズエラ', 'Venezuela'], co: ['コロンビア', 'Colombia'],
+    eg: ['エジプト', 'Egypt'], tz: ['タンザニア', 'Tanzania'], sn: ['セネガル', 'Senegal'], ma: ['モロッコ', 'Morocco'], ke: ['ケニア', 'Kenya'],
+    za: ['南アフリカ', 'South Africa'], et: ['エチオピア', 'Ethiopia'], au: ['オーストラリア', 'Australia'], nz: ['ニュージーランド', 'New Zealand'], gb: ['イギリス', 'United Kingdom']
+  };
+
+  var GROUPS = {
+    asiaE: ['jp', 'cn', 'kr', 'th', 'vn'],
+    asiaS: ['in', 'lk', 'pk', 'bd', 'th', 'vn'],
+    cwest: ['uz', 'kz', 'ir', 'tr', 'jo', 'eg'],
+    europe: ['fr', 'es', 'it', 'de', 'pl', 'gr', 'at', 'cz', 'hr', 'pt', 'ch', 'nl', 'hu'],
+    americas: ['us', 'ca', 'mx', 'br', 'pe', 'cl', 'ar', 've', 'co'],
+    africa: ['eg', 'tz', 'sn', 'ma', 'ke', 'za', 'et'],
+    oceania: ['au', 'nz', 'gb', 'us', 'ca']
+  };
+
+  var Q = function (rank, scene, site, place, year, kind, answer, group, note) {
+    return { rank: rank, scene: scene, site: site, place: place, year: year, kind: kind, answer: answer, group: group, note: note };
+  };
+  var QUIZ_ALL = [
+    Q(1, 'mont', 'モン・サン・ミシェルとその湾', 'フランス・ノルマンディー地方', 1979, '文化遺産', 'fr', 'europe', '8世紀に礼拝堂が建てられたのが始まりで、満ち潮のときには海に浮かぶように見える修道院の島です。'),
+    Q(2, 'yaku', '屋久島', '日本・鹿児島県', 1993, '自然遺産', 'jp', 'asiaE', '樹齢が数千年とされる屋久杉で知られ、縄文杉が象徴的な存在です。'),
+    Q(3, 'samarkand', '文化交差路サマルカンド', 'ウズベキスタン', 2001, '文化遺産', 'uz', 'cwest', 'シルクロードの要衝として栄えた都市で、青いタイルで飾られたレギスタン広場が有名です。'),
+    Q(4, 'yellow', 'イエローストーン国立公園', 'アメリカ・ワイオミング州ほか', 1978, '自然遺産', 'us', 'americas', '1872年に世界で最初に指定された国立公園で、間欠泉などの地熱現象が数多く見られます。'),
+    Q(5, 'machu', 'マチュ・ピチュ', 'ペルー・クスコ地方', 1983, '複合遺産', 'pe', 'americas', '標高約2400mの尾根にあるインカ帝国の遺跡で、段々畑と石組みの建物が残っています。'),
+    Q(6, 'gaudi', 'アントニ・ガウディの作品群', 'スペイン・バルセロナ', 1984, '文化遺産', 'es', 'europe', 'サグラダ・ファミリアの生誕のファサードと地下聖堂、グエル公園、カサ・ミラなど、ガウディが手がけた建築群です。'),
+    Q(7, 'venice', 'ヴェネツィアとその潟', 'イタリア・ヴェネト州', 1987, '文化遺産', 'it', 'europe', '多くの小島と運河でできた水の都で、サン・マルコ広場や大運河沿いの建物が知られています。'),
+    Q(8, 'cologne', 'ケルンの大聖堂', 'ドイツ・ノルトライン=ヴェストファーレン州', 1996, '文化遺産', 'de', 'europe', '1248年に着工し、完成まで600年以上かかったゴシック様式の大聖堂です。'),
+    Q(9, 'wieliczka', 'ヴィエリチカとボフニャの王立岩塩坑', 'ポーランド・クラクフ近郊', 1978, '文化遺産', 'pl', 'europe', '中世から採掘が続いた岩塩坑で、地下には塩で彫られた礼拝堂があります。'),
+    Q(10, 'himeji', '姫路城', '日本・兵庫県', 1993, '文化遺産', 'jp', 'asiaE', '白漆喰の外壁から「白鷺城」とも呼ばれ、江戸時代初期の姿を今に伝える城郭です。'),
+    Q(11, 'lencois', 'レンソイス・マラニャンセス国立公園', 'ブラジル・マラニャン州', 2024, '自然遺産', 'br', 'americas', '白い砂丘の間に、雨季になると澄んだ青緑色の湖ができる国立公園です。'),
+    Q(12, 'istanbul', 'イスタンブルの歴史地区', 'トルコ・イスタンブール', 1985, '文化遺産', 'tr', 'cwest', 'アヤソフィアやブルーモスクなど、ビザンツ帝国とオスマン帝国の建築が集まる地区です。'),
+    Q(13, 'abusimbel', 'ヌビアの遺跡群:アブ・シンベルからフィラエまで', 'エジプト・アスワン県', 1979, '文化遺産', 'eg', 'africa', 'ダム建設による水没の危機から、神殿が丸ごと高台へ移設されたことで知られます。'),
+    Q(14, 'taj', 'タージ・マハル', 'インド・アグラ', 1983, '文化遺産', 'in', 'asiaS', '17世紀にムガル帝国の皇帝シャー・ジャハーンが、亡くなった王妃のために建てた白大理石の霊廟です。'),
+    Q(14, 'kii', '紀伊山地の霊場と参詣道', '日本・和歌山県、奈良県、三重県', 2004, '文化遺産', 'jp', 'asiaE', '熊野三山や高野山などの聖地と、それらを結ぶ参詣道(熊野古道)が対象です。'),
+    Q(16, 'sado', '佐渡島の金山', '日本・新潟県', 2024, '文化遺産', 'jp', 'asiaE', '江戸時代に最盛期を迎えた金山で、手作業による採掘と精錬の跡が残ります。'),
+    Q(17, 'shiretoko', '知床', '日本・北海道', 2005, '自然遺産', 'jp', 'asiaE', '流氷が育む海と陸の生態系がつながる半島で、ヒグマなどが生息します。'),
+    Q(18, 'florence', 'フィレンツェの歴史地区', 'イタリア・トスカーナ州', 1982, '文化遺産', 'it', 'europe', 'ルネサンス発祥の地で、サンタ・マリア・デル・フィオーレ大聖堂のドームが象徴です。'),
+    Q(18, 'itsukushima', '厳島神社', '日本・広島県', 1996, '文化遺産', 'jp', 'asiaE', '海に立つ大鳥居と、潮の満ち引きで海に浮かぶように見える社殿で知られます。'),
+    Q(20, 'alberobello', 'アルベロベッロのトゥルッリ', 'イタリア・プーリア州', 1996, '文化遺産', 'it', 'europe', 'モルタルを使わない石積みの、円錐形の屋根が特徴の家々が並びます。'),
+    Q(20, 'canaima', 'カナイマ国立公園', 'ベネズエラ・ボリバル州', 1994, '自然遺産', 've', 'americas', 'テプイと呼ばれるテーブル状の山が連なり、世界最大の落差をもつアンヘルの滝があります。'),
+    Q(22, 'giza', 'メンフィスとその墓地遺跡(ギザのピラミッド地帯)', 'エジプト・ギザ', 1979, '文化遺産', 'eg', 'africa', 'クフ王・カフラー王・メンカウラー王の三大ピラミッドは、約4500年前の古王国時代に築かれました。'),
+    Q(22, 'nikko', '日光の社寺', '日本・栃木県', 1999, '文化遺産', 'jp', 'asiaE', '徳川家康をまつる東照宮など、華やかな装飾の社寺が杉木立の中に建ちます。'),
+    Q(25, 'sigiriya', 'シーギリヤの古代都市', 'スリランカ・中部州', 1982, '文化遺産', 'lk', 'asiaS', '巨大な岩山の頂に5世紀ごろ王宮が築かれ、「獅子の岩」とも呼ばれます。'),
+    Q(25, 'ogasawara', '小笠原諸島', '日本・東京都', 2011, '自然遺産', 'jp', 'asiaE', '一度も大陸とつながったことのない島々で、固有の動植物が独自に進化しました。'),
+    Q(27, 'meteora', 'メテオラの修道院群', 'ギリシャ・テッサリア地方', 1988, '複合遺産', 'gr', 'europe', '切り立った岩の頂上に、14世紀ごろから修道院が建てられてきました。'),
+    Q(27, 'shirakawa', '白川郷・五箇山の合掌造り集落', '日本・岐阜県、富山県', 1995, '文化遺産', 'jp', 'asiaE', '雪が積もりにくいよう、手を合わせた形に急勾配の茅葺き屋根をもつ民家が並びます。'),
+    Q(29, 'schonbrunn', 'シェーンブルン宮殿と庭園', 'オーストリア・ウィーン', 1996, '文化遺産', 'at', 'europe', 'ハプスブルク家の夏の離宮で、黄色い外壁は「シェーンブルン・イエロー」と呼ばれます。'),
+    Q(29, 'seine', 'パリのセーヌ河岸', 'フランス・パリ', 1991, '文化遺産', 'fr', 'europe', 'ノートルダム大聖堂やエッフェル塔など、川沿いの名所をまとめた登録です。'),
+    Q(29, 'hiraizumi', '平泉', '日本・岩手県', 2011, '文化遺産', 'jp', 'asiaE', '中尊寺金色堂など、浄土の世界を表す建築や庭園が残る、奥州藤原氏ゆかりの地です。'),
+    Q(32, 'versailles', 'ヴェルサイユ宮殿と庭園', 'フランス・イヴリーヌ県', 1979, '文化遺産', 'fr', 'europe', 'ルイ14世が整備した宮殿で、鏡の回廊と幾何学式の庭園が有名です。'),
+    Q(32, 'iwami', '石見銀山遺跡とその文化的景観', '日本・島根県', 2007, '文化遺産', 'jp', 'asiaE', '16世紀に本格的に開発された銀山で、坑道跡と鉱山町が一体で残っています。'),
+    Q(32, 'fuji', '富士山-信仰の対象と芸術の源泉', '日本・静岡県、山梨県', 2013, '文化遺産', 'jp', 'asiaE', '自然遺産ではなく文化遺産で、信仰の対象や芸術の源泉としての価値が認められました。'),
+    Q(36, 'acropolis', 'アテネのアクロポリス', 'ギリシャ・アテネ', 1987, '文化遺産', 'gr', 'europe', '丘の上に紀元前5世紀のパルテノン神殿が建ち、古代ギリシャ文明を象徴します。'),
+    Q(36, 'esfahan', 'イスファハーンのイマーム広場', 'イラン・イスファハーン州', 1979, '文化遺産', 'ir', 'cwest', '17世紀のサファヴィー朝が整備した大広場で、青いタイルのモスクが囲んでいます。'),
+    Q(36, 'prague', 'プラハの歴史地区', 'チェコ・プラハ', 1992, '文化遺産', 'cz', 'europe', 'カレル橋やプラハ城など、中世から続く街並みが保たれた「百塔の街」です。'),
+    Q(36, 'nara', '古都奈良の文化財', '日本・奈良県', 1998, '文化遺産', 'jp', 'asiaE', '東大寺の大仏殿など、8世紀の都・平城京ゆかりの寺社や遺跡が対象です。'),
+    Q(40, 'rockies', 'カナディアン・ロッキー山脈国立公園群', 'カナダ・アルバータ州、ブリティッシュコロンビア州', 1984, '自然遺産', 'ca', 'americas', '氷河が削った峰と、エメラルド色の湖が連なる山岳公園群です。'),
+    Q(40, 'rapanui', 'ラパ・ニュイ国立公園', 'チリ・イースター島', 1995, '文化遺産', 'cl', 'americas', '「モアイ」と呼ばれる巨大な石像が、島のあちこちに残されています。'),
+    Q(40, 'ngorongoro', 'ンゴロンゴロ自然保護区', 'タンザニア・アルーシャ州', 1979, '複合遺産', 'tz', 'africa', '巨大なカルデラの底に、ゾウやライオンなど多くの野生動物が暮らしています。'),
+    Q(44, 'gbr', 'グレート・バリア・リーフ', 'オーストラリア・クイーンズランド州沖', 1981, '自然遺産', 'au', 'oceania', '全長が2000kmを超える世界最大級のサンゴ礁で、宇宙からも見えるといわれます。'),
+    Q(44, 'dubrovnik', 'ドゥブロヴニクの旧市街', 'クロアチア・ドゥブロヴニク', 1979, '文化遺産', 'hr', 'europe', '「アドリア海の真珠」と呼ばれ、城壁に囲まれた旧市街にオレンジ色の屋根が並びます。'),
+    Q(44, 'tongariro', 'トンガリロ国立公園', 'ニュージーランド・北島', 1990, '複合遺産', 'nz', 'oceania', '先住民マオリの聖地でもある火山群で、自然と文化の両面で価値が認められました。'),
+    Q(44, 'jiuzhaigou', '九寨溝の渓谷の景観と歴史地域', '中国・四川省', 1992, '自然遺産', 'cn', 'asiaE', '石灰質を含む水がつくる、エメラルドや青など色鮮やかな湖と滝で知られます。'),
+    Q(44, 'hiroshima', '広島平和記念碑(原爆ドーム)', '日本・広島県', 1996, '文化遺産', 'jp', 'asiaE', '1945年の原子爆弾で破壊された建物を保存したもので、平和の大切さを伝えています。'),
+    Q(49, 'orcia', 'オルチア渓谷', 'イタリア・トスカーナ州', 2004, '文化遺産', 'it', 'europe', '糸杉が並ぶなだらかな丘など、ルネサンス期の理想を映した田園景観です。'),
+    Q(49, 'goree', 'ゴレ島', 'セネガル・ダカール沖', 1978, '文化遺産', 'sn', 'africa', 'かつて大西洋の奴隷貿易の拠点とされ、負の歴史を伝える島です。'),
+    Q(49, 'sharkbay', 'シャーク湾', 'オーストラリア・西オーストラリア州', 1991, '自然遺産', 'au', 'oceania', '最古級の生命の痕跡とされるストロマトライトや、野生のイルカで知られます。'),
+    Q(49, 'plitvice', 'プリトヴィツェ湖群国立公園', 'クロアチア・リカ=セニ郡', 1979, '自然遺産', 'hr', 'europe', '16の湖が段々に連なり、石灰華の堰を越えて多くの滝が流れ落ちます。'),
+    Q(49, 'kyoto', '古都京都の文化財', '日本・京都府、滋賀県', 1994, '文化遺産', 'jp', 'asiaE', '金閣(鹿苑寺)や清水寺など、17の寺社・城が登録されています。')
+  ];
+  // 写真: build.py が id ごとに { src, author, license, url } を差し込む。写真のない問題はイラストを使う。
+  var PHOTOS = {};
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+  }
+  function picture(id) {
+    var p = PHOTOS[id];
+    return p ? '<img src="' + esc(p.src) + '" alt="" decoding="async">' : SCENES[id];
+  }
+  function credit(id) {
+    var p = PHOTOS[id];
+    if (!p) return '';
+    return '<p class="credit">写真: ' + esc(p.author) + ' / ' + esc(p.license) +
+      ' (<a href="' + esc(p.url) + '" target="_blank" rel="noopener">Wikimedia Commons</a>)</p>';
+  }
+  (function () {
+    var n = QUIZ_ALL.filter(function (q) { return PHOTOS[q.scene]; }).length;
+    var el = document.getElementById('footimg');
+    if (n === QUIZ_ALL.length) el.textContent = '画像は Wikimedia Commons の写真(各問の解説に撮影者とライセンスを表示)';
+    else if (n) el.textContent = '画像は ' + n + ' 問が Wikimedia Commons の写真(各問の解説に撮影者とライセンスを表示)、残りは簡略化したイラスト';
+  })();
+
+  var stage = document.getElementById('stage');
+  var countEl = document.getElementById('count');
+  var barEl = document.getElementById('barfill');
+  var quiz = [], idx = 0, score = 0, missed = [], answered = false;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function setHead() {
+    if (!quiz.length) { countEl.innerHTML = ''; barEl.style.width = '0%'; return; }
+    countEl.innerHTML = '第<b>' + Math.min(idx + 1, quiz.length) + '</b>問 / ' + quiz.length + ' ・ 正解 ' + score;
+    barEl.style.width = (Math.min(idx + (answered ? 1 : 0), quiz.length) / quiz.length * 100) + '%';
+  }
+
+  function options(q) {
+    var pool = GROUPS[q.group].filter(function (c) { return c !== q.answer; });
+    return shuffle([q.answer].concat(shuffle(pool).slice(0, 3)));
+  }
+
+  function renderIntro() {
+    quiz = []; idx = 0; score = 0; missed = []; answered = false;
+    countEl.innerHTML = ''; barEl.style.width = '0%';
+    stage.innerHTML =
+      '<div class="shot" role="img" aria-label="世界遺産の画像">' + picture('machu') + '<span class="chip">人気ランキング TOP50</span></div>' +
+      '<h1 class="question">世界遺産の画像を見て、<br>どの国にあるかを当てよう</h1>' +
+      '<p class="lead">人気ランキング上位の50件から出題します。選択肢は国旗と国名がついた4択です。</p>' +
+      '<button class="mode" type="button" data-mode="random"><span class="mt">10問チャレンジ</span><span class="ms">50件の中からランダムに10問</span></button>' +
+      '<button class="mode" type="button" data-mode="all"><span class="mt">全50問</span><span class="ms">ランキング上位の遺産から順に出題</span></button>';
+    var btns = stage.querySelectorAll('.mode');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener('click', function (e) { start(e.currentTarget.getAttribute('data-mode')); });
+    }
+  }
+
+  function start(mode) {
+    quiz = mode === 'all' ? QUIZ_ALL.slice() : shuffle(QUIZ_ALL.slice()).slice(0, 10);
+    idx = 0; score = 0; missed = [];
+    renderQuestion();
+    stage.focus({ preventScroll: true });
+    window.scrollTo(0, 0);
+  }
+
+  function renderQuestion() {
+    var q = quiz[idx];
+    answered = false;
+    setHead();
+    var tiles = options(q).map(function (c) {
+      return '<li><button class="tile" type="button" data-code="' + c + '" data-state="idle">' +
+        '<span class="flag">' + FLAGS[c] + '</span>' +
+        '<span class="ja">' + NAMES[c][0] + '</span>' +
+        '<span class="en">' + NAMES[c][1] + '</span></button></li>';
+    }).join('');
+    stage.innerHTML =
+      '<div class="shot" role="img" aria-label="世界遺産の画像。どこの国にあるでしょう">' + picture(q.scene) +
+      '<span class="chip">人気ランキング ' + q.rank + '位</span><div class="stamp" id="stamp" hidden></div></div>' +
+      '<h1 class="question">この世界遺産がある国は?</h1>' +
+      '<ul class="choices" id="choices">' + tiles + '</ul>' +
+      '<div class="reveal" id="reveal" hidden aria-live="polite"></div>';
+    document.getElementById('choices').addEventListener('click', function (e) {
+      var b = e.target.closest('.tile');
+      if (b) pick(b.getAttribute('data-code'));
+    });
+  }
+
+  function pick(code) {
+    if (answered) return;
+    answered = true;
+    var q = quiz[idx];
+    var ok = code === q.answer;
+    if (ok) { score++; } else { missed.push(q); }
+    setHead();
+
+    var list = document.getElementById('choices');
+    list.setAttribute('data-locked', '');
+    var tiles = list.querySelectorAll('.tile');
+    for (var i = 0; i < tiles.length; i++) {
+      var c = tiles[i].getAttribute('data-code');
+      tiles[i].setAttribute('data-state', c === q.answer ? 'ok' : (c === code ? 'bad' : 'dim'));
+      tiles[i].setAttribute('aria-disabled', 'true');
+    }
+
+    var stamp = document.getElementById('stamp');
+    stamp.className = 'stamp ' + (ok ? 'ok' : 'bad');
+    stamp.textContent = ok ? '正解' : '不正解';
+    stamp.hidden = false;
+
+    var last = idx === quiz.length - 1;
+    var rv = document.getElementById('reveal');
+    rv.innerHTML =
+      '<p class="verdict ' + (ok ? 'ok' : 'bad') + '">' + (ok ? '正解です' : 'ざんねん。正解は' + NAMES[q.answer][0] + 'です') + '</p>' +
+      '<h2 class="site">' + q.site + '</h2>' +
+      '<p class="meta">' + q.place + ' ・ ' + q.year + '年登録(' + q.kind + ')</p>' +
+      '<p class="note">' + q.note + '</p>' + credit(q.scene) +
+      '<button class="next" id="next" type="button">' + (last ? '結果を見る' : '次の問題へ') + '</button>';
+    rv.hidden = false;
+    rv.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    document.getElementById('next').addEventListener('click', function () {
+      if (last) { renderResult(); } else { idx++; renderQuestion(); }
+      stage.focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+    });
+  }
+
+  function renderResult() {
+    idx = quiz.length; answered = false;
+    countEl.innerHTML = '結果';
+    barEl.style.width = '100%';
+    var r = score / quiz.length;
+    var msg = r === 1 ? '全問正解です。国旗と風景の組み合わせがばっちり頭に入っています。'
+      : r >= 0.7 ? 'とても良い結果です。間違えた遺産をもう一度見直してみましょう。'
+      : r >= 0.4 ? 'いい調子です。もう一度挑戦すると、さらに覚えやすくなります。'
+      : '惜しい結果でした。国旗を手がかりにすると当てやすくなります。';
+    var rows = missed.map(function (q) {
+      return '<li><span class="mark bad" aria-label="不正解">×</span>' +
+        '<span class="logsite">' + q.site + '</span>' +
+        '<span class="logans"><span class="flag sm">' + FLAGS[q.answer] + '</span>' + NAMES[q.answer][0] + '</span></li>';
+    }).join('');
+    stage.innerHTML =
+      '<section class="result"><p class="eyebrow">今回のスコア</p>' +
+      '<p class="score">' + score + '<small> / ' + quiz.length + '</small></p>' +
+      '<p class="msg">' + msg + '</p>' +
+      (missed.length ? '<p class="eyebrow">まちがえた遺産(' + missed.length + ')</p><ul class="log">' + rows + '</ul>' : '') +
+      '<button class="next" id="again" type="button">もう一度あそぶ</button></section>';
+    document.getElementById('again').addEventListener('click', function () {
+      renderIntro();
+      stage.focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (answered || !quiz.length || idx >= quiz.length || e.metaKey || e.ctrlKey || e.altKey) return;
+    var n = parseInt(e.key, 10);
+    if (n >= 1 && n <= 4) {
+      var tiles = document.querySelectorAll('#choices .tile');
+      if (tiles[n - 1]) pick(tiles[n - 1].getAttribute('data-code'));
+    }
+  });
+
+  renderIntro();
+})();
+</script>
+</body>
+</html>
