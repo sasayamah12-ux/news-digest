@@ -1,51 +1,151 @@
-file,author,license,url
-mont.jpg,Eric Kilby,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Mont_Saint_Michel_and_sheep_-_2026.jpg
-yaku.jpg,Σ64,CC BY 3.0,https://commons.wikimedia.org/wiki/File:Jomon_Sugi_03.jpg
-samarkand.jpg,"Gustavo Jeronimo from Aranjuez, Spain",CC BY 2.0,https://commons.wikimedia.org/wiki/File:Registan_-_Gusjer.jpg
-yellow.jpg,Dietmar Rabich,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Yellowstone_National_Park_(WY,_USA),_Old_Faithful_Geyser_--_2022_--_2599.jpg"
-machu.jpg,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Machu_Picchu,_Per%C3%BA,_2015-07-30,_DD_47.JPG"
-gaudi.jpg,"Richard Mortel from Riyadh, Saudi Arabia",CC BY 2.0,"https://commons.wikimedia.org/wiki/File:Sagrada_Familia,_Nativity_facade_(26)_(30489118703).jpg"
-venice.jpg,kallerna,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Venice_Ponte_dell%27Accademia_Grand_Canal_santa_Maria_della_Salute_2.jpg
-cologne.jpg,Jörg Braukmann,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Dom_(Deutzer_Br%C3%BCcke).jpg
-wieliczka.jpg,Андрей Романенко,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Saint_Kinga_Chapel_in_Wieliczka_Salt_Mine.jpg
-himeji.jpg,Gorgo,Public domain,https://commons.wikimedia.org/wiki/File:Himeji_Castle_0804_1.jpg
-lencois.jpg,Paulo Cattelan,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Parque_Nacional_dos_Len%C3%A7%C3%B3is_Maranhenses_Paulo_Cattelan_(03).jpg
-istanbul.jpg,Arild Vågen,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Hagia_Sophia_Mars_2013.jpg
-abusimbel.jpg,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Templo_de_Rams%C3%A9s_II,_Abu_Simbel,_Egipto,_2022-04-02,_DD_03.jpg"
-taj.jpg,Yann; edited by King of Hearts,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Taj_Mahal,_Agra,_India_edit2.jpg"
-kii.jpg,Zairon,CC BY 4.0,https://commons.wikimedia.org/wiki/File:Nachikatsuura_Seiganto-ji_Three-Storied_Pagoda_%26_Nachi_Falls_09.jpg
-sado.jpg,inunami,CC BY 2.0,https://commons.wikimedia.org/wiki/File:Sado_20220503101130_(52277558505).jpg
-shiretoko.jpg,kkawamura,CC BY 4.0,"https://commons.wikimedia.org/wiki/File:Hokkaido-Drift_ice,_Shiretoko_Peninsula-xl.jpg"
-florence.jpg,Felix König,CC BY 3.0,https://commons.wikimedia.org/wiki/File:Cattedrale_di_Santa_Maria_del_Fiore_Florenz_M%C3%A4rz_2014.jpg
-itsukushima.jpg,JordyMeow,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Itsukushima_Gate.jpg
-alberobello.jpg,MPhernambucq,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Street_with_trulli_Alberobello.jpg
-canaima.jpg,Antolin Martinez A.,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Canaima_110514-6.JPG
-giza.jpg,Ricardo Liberato,CC BY-SA 2.0,https://commons.wikimedia.org/wiki/File:All_Gizah_Pyramids.jpg
-nikko.jpg,Jpatokal,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Nikko_Toshogu_Yomeimon_Gate_2024.jpg
-sigiriya.jpg,Bernard Gagnon,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Sigiriya.jpg
-ogasawara.jpg,Anagounagi,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Ogasawara_Islands,_Tokyo,_Japan.jpg"
-meteora.jpg,Bernard Gagnon,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Roussanou_Monastery,_Meteora.jpg"
-shirakawa.jpg,Bernard Gagnon,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Gassho-zukuri_farmhouse-01.jpg
-schonbrunn.jpg,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Palacio_de_Sch%C3%B6nbrunn,_Viena,_Austria,_2020-02-02,_DD_07-09_HDR.jpg"
-seine.jpg,Getfunky Paris,CC BY 2.0,https://commons.wikimedia.org/wiki/File:Eiffel_Tower_and_Pont_Alexandre_III_at_night.jpg
-hiraizumi.jpg,掬茶,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:M%C5%8Dts%C5%AB-ji_Pure_Land_Garden_in_autumn_2019.jpg
-versailles.jpg,Julian Lupyan,Public domain,"https://commons.wikimedia.org/wiki/File:Main_Fa%C3%A7ade,_Palace_of_Versailles,_Cour_Royale.jpg"
-iwami.jpg,Wakuwaku99,Public domain,"https://commons.wikimedia.org/wiki/File:Iwami_Ginzan_Silver_Mine,_Ryugenji_Mabu_Mine_Shaft_002.JPG"
-fuji.jpg,"Romain Guy from San Francisco, USA",CC0,"https://commons.wikimedia.org/wiki/File:Mount_Fuji_at_sunset,_March_2025.jpg"
-acropolis.jpg,A.Savin,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Attica_06-13_Athens_50_View_from_Philopappos_-_Acropolis_Hill.jpg
-esfahan.jpg,Arad Mojtahedi,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Naghshe_Jahan_Square_Isfahan_modified2.jpg
-prague.jpg,Godot13,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Czech-2013-Prague-View_from_Charles_Bridge_of_Prague_Castle.jpg
-nara.jpg,Balon Greyjoy,CC0,https://commons.wikimedia.org/wiki/File:20190121_T%C5%8Ddai-ji_Great_Buddha_Hall-1.jpg
-rockies.jpg,David Zhang,CC BY-SA 2.0,https://commons.wikimedia.org/wiki/File:Moraine_Lake_at_evening4.jpg
-rapanui.jpg,Rivi,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Ahu_Tongariki_cropped.jpg
-ngorongoro.jpg,Erasmus Kamugisha,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Majestic_View_of_Ngorongoro.jpg
-gbr.jpg,Ank Kumar,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:The_Great_Barrier_Reef,_Queensland,_Cairns_(Ank_kumar)_05.jpg"
-dubrovnik.jpg,Diego Delso,CC BY-SA 3.0,"https://commons.wikimedia.org/wiki/File:Casco_viejo_de_Dubrovnik,_Croacia,_2014-04-14,_DD_04.JPG"
-tongariro.jpg,Marcus Holland-Moritz,CC BY-SA 2.0,"https://commons.wikimedia.org/wiki/File:Emerald_Lakes,_New_Zealand.jpg"
-jiuzhaigou.jpg,Chensiyuan,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:1_jiuzhaigou_valley_wu_hua_hai_2011b.jpg
-hiroshima.jpg,DXR,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Atomic_Bomb_Dome,_Hiroshima,_South_view_20190417_1.jpg"
-orcia.jpg,VieriTommasiCandidi,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Val_d%27Orcia_TuscanyPeople.jpg
-goree.jpg,Fawaz.tairou,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:C%C3%B4tes_de_l%27%C3%AEle_de_Gor%C3%A9e_au_S%C3%A9n%C3%A9gal_11.jpg
-sharkbay.jpg,Happy Little Nomad,CC BY-SA 2.0,https://commons.wikimedia.org/wiki/File:Stromatolites_in_Shark_Bay.jpg
-plitvice.jpg,Tesla Delacroix,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Plitvice_Lakes1.jpg
-kyoto.jpg,Basile Morin,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Water_reflection_of_Kinkaku-ji_Temple_with_blue_sky_and_white_clouds,_Kyoto,_Japan.jpg"
+file,id,author,license,url
+mont-1.jpg,mont,Eric Kilby,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Mont_Saint_Michel_and_sheep_-_2026.jpg
+mont-2.jpg,mont,Giladtop,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Mont_Saint_Michel_at_sunset,_April_2025.jpg"
+mont-3.jpg,mont,Benh LIEU SONG,CC BY 2.5,https://commons.wikimedia.org/wiki/File:MSM_sunset_02.JPG
+yaku-1.jpg,yaku,Σ64,CC BY 3.0,https://commons.wikimedia.org/wiki/File:Jomon_Sugi_03.jpg
+yaku-2.jpg,yaku,Σ64,CC BY 4.0,https://commons.wikimedia.org/wiki/File:Shiratani_Unsui_Gorge_18.jpg
+yaku-3.jpg,yaku,KimonBerlin,CC BY-SA 2.0,"https://commons.wikimedia.org/wiki/File:Shiratani_Unsuikyo,_Yakushima_island,_Japan_(4196051271).jpg"
+samarkand-1.jpg,samarkand,"Gustavo Jeronimo from Aranjuez, Spain",CC BY 2.0,https://commons.wikimedia.org/wiki/File:Registan_-_Gusjer.jpg
+samarkand-2.jpg,samarkand,Kraftabbas,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:%D0%A1%D0%B0%D0%BC%D0%B0%D1%80%D0%BA%D0%B0%D0%BD%D0%B4._%D0%9F%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D1%8C-%D0%A0%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D0%B0%D0%BD.jpg
+samarkand-3.jpg,samarkand,Ziegler175,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Memorial_complex_%22Registan%22_in_Samarkand_(0).jpg
+yellow-1.jpg,yellow,Dietmar Rabich,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Yellowstone_National_Park_(WY,_USA),_Old_Faithful_Geyser_--_2022_--_2599.jpg"
+yellow-2.jpg,yellow,Dietmar Rabich,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Yellowstone_National_Park_(WY,_USA),_Old_Faithful_Geyser_(und_Bison)_--_2022_--_2587.jpg"
+yellow-3.jpg,yellow,Dietmar Rabich,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Yellowstone_National_Park_(WY,_USA),_Old_Faithful_Geyser_--_2022_--_2592.jpg"
+machu-1.jpg,machu,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Machu_Picchu,_Per%C3%BA,_2015-07-30,_DD_47.JPG"
+machu-2.jpg,machu,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Machu_Picchu,_Per%C3%BA,_2015-07-30,_DD_37.jpg"
+machu-3.jpg,machu,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Machu_Picchu,_Per%C3%BA,_2015-07-30,_DD_41.JPG"
+gaudi-1.jpg,gaudi,"Richard Mortel from Riyadh, Saudi Arabia",CC BY 2.0,"https://commons.wikimedia.org/wiki/File:Sagrada_Familia,_Nativity_facade_(26)_(30489118703).jpg"
+gaudi-2.jpg,gaudi,"Richard Mortel from Riyadh, Saudi Arabia",CC BY 2.0,"https://commons.wikimedia.org/wiki/File:Sagrada_Familia,_Nativity_facade_(2)_(30477190154).jpg"
+gaudi-3.jpg,gaudi,"Richard Mortel from Riyadh, Saudi Arabia",CC BY 2.0,"https://commons.wikimedia.org/wiki/File:Sagrada_Familia,_Nativity_facade_(1)_(30931111520).jpg"
+venice-1.jpg,venice,kallerna,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Venice_Ponte_dell%27Accademia_Grand_Canal_santa_Maria_della_Salute_2.jpg
+venice-2.jpg,venice,kallerna,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Basilica_Santa_Maria_della_Salute_Venice_2.jpg
+venice-3.jpg,venice,Armin Kleiner,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Venice,_Canal_Grande,_Dorsoduro,_S_Maria_della_Salute_2.jpg"
+cologne-1.jpg,cologne,Jörg Braukmann,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Dom_(Deutzer_Br%C3%BCcke).jpg
+cologne-2.jpg,cologne,Martin Falbisoner,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Kranh%C3%A4user_Cologne,_April_2018_-01.jpg"
+cologne-3.jpg,cologne,"Source: Rolf Heinrich, Köln, Processing: User:MathKnight",CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Cologne-Cathedral-0360.jpg
+wieliczka-1.jpg,wieliczka,Андрей Романенко,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Saint_Kinga_Chapel_in_Wieliczka_Salt_Mine.jpg
+wieliczka-2.jpg,wieliczka,bcs78,CC BY 3.0,"https://commons.wikimedia.org/wiki/File:Wieliczka_Salt_Mine,_Altar_of_St_Kinga%27s_Chapel_-_panoramio.jpg"
+wieliczka-3.jpg,wieliczka,Bjoertvedt,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Saint_Anthony_Chapel_in_Wieliczka_Salt_Mine_IMG_7297.jpg
+himeji-1.jpg,himeji,Gorgo,Public domain,https://commons.wikimedia.org/wiki/File:Himeji_Castle_0804_1.jpg
+himeji-2.jpg,himeji,Nikos Kitsakis,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Himeji_castle_in_may_2015.jpg
+himeji-3.jpg,himeji,Yasuo Hamashima,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Himeji_castle_20241025-_YAS2703.jpg
+lencois-1.jpg,lencois,Paulo Cattelan,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Parque_Nacional_dos_Len%C3%A7%C3%B3is_Maranhenses_Paulo_Cattelan_(03).jpg
+lencois-2.jpg,lencois,FiloVasconcellos,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Parque_Nacional_dos_Lencois_Maranhenses_Filo_Vasconcellos_(24).jpg
+lencois-3.jpg,lencois,Rocsilva,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Len%C3%A7%C3%B3is_Maranhenses_Roberto_Silva_20.jpg
+istanbul-1.jpg,istanbul,Arild Vågen,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Hagia_Sophia_Mars_2013.jpg
+istanbul-2.jpg,istanbul,Alexxx1979,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Istanbul_Hagia_Sophia_IMG_8615_2050.jpg
+istanbul-3.jpg,istanbul,Alexxx1979,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Istanbul_Hagia_Sophia_IMG_7406_1800.jpg
+abusimbel-1.jpg,abusimbel,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Templo_de_Rams%C3%A9s_II,_Abu_Simbel,_Egipto,_2022-04-02,_DD_03.jpg"
+abusimbel-2.jpg,abusimbel,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Templo_de_Nefertari,_Abu_Simbel,_Egipto,_2022-04-02,_DD_153.jpg"
+abusimbel-3.jpg,abusimbel,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Templo_de_Rams%C3%A9s_II,_Abu_Simbel,_Egipto,_2022-04-02,_DD_26-28_HDR.jpg"
+taj-1.jpg,taj,Yann; edited by King of Hearts,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Taj_Mahal,_Agra,_India_edit2.jpg"
+taj-2.jpg,taj,Antrix3,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Aks_The_Reflection_Taj_Mahal.jpg
+taj-3.jpg,taj,Asitjain,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Taj_Mahal_N-UP-A28-a.jpg
+kii-1.jpg,kii,Zairon,CC BY 4.0,https://commons.wikimedia.org/wiki/File:Nachikatsuura_Seiganto-ji_Three-Storied_Pagoda_%26_Nachi_Falls_09.jpg
+kii-2.jpg,kii,Zairon,CC BY 4.0,https://commons.wikimedia.org/wiki/File:Nachikatsuura_Seiganto-ji_Three-Storied_Pagoda_%26_Nachi_Falls_02.jpg
+kii-3.jpg,kii,Zairon,CC BY 4.0,https://commons.wikimedia.org/wiki/File:Nachikatsuura_Seiganto-ji_Three-Storied_Pagoda_%26_Nachi_Falls_03.jpg
+sado-1.jpg,sado,inunami,CC BY 2.0,https://commons.wikimedia.org/wiki/File:Sado_20220503101130_(52277558505).jpg
+sado-2.jpg,sado,伊藤善行,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:%E4%BD%90%E6%B8%A1%E9%87%91%E5%B1%B1_-_panoramio.jpg
+sado-3.jpg,sado,inunami,CC BY 2.0,https://commons.wikimedia.org/wiki/File:Sado_20220503093021_(52276107087).jpg
+shiretoko-1.jpg,shiretoko,kkawamura,CC BY 4.0,"https://commons.wikimedia.org/wiki/File:Hokkaido-Drift_ice,_Shiretoko_Peninsula-xl.jpg"
+shiretoko-2.jpg,shiretoko,663highland,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:140828_Otoko-no-namida_Shiretoko_Peninsula_Hokkaido_Japan01s5.jpg
+shiretoko-3.jpg,shiretoko,シンプルですけど機能的なベッド,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:%E3%83%A8%E3%82%A6%E3%82%B7%E3%83%9A%E3%83%84%E3%81%AE%E6%BB%9D.jpg
+florence-1.jpg,florence,Felix König,CC BY 3.0,https://commons.wikimedia.org/wiki/File:Cattedrale_di_Santa_Maria_del_Fiore_Florenz_M%C3%A4rz_2014.jpg
+florence-2.jpg,florence,Dllu,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Florence_Cathedral_seen_from_Piazzale_Michelangelo_night_dllu.jpg
+florence-3.jpg,florence,Rhododendrites,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Florence_from_the_Duomo_terrace_(61408p).jpg
+itsukushima-1.jpg,itsukushima,JordyMeow,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Itsukushima_Gate.jpg
+itsukushima-2.jpg,itsukushima,Jakub Hałun,CC BY 4.0,"https://commons.wikimedia.org/wiki/File:Itsukushima-jinja_torii_at_sunset,_Miyajima,_Japan,_20240816_1812_4144.jpg"
+itsukushima-3.jpg,itsukushima,Jakub Hałun,CC BY 4.0,"https://commons.wikimedia.org/wiki/File:Haraiden_of_Mar%C5%8Ddo_Shrine_and_Floating_Torii_Gate,_Itsukushima_Shinto_Shrine,_Miyajima,_20240816_1707_4004.jpg"
+alberobello-1.jpg,alberobello,MPhernambucq,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Street_with_trulli_Alberobello.jpg
+alberobello-2.jpg,alberobello,Berthold Werner,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Alberobello_BW_2016-10-16_13-44-51.jpg
+alberobello-3.jpg,alberobello,Benjamin Smith,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Alberobello_-_Trulli_del_Rione_Monti_-_03.jpg
+canaima-1.jpg,canaima,Antolin Martinez A.,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Canaima_110514-6.JPG
+canaima-2.jpg,canaima,Sinfinitu,CC BY 3.0,https://commons.wikimedia.org/wiki/File:Kerepakupai_Ven%C3%A1_II.JPG
+canaima-3.jpg,canaima,Diego Delso,CC BY 3.0,https://commons.wikimedia.org/wiki/File:Salto_del_Angel-Canaima-Venezuela18.JPG
+giza-1.jpg,giza,Ricardo Liberato,CC BY-SA 2.0,https://commons.wikimedia.org/wiki/File:All_Gizah_Pyramids.jpg
+giza-2.jpg,giza,someone10x,CC BY 2.0,https://commons.wikimedia.org/wiki/File:Giza_pyramid_complex_(9200944628).jpg
+giza-3.jpg,giza,Eslam maalky.22,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Giza_pyramid_complex_4fr.jpg
+nikko-1.jpg,nikko,Jpatokal,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Nikko_Toshogu_Yomeimon_Gate_2024.jpg
+nikko-2.jpg,nikko,No machine-readable author provided. Fg2 assumed (based on copyright claims).,Public domain,https://commons.wikimedia.org/wiki/File:Nikko_Toshogu_Yomeimon_M3192.jpg
+nikko-3.jpg,nikko,Koichi Sato,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Nikko_toshogu_yomeimon_gate_ver1.jpg
+sigiriya-1.jpg,sigiriya,Bernard Gagnon,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Sigiriya.jpg
+sigiriya-2.jpg,sigiriya,Thushara Nadeeja,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:The_Sigiriya_Rock_Fortress.jpg
+sigiriya-3.jpg,sigiriya,V. Epiney,CC BY-SA 2.0,https://commons.wikimedia.org/wiki/File:Sigir%C3%AEya_Lion_Rock_(36231936082).jpg
+ogasawara-1.jpg,ogasawara,Anagounagi,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Ogasawara_Islands,_Tokyo,_Japan.jpg"
+ogasawara-2.jpg,ogasawara,Ootahara,CC0,"https://commons.wikimedia.org/wiki/File:Kominato_Beach_that_I_looked_at_from_the_Nakayama_Pass_in_Chichijima_Island,Ogasawara,Tokyo,Japan.jpg"
+ogasawara-3.jpg,ogasawara,Kaz Ish,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Oomura-kaigan_beach_-_panoramio.jpg
+meteora-1.jpg,meteora,Bernard Gagnon,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Roussanou_Monastery,_Meteora.jpg"
+meteora-2.jpg,meteora,KASPAR,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Meteora_morning.jpg
+meteora-3.jpg,meteora,Stathis floros,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Meteora%27s_monastery_2.jpg
+shirakawa-1.jpg,shirakawa,Bernard Gagnon,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Gassho-zukuri_farmhouse-01.jpg
+shirakawa-2.jpg,shirakawa,Zairon,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Shirakawa_Gassho-zukuri_39.jpg
+shirakawa-3.jpg,shirakawa,Zairon,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Shirakawa_Gassho-zukuri_14.jpg
+schonbrunn-1.jpg,schonbrunn,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Palacio_de_Sch%C3%B6nbrunn,_Viena,_Austria,_2020-02-02,_DD_07-09_HDR.jpg"
+schonbrunn-2.jpg,schonbrunn,Martin Falbisoner,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Schoenbrunn_Palace_as_seen_from_Neptune_Fountain,_September_2016.jpg"
+schonbrunn-3.jpg,schonbrunn,Diego Delso,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Palacio_de_Sch%C3%B6nbrunn,_Viena,_Austria,_2020-02-02,_DD_37.jpg"
+seine-1.jpg,seine,Getfunky Paris,CC BY 2.0,https://commons.wikimedia.org/wiki/File:Eiffel_Tower_and_Pont_Alexandre_III_at_night.jpg
+seine-2.jpg,seine,ThePromenader,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Eiffel_st-jacques_horz_jms.jpg
+seine-3.jpg,seine,Nicolas Halftermeyer,CC BY-SA 3.0,"https://commons.wikimedia.org/wiki/File:Eiffel_Tower_by_the_Seine_river,_Paris,_2_March_2014.jpg"
+hiraizumi-1.jpg,hiraizumi,掬茶,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:M%C5%8Dts%C5%AB-ji_Pure_Land_Garden_in_autumn_2019.jpg
+hiraizumi-2.jpg,hiraizumi,掬茶,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Garden_path_of_M%C5%8Dts%C5%AB-ji_Pure_Land_Garden.jpg
+hiraizumi-3.jpg,hiraizumi,Nerotaso,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:M%C5%8Dts%C5%AB-ji_Pure_Land_Garden3.JPG
+versailles-1.jpg,versailles,Julian Lupyan,Public domain,"https://commons.wikimedia.org/wiki/File:Main_Fa%C3%A7ade,_Palace_of_Versailles,_Cour_Royale.jpg"
+versailles-2.jpg,versailles,Basile Morin,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Water_reflection_of_the_Orangerie_garden_and_Palace_of_Versailles_with_blue_sky_in_France.jpg
+versailles-3.jpg,versailles,ToucanWings,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Vue_a%C3%A9rienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_113.jpg
+iwami-1.jpg,iwami,Wakuwaku99,Public domain,"https://commons.wikimedia.org/wiki/File:Iwami_Ginzan_Silver_Mine,_Ryugenji_Mabu_Mine_Shaft_002.JPG"
+iwami-2.jpg,iwami,663highland,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:180504_Omori_of_Iwami_Ginzan_Silver_Mine_Oda_Shimane_pref_Japan02bs4.jpg
+iwami-3.jpg,iwami,Yama 1009,CC BY-SA 3.0,"https://commons.wikimedia.org/wiki/File:Iwami_Ginzan_Silver_Mine,_Shimizudani_Refinery_Ruins_001.JPG"
+fuji-1.jpg,fuji,"Romain Guy from San Francisco, USA",CC0,"https://commons.wikimedia.org/wiki/File:Mount_Fuji_at_sunset,_March_2025.jpg"
+fuji-2.jpg,fuji,"名古屋太郎, (edited by Hannes_24)",CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Kodaki_fuji_frm_shojinko_refurb.jpg
+fuji-3.jpg,fuji,Midori,CC BY 3.0,https://commons.wikimedia.org/wiki/File:Lake_Kawaguchiko_Sakura_Mount_Fuji_4.JPG
+acropolis-1.jpg,acropolis,A.Savin,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Attica_06-13_Athens_50_View_from_Philopappos_-_Acropolis_Hill.jpg
+acropolis-2.jpg,acropolis,Jebulon,CC0,https://commons.wikimedia.org/wiki/File:Restoration_Parthenon_Acropolis_Athens.jpg
+acropolis-3.jpg,acropolis,Jebulon,CC0,"https://commons.wikimedia.org/wiki/File:Parthenon_east_side_Acropolis_Athens,_Greece.jpg"
+esfahan-1.jpg,esfahan,Arad Mojtahedi,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Naghshe_Jahan_Square_Isfahan_modified2.jpg
+esfahan-2.jpg,esfahan,Amir Pashaei,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Naqsh-e_Jahan_Square_from_the_gheisariye_Vault.jpg
+esfahan-3.jpg,esfahan,Majid eslamdoust,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Isfahan-Naqsh-e_Jahan_Square_5.jpg
+prague-1.jpg,prague,Godot13,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Czech-2013-Prague-View_from_Charles_Bridge_of_Prague_Castle.jpg
+prague-2.jpg,prague,Jakub Hałun,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:20190816_View_of_Prague_from_Old_Castle_Stairs_1646_5385.jpg
+prague-3.jpg,prague,Scotch Mist,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Prague_Charles_Bridge_2021_14.jpg
+nara-1.jpg,nara,Balon Greyjoy,CC0,https://commons.wikimedia.org/wiki/File:20190121_T%C5%8Ddai-ji_Great_Buddha_Hall-1.jpg
+nara-2.jpg,nara,Martin Falbisoner,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:The_Great_Buddha_Hall_of_T%C5%8Ddai-ji,_Nara,_November_2016.jpg"
+nara-3.jpg,nara,lienyuan lee,CC BY 3.0,https://commons.wikimedia.org/wiki/File:%E6%9D%B1%E5%A4%A7%E5%AF%BA_%E5%A4%A7%E4%BD%9B%E6%AE%BF_Todai-ji_Great_Buddha_Hall_-_panoramio.jpg
+rockies-1.jpg,rockies,David Zhang,CC BY-SA 2.0,https://commons.wikimedia.org/wiki/File:Moraine_Lake_at_evening4.jpg
+rockies-2.jpg,rockies,Gorgo,Public domain,https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg
+rockies-3.jpg,rockies,Terry Ott,CC BY 2.0,https://commons.wikimedia.org/wiki/File:Canada_-_Alberta_-_Moraine_Lake_-_43408658122.jpg
+rapanui-1.jpg,rapanui,Rivi,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Ahu_Tongariki_cropped.jpg
+rapanui-2.jpg,rapanui,Bjørn Christian Tørrissen,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Ahu-Tongariki-and-Traveling-Moai.jpg
+rapanui-3.jpg,rapanui,Sadarama,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Moai_in_Ahu_Tongariki.jpg
+ngorongoro-1.jpg,ngorongoro,Erasmus Kamugisha,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Majestic_View_of_Ngorongoro.jpg
+ngorongoro-2.jpg,ngorongoro,Rasheedhrasheed,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Preserved_by_nature,_and_admired_by_generations.jpg"
+ngorongoro-3.jpg,ngorongoro,Zenith4237,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Nature_of_Ngorongoro_Conservation_Area_(129).jpg
+gbr-1.jpg,gbr,Ank Kumar,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:The_Great_Barrier_Reef,_Queensland,_Cairns_(Ank_kumar)_05.jpg"
+gbr-2.jpg,gbr,Ank Kumar,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Great_Barrier_Reef_off_Cairns_coast_(Ank_Kumar)_05.jpg
+gbr-3.jpg,gbr,Ank Kumar,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Aerial_View_of_Great_Barrier_Reef_(Ank_Kumar)_05.jpg
+dubrovnik-1.jpg,dubrovnik,Diego Delso,CC BY-SA 3.0,"https://commons.wikimedia.org/wiki/File:Casco_viejo_de_Dubrovnik,_Croacia,_2014-04-14,_DD_04.JPG"
+dubrovnik-2.jpg,dubrovnik,Diego Delso,CC BY-SA 3.0,"https://commons.wikimedia.org/wiki/File:Casco_viejo_de_Dubrovnik,_Croacia,_2014-04-14,_DD_07.JPG"
+dubrovnik-3.jpg,dubrovnik,Sokka-the-meat-and-sarcasm-guy,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:On_the_city_wall_of_Old_Town_Dubrovnik,_Croatia.jpg"
+tongariro-1.jpg,tongariro,Marcus Holland-Moritz,CC BY-SA 2.0,"https://commons.wikimedia.org/wiki/File:Emerald_Lakes,_New_Zealand.jpg"
+tongariro-2.jpg,tongariro,Matt Clarke,CC BY 2.0,"https://commons.wikimedia.org/wiki/File:Emerald_Lake,_on_the_Tongariro_Alpine_Crossing.jpg"
+tongariro-3.jpg,tongariro,Blueromulan,CC BY-SA 3.0,"https://commons.wikimedia.org/wiki/File:Mt._Tongariro,_Red_Crater_%26_the_descent_to_Emerald_Lakes_from_Central_Crater.jpg"
+jiuzhaigou-1.jpg,jiuzhaigou,Chensiyuan,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:1_jiuzhaigou_valley_wu_hua_hai_2011b.jpg
+jiuzhaigou-2.jpg,jiuzhaigou,"CEphoto, Uwe Aranas",CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Jiuzhaigou_Sichuan_China_Jiuzhaigou-Valley-02.jpg
+jiuzhaigou-3.jpg,jiuzhaigou,Noé Lecocq,CC BY-SA 2.5,https://commons.wikimedia.org/wiki/File:Jiuzhaigou_Pearl_Waterfall_2005-08-21.jpeg
+hiroshima-1.jpg,hiroshima,DXR,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Atomic_Bomb_Dome,_Hiroshima,_South_view_20190417_1.jpg"
+hiroshima-2.jpg,hiroshima,DXR,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Atomic_Bomb_Dome_and_Motoyaso_River,_Hiroshima,_Northwest_view_20190417_1.jpg"
+hiroshima-3.jpg,hiroshima,Jakub Hałun,CC BY 4.0,"https://commons.wikimedia.org/wiki/File:Hiroshima_Peace_Memorial_(Genbaku_Dome),_20240817_1050_4231.jpg"
+orcia-1.jpg,orcia,VieriTommasiCandidi,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Val_d%27Orcia_TuscanyPeople.jpg
+orcia-2.jpg,orcia,Didier Baertschiger,CC BY-SA 2.0,https://commons.wikimedia.org/wiki/File:Italy_-_Tuscany_-_Val_d%27Orcia.jpg
+orcia-3.jpg,orcia,Anna.Massini,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Wle_2023_-_val_d%27orcia_3_-_Rotoballe.jpg
+goree-1.jpg,goree,Fawaz.tairou,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:C%C3%B4tes_de_l%27%C3%AEle_de_Gor%C3%A9e_au_S%C3%A9n%C3%A9gal_11.jpg
+goree-2.jpg,goree,Fawaz.tairou,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:C%C3%B4tes_de_l%27%C3%AEle_de_Gor%C3%A9e_au_S%C3%A9n%C3%A9gal_05.jpg
+goree-3.jpg,goree,"TSGT JUSTIN D. PYLE, USAF",Public domain,"https://commons.wikimedia.org/wiki/File:Goree_Island,_Senegal.jpg"
+sharkbay-1.jpg,sharkbay,Happy Little Nomad,CC BY-SA 2.0,https://commons.wikimedia.org/wiki/File:Stromatolites_in_Shark_Bay.jpg
+sharkbay-2.jpg,sharkbay,C Eeckhout,CC BY 3.0,https://commons.wikimedia.org/wiki/File:StromatolitheAustralie2008_13.jpeg
+sharkbay-3.jpg,sharkbay,C Eeckhout,CC BY 3.0,https://commons.wikimedia.org/wiki/File:StromatolitheAustralie2008CE.jpeg
+plitvice-1.jpg,plitvice,Tesla Delacroix,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Plitvice_Lakes1.jpg
+plitvice-2.jpg,plitvice,Berthold Werner,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Plitvice_Lakes_National_Park_BW_2014-10-13_13-14-59.jpg
+plitvice-3.jpg,plitvice,Berthold Werner,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Plitvice_Lakes_National_Park_BW_2014-10-13_14-01-15.jpg
+kyoto-1.jpg,kyoto,Basile Morin,CC BY-SA 4.0,"https://commons.wikimedia.org/wiki/File:Water_reflection_of_Kinkaku-ji_Temple_with_blue_sky_and_white_clouds,_Kyoto,_Japan.jpg"
+kyoto-2.jpg,kyoto,Jaycangel,CC BY-SA 3.0,https://commons.wikimedia.org/wiki/File:Kinkaku-ji_the_Golden_Temple_in_Kyoto_overlooking_the_lake_-_high_rez.JPG
+kyoto-3.jpg,kyoto,Martin Falbisoner,CC BY-SA 4.0,https://commons.wikimedia.org/wiki/File:Kinkaku-ji_in_November_2016_-04.jpg
