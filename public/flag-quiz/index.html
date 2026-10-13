@@ -16,9 +16,10 @@
     --ok: #16a34a;
     --ng: #dc2626;
     --track: #eef0f5;
+    --on-accent: #ffffff;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --bg: #11141b;
       --card: #1a1f2a;
       --text: #e8ebf2;
@@ -29,7 +30,23 @@
       --ok: #4ade80;
       --ng: #f87171;
       --track: #252b38;
+      --on-accent: #11141b;
+      color-scheme: dark;
     }
+  }
+  :root[data-theme="dark"] {
+    --bg: #11141b;
+    --card: #1a1f2a;
+    --text: #e8ebf2;
+    --muted: #9aa3b5;
+    --line: #2c3342;
+    --a: #60a5fa;
+    --b: #fb923c;
+    --ok: #4ade80;
+    --ng: #f87171;
+    --track: #252b38;
+    --on-accent: #11141b;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   body {
@@ -70,9 +87,8 @@
   .choice .rank strong { font-size: 1.5rem; color: var(--text); }
   .choice.correct { border-color: var(--ok); }
   .choice.wrong { border-color: var(--ng); }
-  .badge { font-size: .8rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; color: #fff; }
+  .badge { font-size: .8rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; color: var(--on-accent); }
   .badge.ok { background: var(--ok); } .badge.ng { background: var(--ng); }
-  @media (prefers-color-scheme: dark) { .badge { color: #11141b; } }
 
   .result { margin-top: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
   .verdict { font-size: 1.3rem; font-weight: 800; text-align: center; margin: 0 0 4px; }
@@ -114,8 +130,7 @@
   button.primary, button.secondary, select {
     font: inherit; border-radius: 10px; padding: 10px 22px; cursor: pointer;
   }
-  button.primary { background: var(--a); color: #fff; border: none; font-weight: 700; }
-  @media (prefers-color-scheme: dark) { button.primary { color: #11141b; } }
+  button.primary { background: var(--a); color: var(--on-accent); border: none; font-weight: 700; }
   button.secondary, select { background: var(--card); color: var(--text); border: 1px solid var(--line); }
   .settings { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: .9rem; }
   select { padding: 6px 10px; }
@@ -127,6 +142,7 @@
   .history .mark { display: inline-block; width: 1.4em; font-weight: 700; }
   footer { margin-top: 28px; font-size: .8rem; color: var(--muted); text-align: center; }
   .hidden { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 
   @media (max-width: 480px) {
     .choices { gap: 10px; }
