@@ -100,7 +100,17 @@
 
   /* 棒グラフ */
   .bar-row { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; align-items: center; margin: 6px 0; }
-  .bar-label { font-size: .9rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-label { font-size: .9rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .bar-label .nm { overflow: hidden; text-overflow: ellipsis; }
+  .mini-flag { width: 24px; height: 18px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 0 1px var(--line); flex: none; vertical-align: middle; }
+  .win-tag { font-size: .7rem; font-weight: 700; color: var(--ok); border: 1px solid var(--ok); border-radius: 999px; padding: 0 6px; flex: none; }
+  .answer { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 6px 0 14px; }
+  .answer-card { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); min-width: 0; }
+  .answer-card img { width: 96px; height: 72px; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 1px var(--line); }
+  .answer-card .lbl { font-size: .75rem; font-weight: 700; letter-spacing: .04em; }
+  .answer-card .nm { font-size: .9rem; font-weight: 700; }
+  .answer-card.win { border-color: var(--ok); } .answer-card.win .lbl { color: var(--ok); }
+  .answer-card.pick { border-color: var(--ng); } .answer-card.pick .lbl { color: var(--ng); }
   .bar-track { background: var(--track); border-radius: 6px; height: 28px; position: relative; overflow: hidden; }
   .bar-fill { height: 100%; width: 0; border-radius: 6px; transition: width .7s cubic-bezier(.2,.8,.2,1); }
   .bar-value { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -108,7 +118,7 @@
   /* 人型アイコン */
   .people { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .people-box { background: var(--track); border-radius: 10px; padding: 10px; }
-  .people-box .cap { font-size: .85rem; font-weight: 600; margin-bottom: 6px; }
+  .people-box .cap { font-size: .85rem; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .people-grid { display: flex; flex-wrap: wrap; gap: 2px; }
   .person { width: 14px; height: 14px; }
   .people-note { font-size: .8rem; color: var(--muted); margin-top: 6px; }
@@ -120,7 +130,7 @@
   .strip-bars span.a { background: var(--a); }
   .strip-bars span.b { background: var(--b); }
   .pin {
-    position: absolute; top: 0; transform: translateX(-50%);
+    position: absolute; top: 0; transform: translateX(-50%); display: flex; align-items: center; gap: 4px;
     font-size: .75rem; font-weight: 700; white-space: nowrap; text-align: center; line-height: 1.25;
   }
   .stem { position: absolute; top: 32px; bottom: 18px; width: 2px; transform: translateX(-50%); }
@@ -138,8 +148,17 @@
   .final { text-align: center; }
   .final .big { font-size: 3rem; font-weight: 800; margin: 8px 0; font-variant-numeric: tabular-nums; }
   .history { text-align: left; margin-top: 14px; font-size: .9rem; }
-  .history li { margin: 4px 0; }
-  .history .mark { display: inline-block; width: 1.4em; font-weight: 700; }
+  .history { list-style: none; padding: 0; display: grid; gap: 8px; }
+  .history li { display: grid; grid-template-columns: 2.2em 1.6em 1fr; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; }
+  .history .no { color: var(--muted); font-size: .8rem; font-variant-numeric: tabular-nums; }
+  .history .mark { font-weight: 700; font-size: 1.1rem; text-align: center; }
+  .history .pair { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; min-width: 0; }
+  .history .ctry { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 2px 6px 2px 2px; border-radius: 6px; border: 2px solid transparent; }
+  .history .ctry.win { border-color: var(--ok); }
+  .history .ctry .rk { color: var(--muted); font-size: .8rem; font-variant-numeric: tabular-nums; }
+  .history .vs { color: var(--muted); font-size: .8rem; }
+  .history .you { font-size: .7rem; font-weight: 700; color: var(--muted); }
+  .legend { font-size: .8rem; color: var(--muted); margin-top: 8px; text-align: left; }
   footer { margin-top: 28px; font-size: .8rem; color: var(--muted); text-align: center; }
   .hidden { display: none !important; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
@@ -147,7 +166,7 @@
   @media (max-width: 480px) {
     .choices { gap: 10px; }
     .choice { padding: 10px; }
-    .bar-row { grid-template-columns: 5.5em 1fr; }
+    .bar-row { grid-template-columns: 8em 1fr; }
     .people { grid-template-columns: 1fr; }
     .person { width: 12px; height: 12px; }
   }
@@ -178,6 +197,7 @@
 
     <div class="result hidden" id="result">
       <p class="verdict" id="verdict"></p>
+      <div class="answer" id="answer"></div>
       <p class="ratio" id="ratio"></p>
 
       <h2>人口の比較（同じ目盛り）</h2>
@@ -205,6 +225,7 @@
     <p id="finalMsg"></p>
     <p class="status" id="bestScore"></p>
     <ol class="history" id="history"></ol>
+    <p class="legend">緑の枠＝人口が多い国（正解）</p>
     <div class="actions">
       <button class="primary" id="restart">もう一度あそぶ</button>
     </div>
@@ -239,6 +260,7 @@
   };
   const fmtRatio = (r) => r >= 100 ? Math.round(r).toLocaleString("ja-JP") : r >= 10 ? r.toFixed(0) : r.toFixed(1);
   const flagUrl = (code) => `flags/${code}.svg`;
+  const miniFlag = (c) => `<img class="mini-flag" src="${flagUrl(c.code)}" alt="${c.name}の国旗">`;
 
   try { const saved = localStorage.getItem("flagquiz-level"); if (saved) levelSel.value = saved; } catch (e) {}
 
@@ -312,8 +334,14 @@
     const v = $("verdict");
     v.textContent = correct ? "正解！" : "ざんねん…";
     v.className = "verdict " + (correct ? "ok" : "ng");
+    $("answer").innerHTML =
+      `<div class="answer-card win"><span class="lbl">正解（人口が多い）</span>` +
+      `<img src="${flagUrl(big.code)}" alt="${big.name}の国旗"><span class="nm">${big.name}</span></div>` +
+      (correct ? "" :
+        `<div class="answer-card pick"><span class="lbl">あなたの選択</span>` +
+        `<img src="${flagUrl(picked.code)}" alt="${picked.name}の国旗"><span class="nm">${picked.name}</span></div>`);
     $("ratio").innerHTML =
-      `${big.name}は${small.name}の <strong>約${fmtRatio(ratio)}倍</strong>（差は ${fmtPop(big.pop - small.pop)}）`;
+      `${miniFlag(big)} ${big.name}は ${miniFlag(small)} ${small.name}の <strong>約${fmtRatio(ratio)}倍</strong>（差は ${fmtPop(big.pop - small.pop)}）`;
 
     renderBars(a, b);
     renderPeople(a, b, big);
@@ -330,7 +358,7 @@
     const colors = ["var(--a)", "var(--b)"];
     $("bars").innerHTML = [a, b].map((c, i) => `
       <div class="bar-row">
-        <span class="bar-label" title="${c.name}">${c.name}</span>
+        <span class="bar-label" title="${c.name}">${miniFlag(c)}<span class="nm">${c.name}</span></span>
         <div class="bar-track">
           <div class="bar-fill" style="background:${colors[i]}" data-w="${(c.pop / max) * 100}"></div>
           <span class="bar-value">${fmtPop(c.pop)}</span>
@@ -374,7 +402,7 @@
       let icons = personSvg(colors[i]).repeat(full);
       if (frac > 0.05 || full === 0) icons += personSvg(colors[i], Math.max(frac, 0.15));
       return `<div class="people-box">
-        <div class="cap">${c.name}</div>
+        <div class="cap">${miniFlag(c)}${c.name}${c === big ? '<span class="win-tag">多い</span>' : ""}</div>
         <div class="people-grid">${icons}</div>
       </div>`;
     }).join("") + `<p class="people-note" style="grid-column:1/-1">アイコン1つ ＝ ${fmtPop(unit)}</p>`;
@@ -398,7 +426,7 @@
       let x = pos(c);
       if (close) x = i === 0 ? Math.min(x, pos(r) - 11) : Math.max(x, pos(l) + 11);
       x = Math.min(Math.max(x, 9), 91);
-      return `<div class="pin" style="left:${x}%;color:${color}">${c.name}<br>${c.rank}位</div>` +
+      return `<div class="pin" style="left:${x}%;color:${color}">${miniFlag(c)}<span>${c.name}<br>${c.rank}位</span></div>` +
         `<div class="stem" style="left:${pos(c)}%;background:${color}"></div>`;
     }).join("");
   }
@@ -420,11 +448,16 @@
       if (s > best) { best = s; localStorage.setItem(key, String(s)); }
     } catch (e) { best = Math.max(best, s); }
     $("bestScore").textContent = `この難易度の自己ベスト：${best} / ${TOTAL_QUESTIONS}`;
-    $("history").innerHTML = state.history.map((h) => {
-      const [x, y] = [h.a, h.b];
-      return `<li><span class="mark" style="color:var(${h.correct ? "--ok" : "--ng"})">${h.correct ? "○" : "×"}</span>
-        ${x.name}（${x.rank}位） vs ${y.name}（${y.rank}位）</li>`;
-    }).join("");
+    const ctry = (c, h) => {
+      const win = c.pop >= (c === h.a ? h.b : h.a).pop;
+      return `<span class="ctry${win ? " win" : ""}">${miniFlag(c)}${c.name}<span class="rk">${c.rank}位</span>` +
+        `${c === h.picked ? '<span class="you">選択</span>' : ""}</span>`;
+    };
+    $("history").innerHTML = state.history.map((h, n) =>
+      `<li><span class="no">Q${n + 1}</span>` +
+      `<span class="mark" style="color:var(${h.correct ? "--ok" : "--ng"})">${h.correct ? "○" : "×"}</span>` +
+      `<span class="pair">${ctry(h.a, h)}<span class="vs">vs</span>${ctry(h.b, h)}</span></li>`
+    ).join("");
     $("restart").focus({ preventScroll: true });
   }
 
