@@ -5,7 +5,8 @@ sites.csv の検索キーワードで Commons を検索し、再利用可能な�
 幅1000pxのサムネイルを candidates/<id>/<n>.jpg に保存する。
 作者・ライセンス・元ページは candidates.csv に記録する。
 
-使い方: python heritage-quiz/fetch_candidates.py [--per-site 4] [id ...]
+使い方: python heritage-quiz/fetch_candidates.py [--per-site 4] [--changed-since REV] [id ...]
+  --changed-since: 指定したコミットから sites.csv の検索キーワードが変わった id だけを取り直す
 """
 import argparse
 import csv
@@ -13,6 +14,7 @@ import html
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.parse
@@ -87,10 +89,22 @@ def search(query, limit):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--per-site", type=int, default=4)
+    ap.add_argument("--changed-since")
     ap.add_argument("ids", nargs="*")
     a = ap.parse_args()
 
     sites = list(csv.DictReader(open(os.path.join(HERE, "sites.csv"), encoding="utf-8")))
+    if a.changed_since and not a.ids:
+        try:
+            old = subprocess.run(["git", "show", f"{a.changed_since}:heritage-quiz/sites.csv"],
+                                 capture_output=True, text=True, check=True, cwd=HERE).stdout
+            before = {r["id"]: r["query"] for r in csv.DictReader(old.splitlines())}
+            a.ids = [s["id"] for s in sites if before.get(s["id"]) != s["query"]]
+            if not a.ids:
+                print("no query changes")
+                return
+        except subprocess.CalledProcessError:
+            pass  # 比較できないときは全件
     if a.ids:
         sites = [s for s in sites if s["id"] in a.ids]
 
