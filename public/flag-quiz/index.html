@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>国旗人口クイズ</title>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --text: #1d2433;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --a: #2563eb;
+    --b: #ea580c;
+    --ok: #16a34a;
+    --ng: #dc2626;
+    --track: #eef0f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11141b;
+      --card: #1a1f2a;
+      --text: #e8ebf2;
+      --muted: #9aa3b5;
+      --line: #2c3342;
+      --a: #60a5fa;
+      --b: #fb923c;
+      --ok: #4ade80;
+      --ng: #f87171;
+      --track: #252b38;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+    line-height: 1.5;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 20px 16px 48px; }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 1.4rem; margin: 0; }
+  .status { color: var(--muted); font-size: .95rem; font-variant-numeric: tabular-nums; }
+  .status b { color: var(--text); }
+  .question { text-align: center; font-size: 1.15rem; font-weight: 700; margin: 20px 0 14px; }
+
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .choice {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    transition: transform .12s, border-color .12s, box-shadow .12s;
+  }
+  .choice:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.08); }
+  .choice:focus-visible { outline: 3px solid var(--a); outline-offset: 2px; }
+  .choice:disabled { cursor: default; }
+  .choice img {
+    width: 100%; aspect-ratio: 3 / 2; object-fit: contain;
+    background: var(--track); border-radius: 6px;
+  }
+  .choice .name { font-weight: 700; font-size: 1.05rem; }
+  .choice .rank { font-size: .9rem; color: var(--muted); min-height: 1.4em; font-variant-numeric: tabular-nums; }
+  .choice .rank strong { font-size: 1.5rem; color: var(--text); }
+  .choice.correct { border-color: var(--ok); }
+  .choice.wrong { border-color: var(--ng); }
+  .badge { font-size: .8rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; color: #fff; }
+  .badge.ok { background: var(--ok); } .badge.ng { background: var(--ng); }
+  @media (prefers-color-scheme: dark) { .badge { color: #11141b; } }
+
+  .result { margin-top: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .verdict { font-size: 1.3rem; font-weight: 800; text-align: center; margin: 0 0 4px; }
+  .verdict.ok { color: var(--ok); } .verdict.ng { color: var(--ng); }
+  .ratio { text-align: center; margin: 0 0 16px; color: var(--muted); }
+  .ratio strong { color: var(--text); font-size: 1.25rem; }
+
+  h2 { font-size: .85rem; color: var(--muted); font-weight: 600; margin: 18px 0 8px; letter-spacing: .02em; }
+
+  /* 棒グラフ */
+  .bar-row { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; align-items: center; margin: 6px 0; }
+  .bar-label { font-size: .9rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-track { background: var(--track); border-radius: 6px; height: 28px; position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; width: 0; border-radius: 6px; transition: width .7s cubic-bezier(.2,.8,.2,1); }
+  .bar-value { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* 人型アイコン */
+  .people { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .people-box { background: var(--track); border-radius: 10px; padding: 10px; }
+  .people-box .cap { font-size: .85rem; font-weight: 600; margin-bottom: 6px; }
+  .people-grid { display: flex; flex-wrap: wrap; gap: 2px; }
+  .person { width: 14px; height: 14px; }
+  .people-note { font-size: .8rem; color: var(--muted); margin-top: 6px; }
+
+  /* 世界順位マップ */
+  .strip { position: relative; height: 120px; }
+  .strip-bars { position: absolute; inset: 44px 0 18px 0; display: flex; align-items: flex-end; gap: 1px; }
+  .strip-bars span { flex: 1; background: var(--line); min-height: 1px; border-radius: 1px 1px 0 0; }
+  .strip-bars span.a { background: var(--a); }
+  .strip-bars span.b { background: var(--b); }
+  .pin {
+    position: absolute; top: 0; transform: translateX(-50%);
+    font-size: .75rem; font-weight: 700; white-space: nowrap; text-align: center; line-height: 1.25;
+  }
+  .stem { position: absolute; top: 32px; bottom: 18px; width: 2px; transform: translateX(-50%); }
+  .strip-axis { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); }
+
+  .actions { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  button.primary, button.secondary, select {
+    font: inherit; border-radius: 10px; padding: 10px 22px; cursor: pointer;
+  }
+  button.primary { background: var(--a); color: #fff; border: none; font-weight: 700; }
+  @media (prefers-color-scheme: dark) { button.primary { color: #11141b; } }
+  button.secondary, select { background: var(--card); color: var(--text); border: 1px solid var(--line); }
+  .settings { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: .9rem; }
+  select { padding: 6px 10px; }
+
+  .final { text-align: center; }
+  .final .big { font-size: 3rem; font-weight: 800; margin: 8px 0; font-variant-numeric: tabular-nums; }
+  .history { text-align: left; margin-top: 14px; font-size: .9rem; }
+  .history li { margin: 4px 0; }
+  .history .mark { display: inline-block; width: 1.4em; font-weight: 700; }
+  footer { margin-top: 28px; font-size: .8rem; color: var(--muted); text-align: center; }
+  .hidden { display: none !important; }
+
+  @media (max-width: 480px) {
+    .choices { gap: 10px; }
+    .choice { padding: 10px; }
+    .bar-row { grid-template-columns: 5.5em 1fr; }
+    .people { grid-template-columns: 1fr; }
+    .person { width: 12px; height: 12px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>国旗人口クイズ</h1>
+    <div class="settings">
+      <label for="level">難易度</label>
+      <select id="level">
+        <option value="50">かんたん（上位50か国）</option>
+        <option value="120" selected>ふつう（上位120か国）</option>
+        <option value="999">むずかしい（全196か国）</option>
+      </select>
+    </div>
+  </header>
+
+  <p class="status" id="status"></p>
+
+  <section id="game">
+    <p class="question">人口が多いのはどっち？</p>
+    <div class="choices">
+      <button class="choice" id="choice0" data-i="0"></button>
+      <button class="choice" id="choice1" data-i="1"></button>
+    </div>
+
+    <div class="result hidden" id="result">
+      <p class="verdict" id="verdict"></p>
+      <p class="ratio" id="ratio"></p>
+
+      <h2>人口の比較（同じ目盛り）</h2>
+      <div id="bars"></div>
+
+      <h2>人型アイコンで見ると</h2>
+      <div class="people" id="people"></div>
+
+      <h2>世界の人口ランキングの中での位置（左が1位）</h2>
+      <div class="strip">
+        <div class="strip-bars" id="strip"></div>
+        <div id="pins"></div>
+        <div class="strip-axis"><span>1位</span><span id="stripLast"></span></div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="next">次の問題 →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="final" class="final result hidden">
+    <p>結果</p>
+    <p class="big" id="finalScore"></p>
+    <p id="finalMsg"></p>
+    <p class="status" id="bestScore"></p>
+    <ol class="history" id="history"></ol>
+    <div class="actions">
+      <button class="primary" id="restart">もう一度あそぶ</button>
+    </div>
+  </section>
+
+  <footer>
+    人口：国連「World Population Prospects 2024」による2024年推計（概数）。順位はこのクイズに収録した196の国・地域の中での順位です。<br>
+    国旗画像：<a href="https://github.com/lipis/flag-icons">flag-icons</a>（MIT License）
+  </footer>
+</main>
+
+<script src="countries.js"></script>
+<script>
+(() => {
+  const TOTAL_QUESTIONS = 10;
+  const ALL = window.COUNTRIES
+    .map(([code, name, pop]) => ({ code, name, pop }))
+    .sort((x, y) => y.pop - x.pop);
+  ALL.forEach((c, i) => { c.rank = i + 1; });
+  const MAX_POP = ALL[0].pop;
+
+  const $ = (id) => document.getElementById(id);
+  const choiceEls = [$("choice0"), $("choice1")];
+  const levelSel = $("level");
+
+  let state;
+
+  const fmtPop = (n) => {
+    if (n >= 1e8) return (n / 1e8).toFixed(n >= 1e9 ? 1 : 2).replace(/\.?0+$/, "") + "億人";
+    if (n >= 1e4) return Math.round(n / 1e4).toLocaleString("ja-JP") + "万人";
+    return n.toLocaleString("ja-JP") + "人";
+  };
+  const fmtRatio = (r) => r >= 100 ? Math.round(r).toLocaleString("ja-JP") : r >= 10 ? r.toFixed(0) : r.toFixed(1);
+  const flagUrl = (code) => `flags/${code}.svg`;
+
+  try { const saved = localStorage.getItem("flagquiz-level"); if (saved) levelSel.value = saved; } catch (e) {}
+
+  function pickPair() {
+    const pool = ALL.slice(0, Math.min(+levelSel.value, ALL.length));
+    let a, b;
+    do {
+      a = pool[Math.floor(Math.random() * pool.length)];
+      b = pool[Math.floor(Math.random() * pool.length)];
+    } while (a === b || state.seen.has(a.code + b.code) || state.seen.has(b.code + a.code));
+    state.seen.add(a.code + b.code);
+    return [a, b];
+  }
+
+  function start() {
+    state = { q: 0, score: 0, seen: new Set(), history: [] };
+    $("final").classList.add("hidden");
+    $("game").classList.remove("hidden");
+    nextQuestion();
+  }
+
+  function updateStatus() {
+    $("status").innerHTML = `第 <b>${state.q}</b> / ${TOTAL_QUESTIONS} 問　正解 <b>${state.score}</b>`;
+  }
+
+  function nextQuestion() {
+    if (state.q >= TOTAL_QUESTIONS) return finish();
+    state.q++;
+    state.pair = pickPair();
+    state.answered = false;
+    updateStatus();
+    state.pair.forEach((c, i) => {
+      const el = choiceEls[i];
+      el.disabled = false;
+      el.className = "choice";
+      el.innerHTML = `
+        <img src="${flagUrl(c.code)}" alt="${c.name}の国旗">
+        <span class="name">${c.name}</span>
+        <span class="rank"></span>`;
+    });
+    $("result").classList.add("hidden");
+    choiceEls[0].focus({ preventScroll: true });
+  }
+
+  function answer(i) {
+    if (state.answered) return;
+    state.answered = true;
+    const [a, b] = state.pair;
+    const picked = state.pair[i];
+    const other = state.pair[1 - i];
+    const correct = picked.pop >= other.pop;
+    if (correct) state.score++;
+    state.history.push({ a, b, picked, correct });
+    updateStatus();
+
+    state.pair.forEach((c, j) => {
+      const el = choiceEls[j];
+      el.disabled = true;
+      const isBigger = c.pop >= state.pair[1 - j].pop;
+      if (j === i) el.classList.add(correct ? "correct" : "wrong");
+      else if (!correct) el.classList.add("correct");
+      el.querySelector(".rank").innerHTML =
+        `世界 <strong>${c.rank}</strong> 位 ・ ${fmtPop(c.pop)}` +
+        (j === i ? `<br><span class="badge ${correct ? "ok" : "ng"}">あなたの選択</span>` : "");
+    });
+
+    const big = a.pop >= b.pop ? a : b;
+    const small = big === a ? b : a;
+    const ratio = big.pop / small.pop;
+
+    const v = $("verdict");
+    v.textContent = correct ? "正解！" : "ざんねん…";
+    v.className = "verdict " + (correct ? "ok" : "ng");
+    $("ratio").innerHTML =
+      `${big.name}は${small.name}の <strong>約${fmtRatio(ratio)}倍</strong>（差は ${fmtPop(big.pop - small.pop)}）`;
+
+    renderBars(a, b);
+    renderPeople(a, b, big);
+    renderStrip(a, b);
+
+    $("result").classList.remove("hidden");
+    $("next").textContent = state.q >= TOTAL_QUESTIONS ? "結果を見る →" : "次の問題 →";
+    $("next").focus({ preventScroll: true });
+    $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function renderBars(a, b) {
+    const max = Math.max(a.pop, b.pop);
+    const colors = ["var(--a)", "var(--b)"];
+    $("bars").innerHTML = [a, b].map((c, i) => `
+      <div class="bar-row">
+        <span class="bar-label" title="${c.name}">${c.name}</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="background:${colors[i]}" data-w="${(c.pop / max) * 100}"></div>
+          <span class="bar-value">${fmtPop(c.pop)}</span>
+        </div>
+      </div>`).join("");
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.querySelectorAll("#bars .bar-fill").forEach((el) => {
+        // ほぼゼロでも存在が見えるよう最小幅を確保
+        el.style.width = Math.max(+el.dataset.w, 0.6) + "%";
+      });
+    }));
+  }
+
+  // 大きい方を最大100アイコンに収まる「キリのいい単位」で表す
+  function niceUnit(pop) {
+    const raw = pop / 100;
+    const steps = [1, 2, 5];
+    let mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    for (;;) {
+      for (const s of steps) if (s * mag >= raw) return s * mag;
+      mag *= 10;
+    }
+  }
+
+  const personSvg = (color, frac = 1) => {
+    const id = "p" + Math.random().toString(36).slice(2, 8);
+    const shape = `<circle cx="7" cy="3.6" r="2.8"/><path d="M2.2 14c0-3.4 2.1-6.2 4.8-6.2s4.8 2.8 4.8 6.2z"/>`;
+    if (frac >= 1) return `<svg class="person" viewBox="0 0 14 14" fill="${color}">${shape}</svg>`;
+    return `<svg class="person" viewBox="0 0 14 14">
+      <defs><clipPath id="${id}"><rect x="0" y="0" width="${14 * frac}" height="14"/></clipPath></defs>
+      <g fill="var(--line)">${shape}</g><g fill="${color}" clip-path="url(#${id})">${shape}</g></svg>`;
+  };
+
+  function renderPeople(a, b, big) {
+    const unit = niceUnit(big.pop);
+    const colors = ["var(--a)", "var(--b)"];
+    $("people").innerHTML = [a, b].map((c, i) => {
+      const n = c.pop / unit;
+      const full = Math.floor(n);
+      const frac = n - full;
+      let icons = personSvg(colors[i]).repeat(full);
+      if (frac > 0.05 || full === 0) icons += personSvg(colors[i], Math.max(frac, 0.15));
+      return `<div class="people-box">
+        <div class="cap">${c.name}</div>
+        <div class="people-grid">${icons}</div>
+      </div>`;
+    }).join("") + `<p class="people-note" style="grid-column:1/-1">アイコン1つ ＝ ${fmtPop(unit)}</p>`;
+  }
+
+  function renderStrip(a, b) {
+    // 対数スケールの高さで全ての国を並べ、出題の2か国を色付け
+    const logMax = Math.log10(MAX_POP), logMin = Math.log10(ALL[ALL.length - 1].pop);
+    $("strip").innerHTML = ALL.map((c) => {
+      const h = 6 + ((Math.log10(c.pop) - logMin) / (logMax - logMin)) * 94;
+      const cls = c === a ? "a" : c === b ? "b" : "";
+      return `<span class="${cls}" style="height:${h}%" title="${c.rank}位 ${c.name}"></span>`;
+    }).join("");
+    $("stripLast").textContent = ALL.length + "位";
+    // 2か国の位置にラベル付きのピンを立てる（重なる場合は左右にずらす）
+    const pos = (c) => ((c.rank - 0.5) / ALL.length) * 100;
+    const [l, r] = pos(a) <= pos(b) ? [a, b] : [b, a];
+    const close = pos(r) - pos(l) < 22;
+    $("pins").innerHTML = [l, r].map((c, i) => {
+      const color = c === a ? "var(--a)" : "var(--b)";
+      let x = pos(c);
+      if (close) x = i === 0 ? Math.min(x, pos(r) - 11) : Math.max(x, pos(l) + 11);
+      x = Math.min(Math.max(x, 9), 91);
+      return `<div class="pin" style="left:${x}%;color:${color}">${c.name}<br>${c.rank}位</div>` +
+        `<div class="stem" style="left:${pos(c)}%;background:${color}"></div>`;
+    }).join("");
+  }
+
+  function finish() {
+    $("game").classList.add("hidden");
+    $("final").classList.remove("hidden");
+    $("status").innerHTML = "";
+    const s = state.score;
+    $("finalScore").textContent = `${s} / ${TOTAL_QUESTIONS}`;
+    $("finalMsg").textContent =
+      s === TOTAL_QUESTIONS ? "パーフェクト！人口マスターです 🎉" :
+      s >= 8 ? "すばらしい！かなり詳しいですね" :
+      s >= 5 ? "なかなか！もう一度挑戦してみよう" : "意外な結果が多かったかも？";
+    let best = 0;
+    const key = "flagquiz-best-" + levelSel.value;
+    try {
+      best = +(localStorage.getItem(key) || 0);
+      if (s > best) { best = s; localStorage.setItem(key, String(s)); }
+    } catch (e) { best = Math.max(best, s); }
+    $("bestScore").textContent = `この難易度の自己ベスト：${best} / ${TOTAL_QUESTIONS}`;
+    $("history").innerHTML = state.history.map((h) => {
+      const [x, y] = [h.a, h.b];
+      return `<li><span class="mark" style="color:var(${h.correct ? "--ok" : "--ng"})">${h.correct ? "○" : "×"}</span>
+        ${x.name}（${x.rank}位） vs ${y.name}（${y.rank}位）</li>`;
+    }).join("");
+    $("restart").focus({ preventScroll: true });
+  }
+
+  choiceEls.forEach((el) => el.addEventListener("click", () => answer(+el.dataset.i)));
+  $("next").addEventListener("click", nextQuestion);
+  $("restart").addEventListener("click", start);
+  levelSel.addEventListener("change", () => {
+    try { localStorage.setItem("flagquiz-level", levelSel.value); } catch (e) {}
+    start();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.target === levelSel) return;
+    if (!state.answered && (e.key === "ArrowLeft" || e.key === "1")) answer(0);
+    else if (!state.answered && (e.key === "ArrowRight" || e.key === "2")) answer(1);
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>
