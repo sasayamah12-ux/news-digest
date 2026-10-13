@@ -191,7 +191,7 @@ body {
   </header>
   <div class="bar" aria-hidden="true"><i id="barfill"></i></div>
   <main id="stage" tabindex="-1"></main>
-  <p class="foot">ランキングは、PR TIMESに掲載された「勉強して行きたくなった世界遺産 TOP50」をもとにしています。同順位を含めて57件ある中から、複数の国にまたがるものと、絵にするのが難しいものを除いた50件を採用しました。<span id="footimg">画像は簡略化したイラスト</span>、国旗も簡略化した図です。</p>
+  <p class="foot">ランキングは、PR TIMESに掲載された「勉強して行きたくなった世界遺産 TOP50」をもとにしています。同順位を含めて57件ある中から、複数の国にまたがるものと、絵にするのが難しいものを除いた50件を採用しました。追加の50件は、写真で見分けやすい遺産を選んでいます(複数の国にまたがるものは除外)。<span id="footimg">画像は簡略化したイラスト</span>、国旗も簡略化した図です。</p>
 </div>
 
 <script>
@@ -312,6 +312,8 @@ body {
   FLAGS.au = flag(R(0, 0, 60, 40, '#012169') + JACK() + fs(15, 30, 4, '#fff', 7, 0.45) + fs(44, 33, 3, '#fff') + fs(36, 21, 2.4, '#fff') + fs(51, 17, 2.4, '#fff') + fs(44, 8, 2.8, '#fff'));
   FLAGS.nz = flag(R(0, 0, 60, 40, '#00247d') + JACK() + fs(45, 31, 3, '#cc142b') + fs(38, 18, 3, '#cc142b') + fs(52, 16, 3, '#cc142b') + fs(45, 7, 3, '#cc142b'));
   FLAGS.gb = flag(UJ(60, 40));
+  FLAGS.mm = flag(H3('#fecb00', '#34b233', '#ea2839') + fs(30, 21, 11, '#fff'));
+  FLAGS.ml = flag(V3('#14b53a', '#fcd116', '#ce1126'));
   var SCENES = {
     taj: '<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' +
       '<defs>' +
@@ -700,6 +702,7 @@ body {
     R(126, 94, 4, 14, '#8a5a1a') + R(190, 94, 4, 14, '#8a5a1a') + P('152,58 160,42 168,58', '#4a3a30') + C(160, 38, 2.4, '#d9a93a') +
     R(112, 134, 96, 22, '#e6bd4a', .22) + R(120, 156, 80, 12, '#e6bd4a', .14) + L('M30 160H100M220 170H300M90 186H230', '#fff', 1.2, .25) + PINE(40, 134, 50, '#2f5a3f') + PINE(282, 134, 54, '#2f5a3f'));
   var NAMES = {
+    id: ['インドネシア', 'Indonesia'], kh: ['カンボジア', 'Cambodia'], la: ['ラオス', 'Laos'], mm: ['ミャンマー', 'Myanmar'],
     jp: ['日本', 'Japan'], cn: ['中国', 'China'], kr: ['韓国', 'South Korea'], th: ['タイ', 'Thailand'], vn: ['ベトナム', 'Vietnam'],
     'in': ['インド', 'India'], lk: ['スリランカ', 'Sri Lanka'], pk: ['パキスタン', 'Pakistan'], bd: ['バングラデシュ', 'Bangladesh'],
     uz: ['ウズベキスタン', 'Uzbekistan'], kz: ['カザフスタン', 'Kazakhstan'], ir: ['イラン', 'Iran'], tr: ['トルコ', 'Türkiye'], jo: ['ヨルダン', 'Jordan'],
@@ -709,16 +712,17 @@ body {
     us: ['アメリカ', 'United States'], ca: ['カナダ', 'Canada'], mx: ['メキシコ', 'Mexico'], br: ['ブラジル', 'Brazil'], pe: ['ペルー', 'Peru'],
     cl: ['チリ', 'Chile'], ar: ['アルゼンチン', 'Argentina'], ve: ['ベネズエラ', 'Venezuela'], co: ['コロンビア', 'Colombia'],
     eg: ['エジプト', 'Egypt'], tz: ['タンザニア', 'Tanzania'], sn: ['セネガル', 'Senegal'], ma: ['モロッコ', 'Morocco'], ke: ['ケニア', 'Kenya'],
-    za: ['南アフリカ', 'South Africa'], et: ['エチオピア', 'Ethiopia'], au: ['オーストラリア', 'Australia'], nz: ['ニュージーランド', 'New Zealand'], gb: ['イギリス', 'United Kingdom']
+    za: ['南アフリカ', 'South Africa'], et: ['エチオピア', 'Ethiopia'], ml: ['マリ', 'Mali'], au: ['オーストラリア', 'Australia'], nz: ['ニュージーランド', 'New Zealand'], gb: ['イギリス', 'United Kingdom']
   };
 
   var GROUPS = {
     asiaE: ['jp', 'cn', 'kr', 'th', 'vn'],
     asiaS: ['in', 'lk', 'pk', 'bd', 'th', 'vn'],
+    asiaSE: ['th', 'vn', 'kh', 'la', 'id', 'mm'],
     cwest: ['uz', 'kz', 'ir', 'tr', 'jo', 'eg'],
-    europe: ['fr', 'es', 'it', 'de', 'pl', 'gr', 'at', 'cz', 'hr', 'pt', 'ch', 'nl', 'hu'],
+    europe: ['fr', 'es', 'it', 'de', 'pl', 'gr', 'at', 'cz', 'hr', 'pt', 'ch', 'nl', 'hu', 'gb'],
     americas: ['us', 'ca', 'mx', 'br', 'pe', 'cl', 'ar', 've', 'co'],
-    africa: ['eg', 'tz', 'sn', 'ma', 'ke', 'za', 'et'],
+    africa: ['eg', 'tz', 'sn', 'ma', 'ke', 'za', 'et', 'ml'],
     oceania: ['au', 'nz', 'gb', 'us', 'ca']
   };
 
@@ -775,7 +779,58 @@ body {
     Q(49, 'goree', 'ゴレ島', 'セネガル・ダカール沖', 1978, '文化遺産', 'sn', 'africa', 'かつて大西洋の奴隷貿易の拠点とされ、負の歴史を伝える島です。'),
     Q(49, 'sharkbay', 'シャーク湾', 'オーストラリア・西オーストラリア州', 1991, '自然遺産', 'au', 'oceania', '最古級の生命の痕跡とされるストロマトライトや、野生のイルカで知られます。'),
     Q(49, 'plitvice', 'プリトヴィツェ湖群国立公園', 'クロアチア・リカ=セニ郡', 1979, '自然遺産', 'hr', 'europe', '16の湖が段々に連なり、石灰華の堰を越えて多くの滝が流れ落ちます。'),
-    Q(49, 'kyoto', '古都京都の文化財', '日本・京都府、滋賀県', 1994, '文化遺産', 'jp', 'asiaE', '金閣(鹿苑寺)や清水寺など、17の寺社・城が登録されています。')
+    Q(49, 'kyoto', '古都京都の文化財', '日本・京都府、滋賀県', 1994, '文化遺産', 'jp', 'asiaE', '金閣(鹿苑寺)や清水寺など、17の寺社・城が登録されています。'),
+    // ここから追加の50件(ランキング外。写真で見分けやすい遺産を選んだもの)
+    Q(null, 'angkor', 'アンコール', 'カンボジア・シェムリアップ州', 1992, '文化遺産', 'kh', 'asiaSE', '12世紀に建てられたアンコール・ワットを中心に、クメール王朝の都の遺跡が広がります。'),
+    Q(null, 'borobudur', 'ボロブドゥール寺院遺跡群', 'インドネシア・中部ジャワ州', 1991, '文化遺産', 'id', 'asiaSE', '8〜9世紀に築かれた世界最大級の仏教遺跡で、釣鐘形のストゥーパが段状に並びます。'),
+    Q(null, 'greatwall', '万里の長城', '中国・北京市ほか', 1987, '文化遺産', 'cn', 'asiaE', '北方の遊牧民に備えて築かれた城壁で、現在見られる姿の多くは明の時代のものです。'),
+    Q(null, 'forbidden', '北京と瀋陽の明・清朝の皇宮群', '中国・北京市、遼寧省', 1987, '文化遺産', 'cn', 'asiaE', '北京の紫禁城(故宮)は、明・清の皇帝が約500年にわたり暮らした宮殿です。'),
+    Q(null, 'terracotta', '秦の始皇陵', '中国・陝西省', 1987, '文化遺産', 'cn', 'asiaE', '始皇帝の陵墓のそばから、等身大の兵士や馬をかたどった兵馬俑が数千体見つかっています。'),
+    Q(null, 'halong', 'ハロン湾', 'ベトナム・クアンニン省', 1994, '自然遺産', 'vn', 'asiaSE', '石灰岩の小島が海から2000近くそびえ立つ、独特の景観の湾です。'),
+    Q(null, 'hoian', '古都ホイアン', 'ベトナム・クアンナム省', 1999, '文化遺産', 'vn', 'asiaSE', '15〜19世紀に栄えた港町で、日本人町の名残とされる来遠橋(日本橋)が残ります。'),
+    Q(null, 'ayutthaya', '古都アユタヤ', 'タイ・アユタヤ県', 1991, '文化遺産', 'th', 'asiaSE', '14〜18世紀に栄えたアユタヤ王朝の都で、仏塔や寺院の遺跡が点在します。'),
+    Q(null, 'bulguksa', '石窟庵と仏国寺', '韓国・慶尚北道', 1995, '文化遺産', 'kr', 'asiaE', '8世紀の新羅時代に建てられた寺院と、花崗岩の石仏をまつる石窟です。'),
+    Q(null, 'petra', 'ペトラ', 'ヨルダン・マアン県', 1985, '文化遺産', 'jo', 'cwest', 'ナバテア人が赤い砂岩の崖を彫って造った都市で、宝物殿(エル・カズネ)が有名です。'),
+    Q(null, 'aitbenhaddou', 'アイット=ベン=ハドゥの集落', 'モロッコ・ワルザザート州', 1987, '文化遺産', 'ma', 'africa', '日干しれんがの建物が丘に連なる、サハラ交易路沿いの要塞化した集落です。'),
+    Q(null, 'pamukkale', 'ヒエラポリス-パムッカレ', 'トルコ・デニズリ県', 1988, '複合遺産', 'tr', 'cwest', '温泉の石灰分がつくった真っ白な段々の池と、古代都市ヒエラポリスの遺跡があります。'),
+    Q(null, 'cappadocia', 'ギョレメ国立公園とカッパドキアの岩窟群', 'トルコ・ネヴシェヒル県', 1985, '複合遺産', 'tr', 'cwest', '火山灰が浸食されてできた奇岩が並び、岩を掘った教会や住居が残ります。'),
+    Q(null, 'persepolis', 'ペルセポリス', 'イラン・ファールス州', 1979, '文化遺産', 'ir', 'cwest', '紀元前6世紀に建設が始まった、アケメネス朝ペルシアの宮殿都市の遺跡です。'),
+    Q(null, 'lalibela', 'ラリベラの岩の聖堂群', 'エチオピア・アムハラ州', 1978, '文化遺産', 'et', 'africa', '岩盤を上から掘り下げて造った教会群で、十字形の聖ギオルギス教会が知られます。'),
+    Q(null, 'kilimanjaro', 'キリマンジャロ国立公園', 'タンザニア・キリマンジャロ州', 1987, '自然遺産', 'tz', 'africa', 'アフリカ最高峰の山で、赤道近くにありながら山頂付近には氷河があります。'),
+    Q(null, 'kenyalakes', '大地溝帯にあるケニアの湖沼群', 'ケニア・リフトバレー州', 2011, '自然遺産', 'ke', 'africa', 'ナクルなど3つの湖からなり、フラミンゴの大群が集まることで知られます。'),
+    Q(null, 'liberty', '自由の女神像', 'アメリカ・ニューヨーク州', 1984, '文化遺産', 'us', 'americas', 'アメリカ独立100周年を記念してフランスから贈られた、高さ約46mの像です。'),
+    Q(null, 'grandcanyon', 'グランド・キャニオン国立公園', 'アメリカ・アリゾナ州', 1979, '自然遺産', 'us', 'americas', 'コロラド川が長い時間をかけて削った大峡谷で、深さは最大で約1800mあります。'),
+    Q(null, 'chichenitza', '古代都市チチェン・イッツァ', 'メキシコ・ユカタン州', 1988, '文化遺産', 'mx', 'americas', 'マヤ文明の都市遺跡で、ククルカンの神殿(エル・カスティージョ)がそびえます。'),
+    Q(null, 'teotihuacan', '古代都市テオティワカン', 'メキシコ・メキシコ州', 1987, '文化遺産', 'mx', 'americas', '紀元前後から栄えた巨大都市の遺跡で、「太陽のピラミッド」と「月のピラミッド」があります。'),
+    Q(null, 'iguazu', 'イグアス国立公園', 'アルゼンチン・ミシオネス州', 1984, '自然遺産', 'ar', 'americas', '「悪魔の喉笛」をはじめ、大小の滝が幅約2.7kmにわたって連なります。'),
+    Q(null, 'glaciares', 'ロス・グラシアレス国立公園', 'アルゼンチン・サンタクルス州', 1981, '自然遺産', 'ar', 'americas', 'パタゴニアの氷河地帯で、ペリト・モレノ氷河の崩落が見どころです。'),
+    Q(null, 'rio', 'リオデジャネイロ:山と海に囲まれたカリオカの景観', 'ブラジル・リオデジャネイロ州', 2012, '文化遺産', 'br', 'americas', 'コルコバードの丘のキリスト像やポン・ジ・アスーカルなど、山と海に囲まれた都市景観です。'),
+    Q(null, 'cartagena', 'カルタヘナの港、要塞群と建造物群', 'コロンビア・ボリバル県', 1984, '文化遺産', 'co', 'americas', 'スペイン植民地時代の港町で、城壁に囲まれた旧市街にカラフルな建物が並びます。'),
+    Q(null, 'stonehenge', 'ストーンヘンジ、エーヴベリーと関連する遺跡群', 'イギリス・ウィルトシャー', 1986, '文化遺産', 'gb', 'europe', '新石器時代から青銅器時代にかけて築かれた、巨石を円形に並べた遺跡です。'),
+    Q(null, 'causeway', 'ジャイアンツ・コーズウェーとコーズウェー海岸', 'イギリス・北アイルランド', 1986, '自然遺産', 'gb', 'europe', '溶岩が冷えて固まった六角形の石柱が、約4万本も海岸に並んでいます。'),
+    Q(null, 'alhambra', 'グラナダのアルハンブラ、ヘネラリーフェ、アルバイシン地区', 'スペイン・アンダルシア州', 1984, '文化遺産', 'es', 'europe', 'イスラム王朝ナスル朝の宮殿で、繊細な装飾と「ライオンの中庭」が有名です。'),
+    Q(null, 'pisa', 'ピサのドゥオモ広場', 'イタリア・トスカーナ州', 1987, '文化遺産', 'it', 'europe', '大聖堂、洗礼堂、そして傾いた鐘楼「ピサの斜塔」が芝生の広場に並びます。'),
+    Q(null, 'amalfi', 'アマルフィ海岸', 'イタリア・カンパニア州', 1997, '文化遺産', 'it', 'europe', '断崖に色とりどりの家が張り付くように建つ、地中海沿いの海岸線です。'),
+    Q(null, 'dolomites', 'ドロミーティ山塊', 'イタリア・トレンティーノ=アルト・アディジェ州ほか', 2009, '自然遺産', 'it', 'europe', '白っぽい岩の峰が鋭くそびえる山岳地帯で、トレ・チーメなどの名峰があります。'),
+    Q(null, 'jungfrau', 'スイス・アルプス ユングフラウ-アレッチ', 'スイス・ベルン州、ヴァレー州', 2001, '自然遺産', 'ch', 'europe', 'アルプス最大のアレッチ氷河と、ユングフラウなどの4000m級の峰々が対象です。'),
+    Q(null, 'kinderdijk', 'キンデルダイク=エルスハウトの風車網', 'オランダ・南ホラント州', 1997, '文化遺産', 'nl', 'europe', '低地の水をくみ上げるため18世紀に造られた19基の風車が、水路沿いに並びます。'),
+    Q(null, 'budapest', 'ブダペスト:ドナウ河岸とブダ城地区、アンドラーシ通り', 'ハンガリー・ブダペスト', 1987, '文化遺産', 'hu', 'europe', 'ドナウ川沿いに国会議事堂や王宮が建ち並び、「ドナウの真珠」と呼ばれます。'),
+    Q(null, 'krumlov', 'チェスキー・クルムロフ歴史地区', 'チェコ・南ボヘミア州', 1992, '文化遺産', 'cz', 'europe', 'S字に曲がる川に抱かれた城下町で、赤い屋根の街並みと城の塔が見どころです。'),
+    Q(null, 'hallstatt', 'ハルシュタット-ダッハシュタイン・ザルツカンマーグートの文化的景観', 'オーストリア・オーバーエスターライヒ州', 1997, '文化遺産', 'at', 'europe', '湖と山に挟まれた小さな町で、古代から岩塩の採掘で栄えました。'),
+    Q(null, 'krakow', 'クラクフ歴史地区', 'ポーランド・マウォポルスカ県', 1978, '文化遺産', 'pl', 'europe', 'ポーランド王国の旧都で、ヨーロッパ最大級の中央広場と織物会館があります。'),
+    Q(null, 'delphi', 'デルフィの古代遺跡', 'ギリシャ・中央ギリシャ地方', 1987, '文化遺産', 'gr', 'europe', '古代ギリシャで「世界のへそ」とされたアポロンの神託所の遺跡です。'),
+    Q(null, 'opera', 'シドニー・オペラハウス', 'オーストラリア・ニューサウスウェールズ州', 2007, '文化遺産', 'au', 'oceania', '帆や貝殻を思わせる屋根をもつ劇場で、1973年に完成しました。'),
+    Q(null, 'uluru', 'ウルル-カタ・ジュタ国立公園', 'オーストラリア・ノーザンテリトリー', 1987, '複合遺産', 'au', 'oceania', '巨大な一枚岩ウルルは、先住民アナング族の聖地でもあります。'),
+    Q(null, 'milford', 'テ・ワヒポウナム(南西ニュージーランド)', 'ニュージーランド・南島', 1990, '自然遺産', 'nz', 'oceania', '氷河が削ったフィヨルドが連なり、ミルフォード・サウンドのマイター・ピークが象徴的です。'),
+    Q(null, 'quebec', 'ケベック旧市街の歴史地区', 'カナダ・ケベック州', 1985, '文化遺産', 'ca', 'americas', '北米で珍しく城壁が残る街で、シャトー・フロンテナックが旧市街を見下ろします。'),
+    Q(null, 'nazca', 'ナスカとパルパの地上絵', 'ペルー・イカ州', 1994, '文化遺産', 'pe', 'americas', '乾いた大地に描かれた巨大な線や動物の絵で、上空からでないと全体が見えません。'),
+    Q(null, 'amber', 'ラージャスターンの丘陵城塞群', 'インド・ラージャスターン州', 2013, '文化遺産', 'in', 'asiaS', 'アンベール城など、ラージプート諸王国が丘の上に築いた6つの城塞が対象です。'),
+    Q(null, 'bagan', 'バガン', 'ミャンマー・マンダレー地方', 2019, '文化遺産', 'mm', 'asiaSE', '11〜13世紀の王朝の都で、平原に数千の仏塔や寺院が点在します。'),
+    Q(null, 'luangprabang', 'ルアン・パバンの町', 'ラオス・ルアンパバーン県', 1995, '文化遺産', 'la', 'asiaSE', 'メコン川沿いの古都で、仏教寺院とフランス植民地時代の建物が調和しています。'),
+    Q(null, 'khiva', 'イチャン・カラ', 'ウズベキスタン・ホラズム州', 1990, '文化遺産', 'uz', 'cwest', 'ヒヴァの城壁に囲まれた内城で、青いタイルの未完の塔カルタ・ミナルが目を引きます。'),
+    Q(null, 'luxor', '古代都市テーベとその墓地遺跡', 'エジプト・ルクソール県', 1979, '文化遺産', 'eg', 'africa', 'カルナック神殿やルクソール神殿、王家の谷など、新王国時代の都の遺跡です。'),
+    Q(null, 'djenne', 'ジェンネ旧市街', 'マリ・モプティ州', 1988, '文化遺産', 'ml', 'africa', '世界最大級の泥の建築とされる大モスクがあり、毎年泥を塗り直す祭りが行われます。'),
+    Q(null, 'sintra', 'シントラの文化的景観', 'ポルトガル・リスボン県', 1995, '文化遺産', 'pt', 'europe', '森の中に色鮮やかなペーナ宮殿などが建つ、19世紀ロマン主義の景観です。')
   ];
   // 写真: build.py が id ごとに [{ src, author, license, url }, ...] を差し込む。写真のない問題はイラストを使う。
   var PHOTOS = /*PHOTOS*/{}/*END PHOTOS*/;
@@ -785,7 +840,7 @@ body {
   // 画像枠。写真が複数あれば横スクロールで切り替え、イラストは1枚の絵として出す。
   function shot(id, label, overlay) {
     var ps = PHOTOS[id];
-    if (!ps || !ps.length) return '<div class="shot" role="img" aria-label="' + label + '">' + SCENES[id] + overlay + '</div>';
+    if (!ps || !ps.length) return '<div class="shot" role="img" aria-label="' + label + '">' + (SCENES[id] || '') + overlay + '</div>';
     var imgs = ps.map(function (p, i) { return '<img src="' + esc(p.src) + '" alt="写真' + (i + 1) + '" decoding="async">'; }).join('');
     var more = ps.length > 1;
     return '<div class="shot" role="group" aria-label="' + label + (more ? '(左右にスクロールで写真を切り替え)' : '') + '">' +
@@ -799,6 +854,18 @@ body {
     if (!s) return;
     var dots = stage.querySelectorAll('.dots i');
     var prev = stage.querySelector('.slide-btn.prev'), next = stage.querySelector('.slide-btn.next2');
+    // 読み込めなかった写真は外し、点の数も合わせる(1枚も残らなければ枠ごと空にしない)
+    Array.prototype.forEach.call(s.querySelectorAll('img'), function (img, i) {
+      img.addEventListener('error', function () {
+        if (s.children.length <= 1) return;
+        var d = stage.querySelectorAll('.dots i')[Array.prototype.indexOf.call(s.children, img)];
+        if (d) d.remove();
+        img.remove();
+        n = s.children.length;
+        dots = stage.querySelectorAll('.dots i');
+        sync();
+      });
+    });
     var n = s.children.length;
     function cur() { return Math.round(s.scrollLeft / Math.max(s.clientWidth, 1)); }
     function sync() {
@@ -857,11 +924,12 @@ body {
     quiz = []; idx = 0; score = 0; missed = []; answered = false;
     countEl.innerHTML = ''; barEl.style.width = '0%';
     stage.innerHTML =
-      shot('machu', '世界遺産の画像', '<span class="chip">人気ランキング TOP50</span>') +
+      shot('machu', '世界遺産の画像', '<span class="chip">世界遺産 100件</span>') +
       '<h1 class="question">世界遺産の画像を見て、<br>どの国にあるかを当てよう</h1>' +
-      '<p class="lead">人気ランキング上位の50件から出題します。選択肢は国旗と国名がついた4択です。</p>' +
-      '<button class="mode" type="button" data-mode="random"><span class="mt">10問チャレンジ</span><span class="ms">50件の中からランダムに10問</span></button>' +
-      '<button class="mode" type="button" data-mode="all"><span class="mt">全50問</span><span class="ms">ランキング上位の遺産から順に出題</span></button>';
+      '<p class="lead">人気ランキング上位の50件と、写真で見分けやすい50件の、計100件から出題します。選択肢は国旗と国名がついた4択です。</p>' +
+      '<button class="mode" type="button" data-mode="random"><span class="mt">10問チャレンジ</span><span class="ms">100件の中からランダムに10問</span></button>' +
+      '<button class="mode" type="button" data-mode="rank"><span class="mt">ランキング50問</span><span class="ms">人気ランキング上位の遺産から順に出題</span></button>' +
+      '<button class="mode" type="button" data-mode="extra"><span class="mt">追加の50問</span><span class="ms">写真で見分けやすい50件をランダムな順で出題</span></button>';
     wireShot();
     var btns = stage.querySelectorAll('.mode');
     for (var i = 0; i < btns.length; i++) {
@@ -870,7 +938,9 @@ body {
   }
 
   function start(mode) {
-    quiz = mode === 'all' ? QUIZ_ALL.slice() : shuffle(QUIZ_ALL.slice()).slice(0, 10);
+    quiz = mode === 'rank' ? QUIZ_ALL.filter(function (q) { return q.rank; })
+      : mode === 'extra' ? shuffle(QUIZ_ALL.filter(function (q) { return !q.rank; }))
+      : shuffle(QUIZ_ALL.slice()).slice(0, 10);
     idx = 0; score = 0; missed = [];
     renderQuestion();
     stage.focus({ preventScroll: true });
@@ -888,7 +958,7 @@ body {
         '<span class="en">' + NAMES[c][1] + '</span></button></li>';
     }).join('');
     stage.innerHTML =
-      shot(q.scene, '世界遺産の画像。どこの国にあるでしょう', '<span class="chip">人気ランキング ' + q.rank + '位</span><div class="stamp" id="stamp" hidden></div>') +
+      shot(q.scene, '世界遺産の画像。どこの国にあるでしょう', '<span class="chip">' + (q.rank ? '人気ランキング ' + q.rank + '位' : '追加の50件') + '</span><div class="stamp" id="stamp" hidden></div>') +
       '<h1 class="question">この世界遺産がある国は?</h1>' +
       '<ul class="choices" id="choices">' + tiles + '</ul>' +
       '<div class="reveal" id="reveal" hidden aria-live="polite"></div>';

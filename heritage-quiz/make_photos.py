@@ -1,7 +1,7 @@
 """選んだ候補から photos/<id>-<k>.jpg と photos/credits.csv を作る。
 
 selection.csv(id, n)で各遺産に使う候補番号を、表示順に空白区切りで指定する(例: "4 1 7")。
-写真は photos/<id>-<k>.jpg として、幅720px・JPEG品質68に縮小する(150枚を1ページに埋め込むため)。
+写真は photos/<id>-<k>.jpg として、幅800px・JPEG品質72に縮小する。
 
 使い方: python heritage-quiz/make_photos.py
 """
@@ -11,7 +11,7 @@ import os
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-WIDTH, QUALITY = 720, 68
+WIDTH, QUALITY = 800, 72
 
 
 def main():

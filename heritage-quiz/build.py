@@ -1,6 +1,8 @@
 """src/quiz.html に写真を差し込んで、2つの完成品を作る。
 
-- dist/world-heritage-quiz.html : 写真を data URI で埋め込んだ1ファイル版(claude.ai の Artifact 用)
+- dist/world-heritage-quiz.html : claude.ai の Artifact 用の1ファイル版。
+  写真は assets.json(写真ファイル名 → Artifact のアセットURL)にあるものはそのURLで参照し、
+  ないものは data URI で埋め込む。ページ全体の上限が16MBなので、300枚はアセットに置く。
 - ../public/heritage-quiz/      : 写真を別ファイルで参照する GitHub Pages 版
 
 photos/credits.csv がなければ、全問イラストのまま出力する。
@@ -35,6 +37,8 @@ def render(src, photos):
 def main():
     src = open(os.path.join(HERE, "src", "quiz.html"), encoding="utf-8").read()
     rows = credits()
+    amap_path = os.path.join(HERE, "assets.json")
+    amap = json.load(open(amap_path, encoding="utf-8")) if os.path.exists(amap_path) else {}
 
     def entry(r, url):
         return {"src": url, "author": r["author"], "license": r["license"], "url": r["url"]}
@@ -42,8 +46,12 @@ def main():
     # 遺産ごとに、credits.csv の並び順(=表示順)で写真をまとめる
     embedded, linked = {}, {}
     for r in rows:
-        data = open(os.path.join(HERE, "photos", r["file"]), "rb").read()
-        embedded.setdefault(r["id"], []).append(entry(r, "data:image/jpeg;base64," + base64.b64encode(data).decode()))
+        if r["file"] in amap:
+            src_url = amap[r["file"]]
+        else:
+            data = open(os.path.join(HERE, "photos", r["file"]), "rb").read()
+            src_url = "data:image/jpeg;base64," + base64.b64encode(data).decode()
+        embedded.setdefault(r["id"], []).append(entry(r, src_url))
         linked.setdefault(r["id"], []).append(entry(r, "photos/" + r["file"]))
     os.makedirs(os.path.join(HERE, "dist"), exist_ok=True)
     one = os.path.join(HERE, "dist", "world-heritage-quiz.html")
@@ -55,7 +63,7 @@ def main():
         shutil.copy(os.path.join(HERE, "photos", r["file"]), os.path.join(PAGES_DIR, "photos", r["file"]))
     open(os.path.join(PAGES_DIR, "index.html"), "w", encoding="utf-8").write(render(src, linked))
 
-    print(f"photos: {len(rows)} ({len(embedded)} sites)")
+    print(f"photos: {len(rows)} ({len(embedded)} sites, {sum(r['file'] in amap for r in rows)} from assets)")
     print(f"{os.path.relpath(one)}: {os.path.getsize(one) / 1e6:.2f} MB")
     print(f"{os.path.relpath(PAGES_DIR)}/index.html")
 
