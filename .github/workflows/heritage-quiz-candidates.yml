@@ -15,6 +15,7 @@ on:
     paths:
       - 'heritage-quiz/sites.csv'
       - 'heritage-quiz/fetch_candidates.py'
+      - 'heritage-quiz/rejected.csv'
       - '.github/workflows/heritage-quiz-candidates.yml'
 
 permissions:

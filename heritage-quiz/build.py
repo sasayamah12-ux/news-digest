@@ -39,13 +39,12 @@ def main():
     def entry(r, url):
         return {"src": url, "author": r["author"], "license": r["license"], "url": r["url"]}
 
-    def sid(r):
-        return os.path.splitext(r["file"])[0]
-
-    embedded = {}
+    # 遺産ごとに、credits.csv の並び順(=表示順)で写真をまとめる
+    embedded, linked = {}, {}
     for r in rows:
         data = open(os.path.join(HERE, "photos", r["file"]), "rb").read()
-        embedded[sid(r)] = entry(r, "data:image/jpeg;base64," + base64.b64encode(data).decode())
+        embedded.setdefault(r["id"], []).append(entry(r, "data:image/jpeg;base64," + base64.b64encode(data).decode()))
+        linked.setdefault(r["id"], []).append(entry(r, "photos/" + r["file"]))
     os.makedirs(os.path.join(HERE, "dist"), exist_ok=True)
     one = os.path.join(HERE, "dist", "world-heritage-quiz.html")
     open(one, "w", encoding="utf-8").write(render(src, embedded))
@@ -54,10 +53,9 @@ def main():
     os.makedirs(os.path.join(PAGES_DIR, "photos"))
     for r in rows:
         shutil.copy(os.path.join(HERE, "photos", r["file"]), os.path.join(PAGES_DIR, "photos", r["file"]))
-    linked = {sid(r): entry(r, "photos/" + r["file"]) for r in rows}
     open(os.path.join(PAGES_DIR, "index.html"), "w", encoding="utf-8").write(render(src, linked))
 
-    print(f"photos: {len(rows)} / 50")
+    print(f"photos: {len(rows)} ({len(embedded)} sites)")
     print(f"{os.path.relpath(one)}: {os.path.getsize(one) / 1e6:.2f} MB")
     print(f"{os.path.relpath(PAGES_DIR)}/index.html")
 

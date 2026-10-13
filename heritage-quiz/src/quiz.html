@@ -77,8 +77,20 @@ body {
 #stage { display: flex; flex-direction: column; gap: 14px; outline: none; }
 
 .shot { position: relative; aspect-ratio: 16 / 10; max-width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #1c2236; }
-.shot > svg, .shot > img { width: 100%; height: 100%; display: block; }
-.shot > img { object-fit: cover; }
+.shot > svg { width: 100%; height: 100%; display: block; }
+/* 写真は横スクロール(スワイプ)で切り替える。1枚ずつぴったり止まる。 */
+.slides { display: flex; width: 100%; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; outline: none; }
+.slides::-webkit-scrollbar { display: none; }
+.slides img { flex: 0 0 100%; width: 100%; height: 100%; display: block; object-fit: cover; scroll-snap-align: start; scroll-snap-stop: always; }
+.dots { position: absolute; right: 10px; bottom: 13px; display: flex; gap: 6px; pointer-events: none; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, .5); box-shadow: 0 0 0 1px rgba(10, 16, 32, .25); }
+.dots i[data-on] { background: #fff; }
+.slide-btn { display: none; position: absolute; top: 50%; width: 34px; height: 34px; margin-top: -17px; border: 0; border-radius: 50%; background: rgba(10, 16, 32, .5); color: #fff; font: 700 18px/1 var(--font-body); cursor: pointer; }
+.slide-btn.prev { left: 8px; }
+.slide-btn.next2 { right: 8px; }
+.slide-btn[disabled] { opacity: 0; pointer-events: none; }
+.slide-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .slide-btn { display: block; } }
 .chip { position: absolute; left: 10px; bottom: 10px; padding: 2px 10px; border-radius: 999px; background: rgba(10, 16, 32, .6); color: #fff; font-size: 11px; letter-spacing: .08em; }
 
 .stamp {
@@ -764,23 +776,52 @@ body {
     Q(49, 'plitvice', 'プリトヴィツェ湖群国立公園', 'クロアチア・リカ=セニ郡', 1979, '自然遺産', 'hr', 'europe', '16の湖が段々に連なり、石灰華の堰を越えて多くの滝が流れ落ちます。'),
     Q(49, 'kyoto', '古都京都の文化財', '日本・京都府、滋賀県', 1994, '文化遺産', 'jp', 'asiaE', '金閣(鹿苑寺)や清水寺など、17の寺社・城が登録されています。')
   ];
-  // 写真: build.py が id ごとに { src, author, license, url } を差し込む。写真のない問題はイラストを使う。
+  // 写真: build.py が id ごとに [{ src, author, license, url }, ...] を差し込む。写真のない問題はイラストを使う。
   var PHOTOS = /*PHOTOS*/{}/*END PHOTOS*/;
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
   }
-  function picture(id) {
-    var p = PHOTOS[id];
-    return p ? '<img src="' + esc(p.src) + '" alt="" decoding="async">' : SCENES[id];
+  // 画像枠。写真が複数あれば横スクロールで切り替え、イラストは1枚の絵として出す。
+  function shot(id, label, overlay) {
+    var ps = PHOTOS[id];
+    if (!ps || !ps.length) return '<div class="shot" role="img" aria-label="' + label + '">' + SCENES[id] + overlay + '</div>';
+    var imgs = ps.map(function (p, i) { return '<img src="' + esc(p.src) + '" alt="写真' + (i + 1) + '" decoding="async">'; }).join('');
+    var more = ps.length > 1;
+    return '<div class="shot" role="group" aria-label="' + label + (more ? '(左右にスクロールで写真を切り替え)' : '') + '">' +
+      '<div class="slides" tabindex="0">' + imgs + '</div>' +
+      (more ? '<button class="slide-btn prev" type="button" aria-label="前の写真" disabled>‹</button><button class="slide-btn next2" type="button" aria-label="次の写真">›</button>' +
+        '<div class="dots" aria-hidden="true">' + ps.map(function (_, i) { return '<i' + (i ? '' : ' data-on') + '></i>'; }).join('') + '</div>' : '') +
+      overlay + '</div>';
+  }
+  function wireShot() {
+    var s = stage.querySelector('.slides');
+    if (!s) return;
+    var dots = stage.querySelectorAll('.dots i');
+    var prev = stage.querySelector('.slide-btn.prev'), next = stage.querySelector('.slide-btn.next2');
+    var n = s.children.length;
+    function cur() { return Math.round(s.scrollLeft / Math.max(s.clientWidth, 1)); }
+    function sync() {
+      var c = cur();
+      for (var i = 0; i < dots.length; i++) { if (i === c) dots[i].setAttribute('data-on', ''); else dots[i].removeAttribute('data-on'); }
+      if (prev) { prev.disabled = c <= 0; next.disabled = c >= n - 1; }
+    }
+    function go(d) { s.scrollTo({ left: (cur() + d) * s.clientWidth, behavior: reduce ? 'auto' : 'smooth' }); }
+    s.addEventListener('scroll', sync, { passive: true });
+    if (prev) {
+      prev.addEventListener('click', function () { go(-1); });
+      next.addEventListener('click', function () { go(1); });
+    }
   }
   function credit(id) {
-    var p = PHOTOS[id];
-    if (!p) return '';
-    return '<p class="credit">写真: ' + esc(p.author) + ' / ' + esc(p.license) +
-      ' (<a href="' + esc(p.url) + '" target="_blank" rel="noopener">Wikimedia Commons</a>)</p>';
+    var ps = PHOTOS[id];
+    if (!ps || !ps.length) return '';
+    return '<p class="credit">' + ps.map(function (p, i) {
+      return '写真' + (ps.length > 1 ? i + 1 : '') + ': ' + esc(p.author) + ' / ' + esc(p.license) +
+        ' (<a href="' + esc(p.url) + '" target="_blank" rel="noopener">Wikimedia Commons</a>)';
+    }).join('<br>') + '</p>';
   }
   (function () {
-    var n = QUIZ_ALL.filter(function (q) { return PHOTOS[q.scene]; }).length;
+    var n = QUIZ_ALL.filter(function (q) { return PHOTOS[q.scene] && PHOTOS[q.scene].length; }).length;
     var el = document.getElementById('footimg');
     if (n === QUIZ_ALL.length) el.textContent = '画像は Wikimedia Commons の写真(各問の解説に撮影者とライセンスを表示)';
     else if (n) el.textContent = '画像は ' + n + ' 問が Wikimedia Commons の写真(各問の解説に撮影者とライセンスを表示)、残りは簡略化したイラスト';
@@ -815,11 +856,12 @@ body {
     quiz = []; idx = 0; score = 0; missed = []; answered = false;
     countEl.innerHTML = ''; barEl.style.width = '0%';
     stage.innerHTML =
-      '<div class="shot" role="img" aria-label="世界遺産の画像">' + picture('machu') + '<span class="chip">人気ランキング TOP50</span></div>' +
+      shot('machu', '世界遺産の画像', '<span class="chip">人気ランキング TOP50</span>') +
       '<h1 class="question">世界遺産の画像を見て、<br>どの国にあるかを当てよう</h1>' +
       '<p class="lead">人気ランキング上位の50件から出題します。選択肢は国旗と国名がついた4択です。</p>' +
       '<button class="mode" type="button" data-mode="random"><span class="mt">10問チャレンジ</span><span class="ms">50件の中からランダムに10問</span></button>' +
       '<button class="mode" type="button" data-mode="all"><span class="mt">全50問</span><span class="ms">ランキング上位の遺産から順に出題</span></button>';
+    wireShot();
     var btns = stage.querySelectorAll('.mode');
     for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener('click', function (e) { start(e.currentTarget.getAttribute('data-mode')); });
@@ -845,11 +887,11 @@ body {
         '<span class="en">' + NAMES[c][1] + '</span></button></li>';
     }).join('');
     stage.innerHTML =
-      '<div class="shot" role="img" aria-label="世界遺産の画像。どこの国にあるでしょう">' + picture(q.scene) +
-      '<span class="chip">人気ランキング ' + q.rank + '位</span><div class="stamp" id="stamp" hidden></div></div>' +
+      shot(q.scene, '世界遺産の画像。どこの国にあるでしょう', '<span class="chip">人気ランキング ' + q.rank + '位</span><div class="stamp" id="stamp" hidden></div>') +
       '<h1 class="question">この世界遺産がある国は?</h1>' +
       '<ul class="choices" id="choices">' + tiles + '</ul>' +
       '<div class="reveal" id="reveal" hidden aria-live="polite"></div>';
+    wireShot();
     document.getElementById('choices').addEventListener('click', function (e) {
       var b = e.target.closest('.tile');
       if (b) pick(b.getAttribute('data-code'));

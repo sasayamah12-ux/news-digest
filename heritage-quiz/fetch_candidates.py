@@ -7,7 +7,8 @@ sites.csv の検索キーワードで Commons を検索し、再利用可能な�
 
 すでにある候補は番号ごと残し、足りない分だけ追加する(selection.csv の番号がずれないように)。
 検索キーワードは " | " で区切って複数指定でき、前から順に候補を集める。
-候補を取り直したいときは、candidates.csv の該当行と画像を消してから実行する。
+使えない候補は candidates.csv の行と画像を消し、rejected.csv(id, title)に書いておくと、
+次の実行でその分が別の写真で補充される(同じ写真は二度と取らない)。
 
 使い方: python heritage-quiz/fetch_candidates.py [--per-site 8] [id ...]
 """
@@ -99,6 +100,8 @@ def main():
 
     csv_path = os.path.join(HERE, "candidates.csv")
     rows = list(csv.DictReader(open(csv_path, encoding="utf-8"))) if os.path.exists(csv_path) else []
+    rej_path = os.path.join(HERE, "rejected.csv")
+    rejected = list(csv.DictReader(open(rej_path, encoding="utf-8"))) if os.path.exists(rej_path) else []
 
     for s in sites:
         have = [r for r in rows if r["id"] == s["id"]]
@@ -107,8 +110,8 @@ def main():
         print(f"[{s['id']}] {s['query']} ({len(have)} -> {a.per_site})")
         d = os.path.join(HERE, "candidates", s["id"])
         os.makedirs(d, exist_ok=True)
-        seen = {r["title"] for r in have}
-        n = max([int(r["n"]) for r in have] or [0])
+        seen = {r["title"] for r in have} | {r["title"] for r in rejected if r["id"] == s["id"]}
+        n = max([int(r["n"]) for r in have] + [0])
         for q in [q.strip() for q in s["query"].split("|") if q.strip()]:
             for c in search(q, seen):
                 if len(have) >= a.per_site:

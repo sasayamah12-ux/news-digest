@@ -1,51 +1,51 @@
 id,n
-mont,4
-yaku,1
-samarkand,1
-yellow,1
-machu,1
-gaudi,2
-venice,2
-cologne,4
-wieliczka,2
-himeji,2
-lencois,1
-istanbul,1
-abusimbel,4
-taj,1
-kii,1
-sado,1
-shiretoko,1
-florence,3
-itsukushima,3
-alberobello,1
-canaima,2
-giza,1
-nikko,1
-sigiriya,1
-ogasawara,4
-meteora,3
-shirakawa,2
-schonbrunn,3
-seine,1
-hiraizumi,3
-versailles,4
-iwami,1
-fuji,2
-acropolis,1
-esfahan,4
-prague,1
-nara,2
-rockies,2
-rapanui,1
-ngorongoro,3
-gbr,3
-dubrovnik,3
-tongariro,1
-jiuzhaigou,1
-hiroshima,2
-orcia,4
-goree,2
-sharkbay,1
-plitvice,1
-kyoto,3
+mont,4 5 1
+yaku,1 4 8
+samarkand,1 3 5
+yellow,1 6 4
+machu,1 4 7
+gaudi,2 1 7
+venice,2 1 4
+cologne,4 1 7
+wieliczka,2 3 4
+himeji,2 5 8
+lencois,1 4 5
+istanbul,1 5 6
+abusimbel,4 3 1
+taj,1 4 3
+kii,1 5 2
+sado,1 4
+shiretoko,1 2 8
+florence,3 2 5
+itsukushima,3 1 7
+alberobello,1 5 6
+canaima,2 4 3
+giza,1 5 7
+nikko,1 4 5
+sigiriya,1 3 7
+ogasawara,4 1 8
+meteora,3 5 6
+shirakawa,2 6 3
+schonbrunn,3 1 7
+seine,1 4 8
+hiraizumi,3 1 7
+versailles,4 5 7
+iwami,1 4 6
+fuji,2 3
+acropolis,1 4 5
+esfahan,4 2 6
+prague,1 7 6
+nara,2 1 4
+rockies,2 1 6
+rapanui,1 5 6
+ngorongoro,3 4 7
+gbr,3 6 7
+dubrovnik,3 2 6
+tongariro,1 5 8
+jiuzhaigou,1 2 8
+hiroshima,2 4 7
+orcia,4 5 2
+goree,2 3 7
+sharkbay,1 4 6
+plitvice,1 5 8
+kyoto,3 4 7
