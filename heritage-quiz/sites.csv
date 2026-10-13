@@ -1,51 +1,51 @@
 rank,id,name,place,country,query
-1,mont,モン・サン・ミシェルとその湾,フランス・ノルマンディー地方,フランス,Mont-Saint-Michel
-2,yaku,屋久島,日本・鹿児島県,日本,Jomon Sugi Yakushima
-3,samarkand,文化交差路サマルカンド,ウズベキスタン,ウズベキスタン,Registan Samarkand
-4,yellow,イエローストーン国立公園,アメリカ・ワイオミング州ほか,アメリカ,Old Faithful Yellowstone
-5,machu,マチュ・ピチュ,ペルー・クスコ地方,ペルー,Machu Picchu
-6,gaudi,アントニ・ガウディの作品群,スペイン・バルセロナ,スペイン,Sagrada Familia Nativity facade
-7,venice,ヴェネツィアとその潟,イタリア・ヴェネト州,イタリア,Santa Maria della Salute Grand Canal Venice
-8,cologne,ケルンの大聖堂,ドイツ・ノルトライン=ヴェストファーレン州,ドイツ,Cologne Cathedral
-9,wieliczka,ヴィエリチカとボフニャの王立岩塩坑,ポーランド・クラクフ近郊,ポーランド,Wieliczka Salt Mine chapel
-10,himeji,姫路城,日本・兵庫県,日本,Himeji Castle
-11,lencois,レンソイス・マラニャンセス国立公園,ブラジル・マラニャン州,ブラジル,Lencois Maranhenses
-12,istanbul,イスタンブルの歴史地区,トルコ・イスタンブール,トルコ,Hagia Sophia
-13,abusimbel,ヌビアの遺跡群:アブ・シンベルからフィラエまで,エジプト・アスワン県,エジプト,Abu Simbel temple
-14,taj,タージ・マハル,インド・アグラ,インド,Taj Mahal
-14,kii,紀伊山地の霊場と参詣道,日本・和歌山県、奈良県、三重県,日本,Nachi Falls Seiganto-ji pagoda
-16,sado,佐渡島の金山,日本・新潟県,日本,Doyu no Warito Sado
-17,shiretoko,知床,日本・北海道,日本,Shiretoko peninsula
-18,florence,フィレンツェの歴史地区,イタリア・トスカーナ州,イタリア,Florence Cathedral Santa Maria del Fiore
-18,itsukushima,厳島神社,日本・広島県,日本,Itsukushima Shrine torii
-20,alberobello,アルベロベッロのトゥルッリ,イタリア・プーリア州,イタリア,Alberobello trulli
-20,canaima,カナイマ国立公園,ベネズエラ・ボリバル州,ベネズエラ,Canaima Angel Falls tepui
-22,giza,メンフィスとその墓地遺跡(ギザのピラミッド地帯),エジプト・ギザ,エジプト,Giza pyramid complex
-22,nikko,日光の社寺,日本・栃木県,日本,Nikko Toshogu Yomeimon
-25,sigiriya,シーギリヤの古代都市,スリランカ・中部州,スリランカ,Sigiriya rock
-25,ogasawara,小笠原諸島,日本・東京都,日本,Chichijima beach Ogasawara
-27,meteora,メテオラの修道院群,ギリシャ・テッサリア地方,ギリシャ,Meteora monasteries
-27,shirakawa,白川郷・五箇山の合掌造り集落,日本・岐阜県、富山県,日本,Shirakawa-go gassho-zukuri
-29,schonbrunn,シェーンブルン宮殿と庭園,オーストリア・ウィーン,オーストリア,Schonbrunn Palace
-29,seine,パリのセーヌ河岸,フランス・パリ,フランス,Seine Paris Eiffel Tower
-29,hiraizumi,平泉,日本・岩手県,日本,Motsu-ji Hiraizumi garden
-32,versailles,ヴェルサイユ宮殿と庭園,フランス・イヴリーヌ県,フランス,Palace of Versailles
-32,iwami,石見銀山遺跡とその文化的景観,日本・島根県,日本,Ryugenji Mabu Iwami Ginzan
-32,fuji,富士山-信仰の対象と芸術の源泉,日本・静岡県、山梨県,日本,Mount Fuji
-36,acropolis,アテネのアクロポリス,ギリシャ・アテネ,ギリシャ,Acropolis Parthenon Athens
-36,esfahan,イスファハーンのイマーム広場,イラン・イスファハーン州,イラン,Naqsh-e Jahan Square Isfahan
-36,prague,プラハの歴史地区,チェコ・プラハ,チェコ,Charles Bridge Prague Castle
-36,nara,古都奈良の文化財,日本・奈良県,日本,Todai-ji Great Buddha Hall
-40,rockies,カナディアン・ロッキー山脈国立公園群,カナダ・アルバータ州、ブリティッシュコロンビア州,カナダ,Moraine Lake Canadian Rockies
-40,rapanui,ラパ・ニュイ国立公園,チリ・イースター島,チリ,Ahu Tongariki moai
-40,ngorongoro,ンゴロンゴロ自然保護区,タンザニア・アルーシャ州,タンザニア,Ngorongoro Crater panorama
-44,gbr,グレート・バリア・リーフ,オーストラリア・クイーンズランド州沖,オーストラリア,Great Barrier Reef
-44,dubrovnik,ドゥブロヴニクの旧市街,クロアチア・ドゥブロヴニク,クロアチア,Dubrovnik old town walls
-44,tongariro,トンガリロ国立公園,ニュージーランド・北島,ニュージーランド,Tongariro Emerald Lakes
-44,jiuzhaigou,九寨溝の渓谷の景観と歴史地域,中国・四川省,中国,Jiuzhaigou
-44,hiroshima,広島平和記念碑(原爆ドーム),日本・広島県,日本,Atomic Bomb Dome Hiroshima
-49,orcia,オルチア渓谷,イタリア・トスカーナ州,イタリア,Val d'Orcia Tuscany
-49,goree,ゴレ島,セネガル・ダカール沖,セネガル,Goree Island
-49,sharkbay,シャーク湾,オーストラリア・西オーストラリア州,オーストラリア,Hamelin Pool stromatolites Shark Bay
-49,plitvice,プリトヴィツェ湖群国立公園,クロアチア・リカ=セニ郡,クロアチア,Plitvice Lakes
-49,kyoto,古都京都の文化財,日本・京都府、滋賀県,日本,Kinkaku-ji
+1,mont,モン・サン・ミシェルとその湾,フランス・ノルマンディー地方,フランス,Mont-Saint-Michel | Mont-Saint-Michel aerial
+2,yaku,屋久島,日本・鹿児島県,日本,Jomon Sugi Yakushima | Shiratani Unsuikyo Yakushima
+3,samarkand,文化交差路サマルカンド,ウズベキスタン,ウズベキスタン,Registan Samarkand | Shah-i-Zinda Samarkand
+4,yellow,イエローストーン国立公園,アメリカ・ワイオミング州ほか,アメリカ,Old Faithful Yellowstone | Grand Prismatic Spring
+5,machu,マチュ・ピチュ,ペルー・クスコ地方,ペルー,Machu Picchu | Machu Picchu Intihuatana
+6,gaudi,アントニ・ガウディの作品群,スペイン・バルセロナ,スペイン,Sagrada Familia Nativity facade | Casa Batllo facade | Park Guell
+7,venice,ヴェネツィアとその潟,イタリア・ヴェネト州,イタリア,Santa Maria della Salute Grand Canal Venice | Rialto Bridge Grand Canal
+8,cologne,ケルンの大聖堂,ドイツ・ノルトライン=ヴェストファーレン州,ドイツ,Cologne Cathedral | Kölner Dom
+9,wieliczka,ヴィエリチカとボフニャの王立岩塩坑,ポーランド・クラクフ近郊,ポーランド,Wieliczka Salt Mine chapel | Wieliczka Salt Mine
+10,himeji,姫路城,日本・兵庫県,日本,Himeji Castle | Himeji Castle cherry blossom
+11,lencois,レンソイス・マラニャンセス国立公園,ブラジル・マラニャン州,ブラジル,Lencois Maranhenses | Lencois Maranhenses lagoon
+12,istanbul,イスタンブルの歴史地区,トルコ・イスタンブール,トルコ,Hagia Sophia | Blue Mosque Istanbul | Topkapi Palace
+13,abusimbel,ヌビアの遺跡群:アブ・シンベルからフィラエまで,エジプト・アスワン県,エジプト,Abu Simbel temple | Philae temple
+14,taj,タージ・マハル,インド・アグラ,インド,Taj Mahal | Taj Mahal Yamuna
+14,kii,紀伊山地の霊場と参詣道,日本・和歌山県、奈良県、三重県,日本,Nachi Falls Seiganto-ji pagoda | Kumano Kodo | Kumano Hongu Taisha
+16,sado,佐渡島の金山,日本・新潟県,日本,Doyu no Warito Sado | Sado Kinzan | Kitazawa flotation plant
+17,shiretoko,知床,日本・北海道,日本,Shiretoko peninsula | Shiretoko Five Lakes
+18,florence,フィレンツェの歴史地区,イタリア・トスカーナ州,イタリア,Florence Cathedral Santa Maria del Fiore | Ponte Vecchio Florence
+18,itsukushima,厳島神社,日本・広島県,日本,Itsukushima Shrine torii | Itsukushima Shrine corridor
+20,alberobello,アルベロベッロのトゥルッリ,イタリア・プーリア州,イタリア,Alberobello trulli | Alberobello Rione Monti
+20,canaima,カナイマ国立公園,ベネズエラ・ボリバル州,ベネズエラ,Canaima Angel Falls tepui | Angel Falls | Kukenan tepui
+22,giza,メンフィスとその墓地遺跡(ギザのピラミッド地帯),エジプト・ギザ,エジプト,Giza pyramid complex | Great Sphinx Giza
+22,nikko,日光の社寺,日本・栃木県,日本,Nikko Toshogu Yomeimon | Nikko Toshogu
+25,sigiriya,シーギリヤの古代都市,スリランカ・中部州,スリランカ,Sigiriya rock | Sigiriya Lion Gate
+25,ogasawara,小笠原諸島,日本・東京都,日本,Chichijima beach Ogasawara | Minamijima Ogasawara | Hahajima
+27,meteora,メテオラの修道院群,ギリシャ・テッサリア地方,ギリシャ,Meteora monasteries | Meteora Varlaam
+27,shirakawa,白川郷・五箇山の合掌造り集落,日本・岐阜県、富山県,日本,Shirakawa-go gassho-zukuri | Ogimachi Shirakawa-go | Ainokura Gokayama
+29,schonbrunn,シェーンブルン宮殿と庭園,オーストリア・ウィーン,オーストリア,Schonbrunn Palace | Gloriette Schonbrunn
+29,seine,パリのセーヌ河岸,フランス・パリ,フランス,Seine Paris Eiffel Tower | Pont Alexandre III | Notre-Dame de Paris Seine
+29,hiraizumi,平泉,日本・岩手県,日本,Motsu-ji Hiraizumi garden | Chuson-ji Hiraizumi | Motsu-ji
+32,versailles,ヴェルサイユ宮殿と庭園,フランス・イヴリーヌ県,フランス,Palace of Versailles | Gardens of Versailles
+32,iwami,石見銀山遺跡とその文化的景観,日本・島根県,日本,Ryugenji Mabu Iwami Ginzan | Omori Ginzan | Iwami Ginzan
+32,fuji,富士山-信仰の対象と芸術の源泉,日本・静岡県、山梨県,日本,Mount Fuji | Mount Fuji Lake Kawaguchi | Chureito Pagoda
+36,acropolis,アテネのアクロポリス,ギリシャ・アテネ,ギリシャ,Acropolis Parthenon Athens | Erechtheion
+36,esfahan,イスファハーンのイマーム広場,イラン・イスファハーン州,イラン,Naqsh-e Jahan Square Isfahan | Shah Mosque Isfahan
+36,prague,プラハの歴史地区,チェコ・プラハ,チェコ,Charles Bridge Prague Castle | Prague Old Town Square | Charles Bridge
+36,nara,古都奈良の文化財,日本・奈良県,日本,Todai-ji Great Buddha Hall | Kasuga Taisha | Kofuku-ji five-storied pagoda
+40,rockies,カナディアン・ロッキー山脈国立公園群,カナダ・アルバータ州、ブリティッシュコロンビア州,カナダ,Moraine Lake Canadian Rockies | Lake Louise | Peyto Lake
+40,rapanui,ラパ・ニュイ国立公園,チリ・イースター島,チリ,Ahu Tongariki moai | Rano Raraku moai
+40,ngorongoro,ンゴロンゴロ自然保護区,タンザニア・アルーシャ州,タンザニア,Ngorongoro Crater panorama | Ngorongoro Crater
+44,gbr,グレート・バリア・リーフ,オーストラリア・クイーンズランド州沖,オーストラリア,Great Barrier Reef | Great Barrier Reef aerial | Whitehaven Beach
+44,dubrovnik,ドゥブロヴニクの旧市街,クロアチア・ドゥブロヴニク,クロアチア,Dubrovnik old town walls | Dubrovnik Stradun
+44,tongariro,トンガリロ国立公園,ニュージーランド・北島,ニュージーランド,Tongariro Emerald Lakes | Mount Ngauruhoe
+44,jiuzhaigou,九寨溝の渓谷の景観と歴史地域,中国・四川省,中国,Jiuzhaigou | Five Flower Lake Jiuzhaigou | Nuorilang Falls
+44,hiroshima,広島平和記念碑(原爆ドーム),日本・広島県,日本,Atomic Bomb Dome Hiroshima | Hiroshima Peace Memorial Genbaku Dome
+49,orcia,オルチア渓谷,イタリア・トスカーナ州,イタリア,Val d'Orcia Tuscany | Val d'Orcia cypress | Pienza
+49,goree,ゴレ島,セネガル・ダカール沖,セネガル,Goree Island | Ile de Goree
+49,sharkbay,シャーク湾,オーストラリア・西オーストラリア州,オーストラリア,Hamelin Pool stromatolites Shark Bay | Shell Beach Shark Bay
+49,plitvice,プリトヴィツェ湖群国立公園,クロアチア・リカ=セニ郡,クロアチア,Plitvice Lakes | Plitvice Veliki slap
+49,kyoto,古都京都の文化財,日本・京都府、滋賀県,日本,Kinkaku-ji | Kiyomizu-dera | Byodo-in

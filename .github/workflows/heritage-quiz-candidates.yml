@@ -2,7 +2,7 @@ name: Heritage quiz photo candidates
 
 # Wikimedia Commons から写真候補を集め、heritage-quiz/candidates/ にコミットする。
 # 手動実行(ids を空にすると全50件)か、検索キーワード(sites.csv)の変更で動く。
-# push のときは、検索キーワードが変わった id だけを取り直す。
+# すでにある候補は残し、足りない分だけ追加する。
 on:
   workflow_dispatch:
     inputs:
@@ -29,14 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python heritage-quiz/fetch_candidates.py $CHANGED ${{ inputs.ids }}
-        env:
-          CHANGED: ${{ github.event_name == 'push' && format('--changed-since {0}', github.event.before) || '' }}
+      - run: python heritage-quiz/fetch_candidates.py ${{ inputs.ids }}
       - name: Commit candidates
         run: |
           git config user.name "github-actions[bot]"
