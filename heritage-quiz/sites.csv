@@ -49,3 +49,53 @@ rank,id,name,place,country,query
 49,sharkbay,シャーク湾,オーストラリア・西オーストラリア州,オーストラリア,Hamelin Pool stromatolites Shark Bay | Shell Beach Shark Bay
 49,plitvice,プリトヴィツェ湖群国立公園,クロアチア・リカ=セニ郡,クロアチア,Plitvice Lakes | Plitvice Veliki slap
 49,kyoto,古都京都の文化財,日本・京都府、滋賀県,日本,Kinkaku-ji | Kiyomizu-dera | Byodo-in
+,angkor,アンコール,カンボジア・シェムリアップ州,カンボジア,Angkor Wat | Bayon temple | Ta Prohm
+,borobudur,ボロブドゥール寺院遺跡群,インドネシア・中部ジャワ州,インドネシア,Borobudur | Borobudur stupa
+,greatwall,万里の長城,中国・北京市ほか,中国,Great Wall Mutianyu | Great Wall Jinshanling | Badaling Great Wall
+,forbidden,北京と瀋陽の明・清朝の皇宮群,中国・北京市、遼寧省,中国,Forbidden City Hall of Supreme Harmony | Forbidden City aerial
+,terracotta,秦の始皇陵,中国・陝西省,中国,Terracotta Army pit | Terracotta warriors
+,halong,ハロン湾,ベトナム・クアンニン省,ベトナム,Ha Long Bay | Halong Bay karst
+,hoian,古都ホイアン,ベトナム・クアンナム省,ベトナム,Hoi An ancient town | Japanese Covered Bridge Hoi An
+,ayutthaya,古都アユタヤ,タイ・アユタヤ県,タイ,Wat Chaiwatthanaram | Wat Mahathat Ayutthaya | Wat Phra Si Sanphet
+,bulguksa,石窟庵と仏国寺,韓国・慶尚北道,韓国,Bulguksa | Seokguram
+,petra,ペトラ,ヨルダン・マアン県,ヨルダン,Al-Khazneh Petra | Petra Monastery Ad Deir
+,aitbenhaddou,アイット=ベン=ハドゥの集落,モロッコ・ワルザザート州,モロッコ,Ait Benhaddou
+,pamukkale,ヒエラポリス-パムッカレ,トルコ・デニズリ県,トルコ,Pamukkale travertine | Pamukkale terraces
+,cappadocia,ギョレメ国立公園とカッパドキアの岩窟群,トルコ・ネヴシェヒル県,トルコ,Cappadocia fairy chimneys | Goreme Cappadocia
+,persepolis,ペルセポリス,イラン・ファールス州,イラン,Persepolis Gate of All Nations | Persepolis Apadana
+,lalibela,ラリベラの岩の聖堂群,エチオピア・アムハラ州,エチオピア,Church of Saint George Lalibela | Lalibela rock church
+,kilimanjaro,キリマンジャロ国立公園,タンザニア・キリマンジャロ州,タンザニア,Mount Kilimanjaro | Kibo Kilimanjaro
+,kenyalakes,大地溝帯にあるケニアの湖沼群,ケニア・リフトバレー州,ケニア,Lake Nakuru flamingos | Lake Bogoria flamingos
+,liberty,自由の女神像,アメリカ・ニューヨーク州,アメリカ,Statue of Liberty
+,grandcanyon,グランド・キャニオン国立公園,アメリカ・アリゾナ州,アメリカ,Grand Canyon South Rim | Grand Canyon Colorado River
+,chichenitza,古代都市チチェン・イッツァ,メキシコ・ユカタン州,メキシコ,El Castillo Chichen Itza | Chichen Itza
+,teotihuacan,古代都市テオティワカン,メキシコ・メキシコ州,メキシコ,Pyramid of the Sun Teotihuacan | Avenue of the Dead Teotihuacan
+,iguazu,イグアス国立公園,アルゼンチン・ミシオネス州,アルゼンチン,Garganta del Diablo Iguazu | Iguazu Falls Argentina
+,glaciares,ロス・グラシアレス国立公園,アルゼンチン・サンタクルス州,アルゼンチン,Perito Moreno Glacier | Fitz Roy
+,rio,リオデジャネイロ:山と海に囲まれたカリオカの景観,ブラジル・リオデジャネイロ州,ブラジル,Christ the Redeemer Rio | Sugarloaf Mountain Rio
+,cartagena,カルタヘナの港、要塞群と建造物群,コロンビア・ボリバル県,コロンビア,Cartagena walled city | Castillo San Felipe de Barajas
+,stonehenge,ストーンヘンジ、エーヴベリーと関連する遺跡群,イギリス・ウィルトシャー,イギリス,Stonehenge
+,causeway,ジャイアンツ・コーズウェーとコーズウェー海岸,イギリス・北アイルランド,イギリス,Giants Causeway
+,alhambra,グラナダのアルハンブラ、ヘネラリーフェ、アルバイシン地区,スペイン・アンダルシア州,スペイン,Alhambra Granada | Court of the Lions Alhambra
+,pisa,ピサのドゥオモ広場,イタリア・トスカーナ州,イタリア,Leaning Tower of Pisa | Piazza dei Miracoli
+,amalfi,アマルフィ海岸,イタリア・カンパニア州,イタリア,Positano | Amalfi Coast
+,dolomites,ドロミーティ山塊,イタリア・トレンティーノ=アルト・アディジェ州ほか,イタリア,Tre Cime di Lavaredo | Seceda Dolomites | Lago di Braies
+,jungfrau,スイス・アルプス ユングフラウ-アレッチ,スイス・ベルン州、ヴァレー州,スイス,Aletsch Glacier | Jungfrau Eiger Monch
+,kinderdijk,キンデルダイク=エルスハウトの風車網,オランダ・南ホラント州,オランダ,Kinderdijk windmills
+,budapest,ブダペスト:ドナウ河岸とブダ城地区、アンドラーシ通り,ハンガリー・ブダペスト,ハンガリー,Hungarian Parliament Building Danube | Fishermans Bastion | Buda Castle
+,krumlov,チェスキー・クルムロフ歴史地区,チェコ・南ボヘミア州,チェコ,Cesky Krumlov
+,hallstatt,ハルシュタット-ダッハシュタイン・ザルツカンマーグートの文化的景観,オーストリア・オーバーエスターライヒ州,オーストリア,Hallstatt
+,krakow,クラクフ歴史地区,ポーランド・マウォポルスカ県,ポーランド,Krakow Main Market Square | Cloth Hall Krakow | Wawel Castle
+,delphi,デルフィの古代遺跡,ギリシャ・中央ギリシャ地方,ギリシャ,Tholos Delphi | Delphi theatre | Temple of Apollo Delphi
+,opera,シドニー・オペラハウス,オーストラリア・ニューサウスウェールズ州,オーストラリア,Sydney Opera House
+,uluru,ウルル-カタ・ジュタ国立公園,オーストラリア・ノーザンテリトリー,オーストラリア,Uluru | Kata Tjuta
+,milford,テ・ワヒポウナム(南西ニュージーランド),ニュージーランド・南島,ニュージーランド,Milford Sound Mitre Peak | Milford Sound
+,quebec,ケベック旧市街の歴史地区,カナダ・ケベック州,カナダ,Chateau Frontenac | Old Quebec
+,nazca,ナスカとパルパの地上絵,ペルー・イカ州,ペルー,Nazca Lines hummingbird | Nazca lines
+,amber,ラージャスターンの丘陵城塞群,インド・ラージャスターン州,インド,Amber Fort | Chittorgarh Fort | Mehrangarh
+,bagan,バガン,ミャンマー・マンダレー地方,ミャンマー,Bagan temples | Bagan balloons
+,luangprabang,ルアン・パバンの町,ラオス・ルアンパバーン県,ラオス,Luang Prabang | Wat Xieng Thong
+,khiva,イチャン・カラ,ウズベキスタン・ホラズム州,ウズベキスタン,Itchan Kala | Kalta Minor Khiva
+,luxor,古代都市テーベとその墓地遺跡,エジプト・ルクソール県,エジプト,Karnak Temple hypostyle | Luxor Temple | Colossi of Memnon
+,djenne,ジェンネ旧市街,マリ・モプティ州,マリ,Great Mosque of Djenne
+,sintra,シントラの文化的景観,ポルトガル・リスボン県,ポルトガル,Pena Palace Sintra | Quinta da Regaleira
